@@ -212,8 +212,9 @@ export default function Straat() {
                       <td className="max-w-56 px-3 py-2 text-gray-800">
                         {proposalTextLabel(lang, r.assessment.proposal_text)}
                         {r.open_proposal && (
-                          <div className="text-xs text-gray-500">
-                            {t('street.openProposal')} {r.open_proposal.reason}
+                          <div className="line-clamp-2 max-w-xs text-xs text-gray-500" title={r.open_proposal.reason}>
+                            {t('street.openProposal')} {r.open_proposal.reason.split('; ')[0]}
+                            {r.open_proposal.reason.includes('; ') ? ' …' : ''}
                             {r.open_proposal.proposed_value ? ` → ${valueLabel(lang, r.open_proposal.proposed_value)}` : ''}
                           </div>
                         )}
