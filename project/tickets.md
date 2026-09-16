@@ -1,6 +1,6 @@
 # Tickets -- ai_hackathon (Prefix: TICKET)
 
-> Next ID: TICKET-039
+> Next ID: TICKET-042
 
 
 
@@ -28,6 +28,11 @@
 - **Description:** Contacts are the hardest field. Every Staatsblad publication (Luik B) ends with who filed it — usually the accountancy firm holding a volmacht — and that firm is easy to reach online to ask for the company's phone number. The ejustice listing (`rech_res.pl?btw=`) is scrapeable (no captcha): date, rubric, article link and the "BEELD" PDF per publication. The PDFs are scanned images (JBIG2, even in 2022) with no text layer and there is no OCR on this machine, so automatic extraction of the gemachtigde is out of scope. v1: `app/staatsblad.py` fetches + parses the listing → `indicator_cache` kind `staatsblad` (key = enterprise nr); `POST /api/records/{nr}/staatsblad`; the Staatsblad tab gets a "Publicaties ophalen" button that lists the publications newest first, flags the ones likely to name the gemachtigde (ONTSLAGEN-BENOEMINGEN, STATUTEN, DIVERSEN, OPRICHTING, VOLMACHT), links the PDF, and explains the workflow to the officer. Jaarrekening rows (NBB pointers, no PDF) are dropped. Follow-ups: OCR (tesseract) or vision on the PDF to read the filer's name; `last_publication` as an activity signal in scoring; NBB deposit "externe accountant" block as a text alternative.
 - **Branch:** `feat/TICKET-037-staatsblad-publicaties`
 
+### TICKET-041: Google Maps contact details in the Kaart tab (Maps Embed API place mode + Places API (New) Text Search)
+- **Type:** feat(links) | **Priority:** Stretch (contact: phone / website / hours visible in-tab)
+- **Created:** 2026-09-16
+- **Description:** The keyless `output=embed` only renders the mini-card (name, address, reviews). The Maps Embed API `place` mode ($0, but the key needs a billed Cloud project) renders the full place panel with phone, website and opening hours inside the iframe. `links.py` uses `https://www.google.com/maps/embed/v1/place?key=…&q=<name address>&language=nl` when `GOOGLE_MAPS_EMBED_KEY` is set (read from `backend/.env`, gitignored; tiny loader in `app/env.py`), otherwise falls back to the keyless embed. Restrict the key to HTTP referrers + Maps Embed API + Places API (New). The place card still hides phone/website, so a button "Contactgegevens ophalen uit Google Maps" (`GooglePlacesPanel.tsx`) calls Places API (New) Text Search from the browser (referrer-restricted key, exposed via `links.google_places_key`) and shows phone, website, hours, status, rating with source + date; the officer logs it as an observation. The Google Maps light also uses a server-side Places lookup (`app/google_places.py`, cached 7 d, filled per record on `GET /indicators` and per street on `POST /streets/{street}/indicators/refresh`): groen OPERATIONAL, geel tijdelijk gesloten / geen vermelding, rood definitief gesloten; an officer-logged observation always wins.
+- **Branch:** `feat/TICKET-041-google-places` (into PR #12)
 
 ### TICKET-035: KBO Public Search enrichment (NACEBEL 2025 activities + contact) and NACEBEL 2025 code list
 - **Type:** feat(data) | **Priority:** MVP (fills activity for ~all rows; official contact source)

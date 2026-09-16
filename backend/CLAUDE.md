@@ -8,7 +8,7 @@ app/db.py          connect() / get_db() dependency; DB at backend/data.db
 app/schema.sql     tables: records, evidence, proposals (+ nbb_cache)
 app/vkbo.py        VKBO property → row mapping, cleaning rules, upsert SQL
 app/scoring.py     rule-based assessment (status + zekerheid + reasons) — NO AI
-app/links.py       external evidence URLs for a record
+app/links.py       external evidence URLs for a record (+ google_places_key/query when GOOGLE_MAPS_EMBED_KEY is set in backend/.env, see app/env.py)
 app/activity.py    NACE 2-digit → sector (Dutch label); keyword map for officer-observed activity text
 app/nacebel.py     official NACEBEL 2025 list (app/data/nacebel_2025.csv): title(code), describe(code), search(q)
 app/kbo_public.py  KBO Public Search page scraper (NACEBEL 2025 activities, phone/e-mail/website, status) → indicator_cache kind kbo_public
@@ -17,7 +17,8 @@ app/streetview.py  Wegenregister snap: point on the record's own street + headin
 app/contact.py     contacts_for(row, parent, evidence, nbb) → Contact[] with owner/source/date; contact_status()
 app/nbb.py         NBB Balanscentrale public API client (+ cache)
 app/indicator_cache.py  generic cache (table indicator_cache)
-app/indicators.py  the three traffic lights (KBO rule, logged Google Maps observations → light, Peppol payload → light)
+app/indicators.py  the three traffic lights (KBO rule, logged Google Maps observation else cached Places listing → light, Peppol payload → light)
+app/google_places.py  Places API (New) Text Search, server-side (Referer = frontend origin) → indicator_cache kind places (key = own nr, 7 d); needs GOOGLE_MAPS_EMBED_KEY
 app/peppol.py      Peppol SML DNS check + Directory enrichment
 app/routers/       records.py · streets.py · evidence.py · proposals.py · nbb.py · activities.py · indicators.py · staatsblad.py
 scripts/import_data.py

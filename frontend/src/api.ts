@@ -198,6 +198,8 @@ export interface Proposal {
 
 export interface Links {
   google_maps_embed: string
+  google_places_key: string | null
+  google_places_query: string
   google_maps: string
   street_view_embed: string
   street_view: string
