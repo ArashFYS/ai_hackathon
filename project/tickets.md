@@ -64,6 +64,7 @@
 - [ ] Aggregatie doet geen writes of externe calls; bron/deelbestand/noemers zijn zichtbaar. Relevante tel-/filtertests, frontendtypecheck en controle van toetsenbord/mobiele weergave slagen. Geen hardgecodeerde live aantallen.
 
 - **Implementatie-aanvulling:** Gebruik de screenshot als visuele referentie: vier kaarten voor records/ondernemingen/vestigingen/ter controle, activiteitendonut, bestaande Leaflet-kaart uit Kaart en statusbalken. Echte data en expliciete dekking; geen fictieve trendlijnen. Bewijs/contact/zekerheid en voorstellen volgen als compacte blokken onderaan.
+- **Visuele feedback:** Status is standaard in het wiel; onbekende activiteit krijgt een zichtbare kleur, eerste legendapositie en expliciet aantal/aandeel. Kleine sectoren behouden hun segment.
 - **Oplevering:** Dashboard, gedeelde kaart, doorklikfilters en paginering geïmplementeerd. Vier backendtests geslaagd (inclusief 2.105 records, dubbele waarnemingen/voorstellen, ontbrekende moeder, NBB-cachepariteit en alleen-lezen). Productiebuild en bestaande kaarttest geslaagd. Browsercontrole: gemeente/type/sector, echte totalen en kaart zichtbaar.
 
 

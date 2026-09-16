@@ -1,6 +1,7 @@
 export const nlDashboard = {
   'dashboard.excluded': 'Buiten je selectie',
   'dashboard.unlinkedSelection': 'Zonder registerkoppeling · alle gemeenten',
+  'dashboard.unknownActivity': 'Bij {n} records ({pct}) is de activiteit nog onbekend. Dit deel telt mee in de ring.',
   'dashboard.nav': 'Dashboard',
   'dashboard.navigation': 'Hoofdnavigatie',
   'dashboard.eyebrow': 'Provincie Antwerpen · Lokale economie',

@@ -2,6 +2,7 @@ import type { nlDashboard } from '../nl/dashboard'
 export const enDashboard: Record<keyof typeof nlDashboard, string> = {
   'dashboard.excluded': 'Outside your selection',
   'dashboard.unlinkedSelection': 'Without registry link · all municipalities',
+  'dashboard.unknownActivity': 'Activity is unknown for {n} records ({pct}). This portion is included in the ring.',
   'dashboard.nav': 'Dashboard',
   'dashboard.navigation': 'Main navigation',
   'dashboard.eyebrow': 'Province of Antwerp · Local economy',
