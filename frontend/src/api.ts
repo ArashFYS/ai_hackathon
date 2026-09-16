@@ -1,3 +1,4 @@
+import type { GoogleMapsPlace } from './googleMaps'
 // Types mirror backend/CLAUDE.md "API contract" exactly. Do not invent fields.
 
 export type Status = 'actief' | 'ter_controle' | 'waarschijnlijk_niet_actief' | 'geen_onderneming'
@@ -221,6 +222,7 @@ export interface RecordDetail {
   links: Links
   contacts: Contact[]
   contact_status: ContactStatus
+  google_maps: GoogleMapsPlace | null
   kbo_public: KboPublic | null
 }
 
@@ -354,7 +356,7 @@ export class ApiError extends Error {
   }
 }
 
-async function api<T>(path: string, init?: RequestInit): Promise<T> {
+export async function api<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`/api${path}`, {
     ...init,
     headers: { Accept: 'application/json', ...(init?.body ? { 'Content-Type': 'application/json' } : {}), ...(init?.headers ?? {}) },
@@ -504,3 +506,5 @@ export function exportUrl(format: 'csv' | 'json'): string {
 
 // Language-aware label helpers + display helpers live in labels.ts (text in src/i18n); re-exported for convenience.
 export * from './labels'
+// Google Maps listing types + refresh helpers (TICKET-035).
+export * from './googleMaps'

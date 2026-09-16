@@ -1,7 +1,7 @@
 import { Fragment, useCallback, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import type { Proposal, Status, StreetCount, StreetOverview, StreetRecord, StreetRefreshResult } from '../api'
-import { STATUS_CODES, dash, getStreet, getStreets, proposalTextLabel, refreshStreetIndicators, registerLabel, statusLabel, valueLabel } from '../api'
+import { ApiError, STATUS_CODES, dash, getStreet, getStreets, proposalTextLabel, refreshStreetGoogleMaps, refreshStreetIndicators, registerLabel, statusLabel, valueLabel } from '../api'
 import type { TKey } from '../i18n'
 import { useLang, useT } from '../i18n'
 import StatusBadge from '../components/StatusBadge'
@@ -90,6 +90,22 @@ export default function Straat() {
       .finally(() => setChecking(false))
   }
 
+  // "Google Maps ophalen (Apify)": one actor run for every non-VME record in the street (TICKET-035)
+  const [mapsBusy, setMapsBusy] = useState(false)
+  const [mapsResult, setMapsResult] = useState<string | null>(null)
+
+  const fetchMaps = () => {
+    setMapsBusy(true)
+    setMapsResult(null)
+    refreshStreetGoogleMaps(street)
+      .then((res) => {
+        setMapsResult(t('street.mapsResult', { searched: res.searched, found: res.found, closed: res.closed, seconds: res.seconds }))
+        reload()
+      })
+      .catch((e: unknown) => setMapsResult(e instanceof ApiError && (e.status === 409 || e.status === 502) ? e.message : t('street.mapsFailed')))
+      .finally(() => setMapsBusy(false))
+  }
+
   useEffect(() => {
     getStreets().then(setStreets).catch(() => setStreets([]))
   }, [])
@@ -165,10 +181,20 @@ export default function Straat() {
         >
           {checking ? t('street.checkBusy') : t('street.checkButton')}
         </button>
+        <button
+          type="button"
+          onClick={fetchMaps}
+          disabled={mapsBusy || loading}
+          className="mb-0.5 rounded border border-gray-800 bg-white px-2 py-1 text-xs font-medium text-gray-900 hover:bg-gray-100 disabled:opacity-50"
+          title={t('street.mapsTitle')}
+        >
+          {mapsBusy ? t('street.mapsBusy') : t('street.mapsButton')}
+        </button>
         <button type="button" className={`mb-0.5 ${missingBtn}`} disabled={!data} onClick={() => setForm({})}>
           + {t('missing.button')}
         </button>
         {checkResult && <span className="w-full text-xs text-gray-600">{checkResult}</span>}
+        {mapsResult && <span className="w-full text-xs text-gray-600">{mapsResult}</span>}
       </div>
 
       {form && data && form.group === undefined && (
