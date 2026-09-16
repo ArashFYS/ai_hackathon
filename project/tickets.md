@@ -1,6 +1,6 @@
 # Tickets -- ai_hackathon (Prefix: TICKET)
 
-> Next ID: TICKET-026
+> Next ID: TICKET-028
 >
 > **Deadline: 16:30 Europe/Brussels, 16 Sep 2026.** Build freeze ~15:00 → record 15:00–15:45 → upload + check + form by 16:15.
 > Anything not demoable by 15:00 is a slide in the video, not a feature.
