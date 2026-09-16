@@ -30,6 +30,12 @@ Hackathon entry for **Challenge 01: Find the Real Businesses** (ns2agi, Province
 ./backend/app/summaries.py
 ./backend/app/routers/{records,streets,evidence,proposals,nbb}.py
 ./backend/scripts/import_data.py
+./backend/scripts/fetch_google_maps.py   # Google Maps listings via Apify (--street/--nr/--all, --dry-run, --from-json)
+./backend/scripts/samples/apify-google-maps-sample.json
+./backend/app/apify.py            # Apify REST client (needs APIFY_TOKEN in backend/.env)
+./backend/app/google_maps.py      # query/match/store Google Maps listings
+./backend/app/env.py
+./backend/app/routers/google_maps.py
 ./backend/pyproject.toml
 ./frontend/CLAUDE.md             # pages, components, Dutch vocabulary
 ./frontend/src/api.ts            # typed client mirroring backend contract

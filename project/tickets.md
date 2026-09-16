@@ -1,9 +1,6 @@
 # Tickets -- ai_hackathon (Prefix: TICKET)
 
 > Next ID: TICKET-042
-
-
-
 >
 > **Deadline: 16:30 Europe/Brussels, 16 Sep 2026.** Build freeze ~15:00 → record 15:00–15:45 → upload + check + form by 16:15.
 > Anything not demoable by 15:00 is a slide in the video, not a feature.
@@ -31,7 +28,7 @@
 ### TICKET-041: Google Maps contact details in the Kaart tab (Maps Embed API place mode + Places API (New) Text Search)
 - **Type:** feat(links) | **Priority:** Stretch (contact: phone / website / hours visible in-tab)
 - **Created:** 2026-09-16
-- **Description:** The keyless `output=embed` only renders the mini-card (name, address, reviews). The Maps Embed API `place` mode ($0, but the key needs a billed Cloud project) renders the full place panel with phone, website and opening hours inside the iframe. `links.py` uses `https://www.google.com/maps/embed/v1/place?key=…&q=<name address>&language=nl` when `GOOGLE_MAPS_EMBED_KEY` is set (read from `backend/.env`, gitignored; tiny loader in `app/env.py`), otherwise falls back to the keyless embed. Restrict the key to HTTP referrers + Maps Embed API + Places API (New). The place card still hides phone/website, so a button "Contactgegevens ophalen uit Google Maps" (`GooglePlacesPanel.tsx`) calls Places API (New) Text Search from the browser (referrer-restricted key, exposed via `links.google_places_key`) and shows phone, website, hours, status, rating with source + date; the officer logs it as an observation. The Google Maps light also uses a server-side Places lookup (`app/google_places.py`, cached 7 d, filled per record on `GET /indicators` and per street on `POST /streets/{street}/indicators/refresh`): groen OPERATIONAL, geel tijdelijk gesloten / geen vermelding, rood definitief gesloten; an officer-logged observation always wins.
+- **Description:** The keyless `output=embed` only renders the mini-card (name, address, reviews). The Maps Embed API `place` mode ($0, but the key needs a billed Cloud project) renders the full place panel with phone, website and opening hours inside the iframe. `links.py` uses `https://www.google.com/maps/embed/v1/place?key=…&q=<name address>&language=nl` when `GOOGLE_MAPS_EMBED_KEY` is set (read from `backend/.env`, gitignored; tiny loader in `app/env.py`), otherwise falls back to the keyless embed. Restrict the key to HTTP referrers + Maps Embed API + Places API (New). The place card still hides phone/website, so a button "Contactgegevens ophalen uit Google Maps" (`GooglePlacesPanel.tsx`) calls Places API (New) Text Search from the browser (referrer-restricted key, exposed via `links.google_places_key`) and shows phone, website, hours, status, rating with source + date; the officer logs it as an observation. (The Maps light itself comes from main's Apify scrape, TICKET-039/040.)
 - **Branch:** `feat/TICKET-041-google-places` (into PR #12)
 
 ### TICKET-035: KBO Public Search enrichment (NACEBEL 2025 activities + contact) and NACEBEL 2025 code list
@@ -131,6 +128,26 @@
 - **Description:** Browser upload of a VKBO export instead of running the import script; reuses TICKET-004 parser.
 
 ## Done
+
+### TICKET-040: Commit the SQLite database with all collected data
+- **Type:** chore(data)
+- **Created:** 2026-09-16 | **Completed:** 2026-09-16
+- **Description:** `backend/data.db` is now versioned (removed from .gitignore; the `-wal`/`-shm` side files stay ignored) so a checkout carries everything the demo needs without re-running imports or paying Apify again: 1,309 KBO records (starter sample + parents fetched from VKBO), 964 Peppol SML results, 212 Google Maps listings scraped via Apify (all of Paalstraat + one batch of other streets, ≈ $0.85), 3 Apify run records, 10 auto-proposals. `make import` remains the way to rebuild from scratch. The file is ≈ 5 MB and changes on every run: commit it deliberately, not with every code change.
+- **Branch:** `data/TICKET-040-committed-database` | **Commits:** `598c5fa`
+
+### TICKET-039: Bulk Peppol (e-facturatie) check for every record — commits tagged TICKET-036 (id later reused on main)
+- **Type:** feat(score)
+- **Created:** 2026-09-16 | **Completed:** 2026-09-16
+- **Description:** `scripts/fetch_peppol.py` (Makefile `peppol`) runs the Peppol SML DNS check for every enterprise number in the database (or one street), storing results in `indicator_cache` so the e-fact. light is filled on every list and detail page without waiting for a street refresh. Free, no key; cached results younger than 7 days are skipped unless `--force`. Directory enrichment stays lazy on the detail page.
+- **Branch:** `feat/TICKET-035-apify-google-maps` | **Commits:** `77b8843`
+
+### TICKET-038: Google Maps data via Apify (compass/crawler-google-places) — commits tagged TICKET-035 (id later reused on main)
+- **Type:** feat(maps) | **Priority:** Stretch (demo value: real listing, reviews, open/closed status, contacts)
+- **Created:** 2026-09-16 | **Completed:** 2026-09-16
+- **Description:** Pull the Google Maps listing per KBO record through the Apify actor `compass/crawler-google-places`: one query per record ("<naam>, <straat> <nr>, <postcode> <gemeente>", 1 place, language nl, contacts add-on for e-mail/website, 3 newest reviews, no reviewer personal data). Stored in `google_maps_places` (+ `apify_runs`), matched on address (`adres`) or name (`naam`), else `geen`. Drives the Google Maps light (permanent gesloten → rood, tijdelijk gesloten → geel, recensie ≤ 6 maanden → groen, vermeld zonder recente recensie → geel, niet gevonden → geel; a newer officer observation wins). Phone / e-mails / website appear in the contacts list with source "Google Maps (via Apify)". Detail page gets a Google Maps card (status, rating, reviews, openingsuren, link, "Ophalen via Apify"); Straatoverzicht gets "Google Maps ophalen (Apify)". Script `scripts/fetch_google_maps.py` (--street / --nr / --all, batches of 100, --dry-run, offline --from-json), Makefile `google-maps`, token `APIFY_TOKEN` in `backend/.env` (loader `app/env.py`). ≈ $0.0075 per searched record.
+- **Out of scope:** feeding the light into `assess()`; periodic re-scrapes; photos.
+- **Done when:** the offline fixture fills rows without a token and the light/contacts/card show them; with a token `POST /api/records/{nr}/google-maps/refresh` returns a real listing; list endpoints stay network-free.
+- **Branch:** `feat/TICKET-035-apify-google-maps` | **Commits:** `fd84c40..043a77d`
 
 ### TICKET-033: Activiteitsindicatoren — KBO / Google Maps / e-facturatie (Peppol) traffic lights (merge of Wolfgang's TICKET-028 branch)
 - **Type:** feat(score) | **Priority:** Stretch (demo value: three sources at a glance)

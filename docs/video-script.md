@@ -41,7 +41,7 @@ Recording setup: 1440×900 browser window, Chrome, zoom 110%, backend on :8010 +
 
 **Echt vs. gemockt (say this explicitly):**
 - Real: register data, rule engine with provenance on every reason, evidence log (incl. observed phone/website), approval + export, missing-establishment flow, KBO / Google Maps / Street View / Inhoudingsplicht embeds, NBB figures from the live public API, VKBO live fetch of parent enterprises, contact via zetel, activity sectors from NACE + observations, map.
-- Not done / limited: only 1,000 of Schoten's records loaded (API pagination ready); activity known for ~8 % of rows (KBO Open Data import would fix it); Google reviews are opened, not scraped; no user accounts; SQLite single-user; English UI is a toggle, Dutch is the working language.
+- Not done / limited: only 1,000 of Schoten's records loaded (API pagination ready); activity known for ~8 % of rows (KBO Open Data import would fix it); Google Maps listings (status, reviews, contact) are scraped per record via Apify only when a token is configured, otherwise reviews are opened, not scraped; no user accounts; SQLite single-user; English UI is a toggle, Dutch is the working language.
 
 ## 2:20–3:00 — Value, limits, reuse
 

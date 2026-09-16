@@ -5,7 +5,7 @@ Python 3.13, FastAPI, stdlib `sqlite3` (no ORM), managed with `uv`. Port **8010*
 ```
 app/main.py        app, CORS, includes routers
 app/db.py          connect() / get_db() dependency; DB at backend/data.db
-app/schema.sql     tables: records, evidence, proposals (+ nbb_cache)
+app/schema.sql     tables: records, evidence, proposals (+ nbb_cache, indicator_cache, google_maps_places, apify_runs)
 app/vkbo.py        VKBO property → row mapping, cleaning rules, upsert SQL
 app/scoring.py     rule-based assessment (status + zekerheid + reasons) — NO AI
 app/links.py       external evidence URLs for a record (+ google_places_key/query when GOOGLE_MAPS_EMBED_KEY is set in backend/.env, see app/env.py)
@@ -14,13 +14,17 @@ app/nacebel.py     official NACEBEL 2025 list (app/data/nacebel_2025.csv): title
 app/kbo_public.py  KBO Public Search page scraper (NACEBEL 2025 activities, phone/e-mail/website, status) → indicator_cache kind kbo_public
 app/staatsblad.py  Belgisch Staatsblad listing scraper (date, rubric, PDF, likely_gemachtigde) → indicator_cache kind staatsblad (key = enterprise nr)
 app/streetview.py  Wegenregister snap: point on the record's own street + heading → indicator_cache kind streetview
-app/contact.py     contacts_for(row, parent, evidence, nbb) → Contact[] with owner/source/date; contact_status()
+app/contact.py     contacts_for(row, parent, evidence, nbb, kbo_public, einvoice, place) → Contact[] with owner/source/date; contact_status()
+app/env.py         loads backend/.env into os.environ (no dependency); APIFY_TOKEN
 app/nbb.py         NBB Balanscentrale public API client (+ cache)
 app/indicator_cache.py  generic cache (table indicator_cache)
-app/indicators.py  the three traffic lights (KBO rule, logged Google Maps observation else cached Places listing → light, Peppol payload → light)
-app/google_places.py  Places API (New) Text Search, server-side (Referer = frontend origin) → indicator_cache kind places (key = own nr, 7 d); needs GOOGLE_MAPS_EMBED_KEY
+app/indicators.py  the three traffic lights (KBO rule, scraped Google Maps listing / logged observations → light, Peppol payload → light)
+app/apify.py       Apify REST client for the Google Maps Scraper actor (run, poll, dataset, run-sync)
+app/google_maps.py query building, address/name matching, google_maps_places storage, scrape_records()
 app/peppol.py      Peppol SML DNS check + Directory enrichment
 app/routers/       records.py · streets.py · evidence.py · proposals.py · nbb.py · activities.py · indicators.py · staatsblad.py
+app/routers/       records.py · streets.py · evidence.py · proposals.py · nbb.py · activities.py · indicators.py · google_maps.py
+scripts/fetch_google_maps.py   --street / --nr / --all, --dry-run, --from-json (offline fixture in scripts/samples/)
 scripts/import_data.py
 ```
 
@@ -77,6 +81,11 @@ Proposal    { id, record_nr: string|null, kind: 'status_change'|'address_check'|
               record: { display_name, address } | null }
 Indicator   { level: 'groen'|'geel'|'rood'|'onbekend', label: string, text: string, checked_at: 'YYYY-MM-DD'|null, url: string|null }
             RecordSummary carries indicators: { kbo: Indicator, google_maps: Indicator, einvoice: Indicator }  (TICKET-033)
+GoogleMapsPlace { record_nr, match_quality: 'adres'|'adres_andere_naam'|'naam'|'geen', status: 'open'|'tijdelijk_gesloten'|'permanent_gesloten'|'niet_gevonden',
+                search_string, run_id, scraped_at, place_id, title, category, categories: string[], address, street, city, postal_code,
+                phone, website, emails: string[], phones: string[], social: {instagrams,facebooks,linkedIns}, rating, reviews_count,
+                permanently_closed: bool, temporarily_closed: bool, latest_review_at, reviews: [{date, stars, text}], opening_hours: [{day, hours}],
+                url, image_url, lat, lng }
 Links       { google_maps_embed, google_maps, street_view_embed, street_view, kbo_public, kbo_public_embed,
               kbo_establishments, nbb_consult, inhoudingsplicht_embed, inhoudingsplicht, staatsblad, web_search_embed, web_search }
 ```
@@ -94,13 +103,16 @@ GET  /records/{nr}                                     → { record: RecordSumma
                                                            parent_in_dataset: bool, seat_elsewhere: bool,
                                                            establishments: RecordSummary[], evidence: Evidence[], proposals: Proposal[],
                                                            links: Links, contacts: Contact[], contact_status: ContactStatus,
-                                                           kbo_public: { available, url, status, snapshot_date, phone, email, website, activities, note } | null }
+                                                           kbo_public: { available, url, status, snapshot_date, phone, email, website, activities, note } | null,
+                                                           google_maps: GoogleMapsPlace|null }   // table read, no network
                                                          side effect: (re)generate open proposals from the assessment, idempotently
 POST /records/{nr}/kbo-public                          → kbo_public payload (live scrape of the KBO Public Search page, cached; TICKET-035)
 POST /records/{nr}/staatsblad                          → { available, url, last_publication, count, publications: [{ date, rubric, pdf_url, article_url, likely_gemachtigde }], note }  (live, cached; enterprise nr via parent for establishments)
 GET  /nacebel?q=&limit=20  · GET /nacebel/{code}       → [{ code, level, title }] · { code, title, division, division_title, section, section_title }|null
 POST /records/{nr}/fetch-parent                        → RecordSummary  (VKBO API by Ondernemingsnr; 404 if not found)
 GET  /records/{nr}/indicators                          → { kbo, google_maps, einvoice }   live Peppol lookup (cached); KBO and Google Maps lights recomputed
+POST /records/{nr}/google-maps/refresh                 → GoogleMapsPlace   one Apify search (run-sync, 30–60 s); 409 "APIFY_TOKEN ontbreekt in backend/.env", 502 on Apify failure
+POST /streets/{street}/google-maps/refresh             → { street, searched, found, closed, seconds }   one Apify run for every non-VME record (sync ≤ 50 queries, else async + polling, minutes)
 POST /streets/{street}/indicators/refresh              → { street, records, kbo: {groen,geel,rood,onbekend}, google_maps: {...}, einvoice: {...}, seconds }
                                                          sequential lookups for every record in the street (demo pre-fill); 404 "Straat niet gevonden"
 GET  /records/{nr}/nbb                                 → { available: bool, enterprise_nr, url, company: {name, legal_form, legal_situation, legal_situation_date, address, email, website}|null,
@@ -177,6 +189,9 @@ List endpoints (`/records`, `/streets/{street}`) never hit the network: they rea
 
 **KBO** (`kbo_indicator(row, parent)`, pure, reuses `scoring.register_negative_reasons`), in order: own rule 1–3 hit → rood · parent (in DB) hits 1–3 → rood · VME → geel · establishment whose parent is not in DB → geel · KBO≠AR or AR missing → geel · else groen. `url` = KBO public page, `checked_at` = register snapshot date.
 
-**Google Maps** (`google_maps_indicator(evidence)`) — **no Google API** (the Places API needs a billed Cloud project; removed in TICKET-029). Uses the latest officer-logged evidence row with `source = 'google_maps'`: conclusion `niet_actief` → rood · `actief` observed within 183 days → groen · `actief` older → geel · `onduidelijk` → geel · nothing logged → onbekend "Nog geen Google Maps-waarneming gelogd". `checked_at` = observed_at, `url` = the evidence URL.
+**Google Maps** (`google_maps_indicator(evidence, place)`) — scraped listing first (`google_maps_places`, match `adres`/`naam`): `permanently_closed` → rood · `temporarily_closed` → geel · `latest_review_at` within 183 days → groen "Recensie op Google Maps op {date}" · else geel "Vermeld op Google Maps, laatste recensie {date|geen}" (`naam` match adds "adres wijkt af, nazien"). An officer observation (source `google_maps`) newer than `scraped_at` wins: `niet_actief` → rood · `actief` ≤ 183 days → groen · older → geel · `onduidelijk` → geel. Searched but `geen` → geel "Niet gevonden op Google Maps". Nothing → onbekend "Nog niet opgehaald". `checked_at` = scraped_at / observed_at, `url` = Maps link / evidence URL.
 
 **E-facturatie** (`peppol.py`). Participant id = `0208:<ondernemingsnummer>` only (enterprise nr; `links.enterprise_nr_of`). SML DNS: host = `base32(sha256(pid.lower())).rstrip('=').lower() + ".iso6523-actorid-upis.edelivery.tech.ec.europa.eu"`; `socket.getaddrinfo` → exists (`EAI_NODATA`: NAPTR only) = registered, `EAI_NONAME` = not registered, else onbekend (not cached). Sanity-resolves `edelivery.tech.ec.europa.eu` first. groen = registered (detail page adds Peppol Directory name + regDate; the Directory is rate-limited, so only `with_directory=True` there) · rood = not registered · geel = not registered but legal form not obliged (vereniging, stichting, maatschap, openbare instelling). Cache kind `einvoice`, key = enterprise nr, TTL 7 days. `url` = Peppol Directory public search.
+
+## Apify Google Maps client (`apify.py`, `google_maps.py`) — needs `APIFY_TOKEN` in `backend/.env`
+Actor `compass/crawler-google-places` (Google Maps Scraper), REST `https://api.apify.com/v2`: `POST /acts/compass~crawler-google-places/runs?token=&timeout=900` → `data.id`, `data.defaultDatasetId`; `GET /actor-runs/{id}` (status, `usageTotalUsd`); `GET /datasets/{id}/items?clean=true&format=json`; `POST /acts/…/run-sync-get-dataset-items?timeout=300` for ≤ 50 queries. Input per run: `searchStringsArray` = one query per record `"<naam>, <straat> <nr>, <postcode> <gemeente>"` (`google_maps.build_query`; no `locationQuery` → single map screen, Google's order), `maxCrawledPlacesPerSearch: 1`, `language: nl`, `scrapeContacts: true` (e-mail/website/social from the website), `maxReviews: 3`, `reviewsSort: newest`, `scrapeReviewsPersonalData: false`, `skipClosedPlaces: false`. Items echo `searchString`; `store_items` maps them back, `match_quality` = `adres` (address and name agree) · `adres_andere_naam` (address agrees, another name: other shop or unknown trade name → light geel "Andere naam op dit adres", contacts NOT merged) · `naam` (name agrees elsewhere) · `geen` (neither, or an address-only result: category Gebouw / title "Paalstraat 9" without phone, website or rating). Address = KBO street + a whole-token house-number part in item.address/street; name = half of the distinctive name words (stopwords and the municipality removed) in the title, or one shared word of ≥ 5 letters. The actor returns each place once per run under the first query that found it, so `assign_items` offers every item to every record of the batch and the best match wins (own query breaks ties); `--from-run RUN_ID` re-maps a finished run for free after matcher changes. Records sharing a query (enterprise + establishment at one address) cost one search. Reviews keep only date/stars/text; `raw` is stripped of reviewer fields (GDPR). Cost ≈ $0.0075 per query; every run is logged in `apify_runs` (async runs with `cost_usd`). Errors raise `ApifyError` with a Dutch note; routers map missing token → 409, other failures → 502. List endpoints never call Apify: `load_indicator_cache` batch-reads `google_maps_places`. Offline testing: `python3 scripts/fetch_google_maps.py --from-json scripts/samples/apify-google-maps-sample.json` (3 fixture items: open with recent review, permanently closed, non-matching address).

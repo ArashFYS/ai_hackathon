@@ -1,0 +1,169 @@
+[
+ {
+  "searchString": "KAPSALON SCHOTEN, Paalstraat 144, 2900 Schoten",
+  "rank": 1,
+  "title": "Kapsalon Schoten",
+  "categoryName": "Kapsalon",
+  "categories": [
+   "Kapsalon"
+  ],
+  "address": "Paalstraat 144, 2900 Schoten, België",
+  "street": "Paalstraat 144",
+  "city": "Schoten",
+  "postalCode": "2900",
+  "countryCode": "BE",
+  "website": "https://www.kapsalonschoten.be/",
+  "phone": "03 658 00 00",
+  "phoneUnformatted": "+3236580000",
+  "emails": [
+   "info@kapsalonschoten.be"
+  ],
+  "phones": [],
+  "instagrams": [],
+  "facebooks": [],
+  "linkedIns": [],
+  "location": {
+   "lat": 51.25416994,
+   "lng": 4.50330214
+  },
+  "totalScore": 4.6,
+  "permanentlyClosed": false,
+  "temporarilyClosed": false,
+  "placeId": "ChIJsample-kapsalon",
+  "reviewsCount": 87,
+  "scrapedAt": "2026-09-16T10:00:00.000Z",
+  "openingHours": [
+   {
+    "day": "maandag",
+    "hours": "Gesloten"
+   },
+   {
+    "day": "dinsdag",
+    "hours": "9:00 tot 18:00"
+   },
+   {
+    "day": "woensdag",
+    "hours": "9:00 tot 18:00"
+   },
+   {
+    "day": "donderdag",
+    "hours": "9:00 tot 20:00"
+   },
+   {
+    "day": "vrijdag",
+    "hours": "9:00 tot 18:00"
+   },
+   {
+    "day": "zaterdag",
+    "hours": "8:30 tot 16:00"
+   },
+   {
+    "day": "zondag",
+    "hours": "Gesloten"
+   }
+  ],
+  "reviews": [
+   {
+    "publishedAtDate": "2026-08-30T14:12:00.000Z",
+    "stars": 5,
+    "text": "Heel vriendelijk en vakkundig, snit zoals gevraagd."
+   },
+   {
+    "publishedAtDate": "2026-07-12T09:40:00.000Z",
+    "stars": 4,
+    "text": "Goede service, wel even wachten zonder afspraak."
+   },
+   {
+    "publishedAtDate": "2026-05-03T16:05:00.000Z",
+    "stars": 5,
+    "text": "Top kapper in Schoten."
+   }
+  ],
+  "url": "https://www.google.com/maps/search/?api=1&query=Kapsalon%20Schoten%20Paalstraat%20144&query_place_id=ChIJsample-kapsalon",
+  "imageUrl": null
+ },
+ {
+  "searchString": "BROODJESBAR BO, Paalstraat 205, 2900 Schoten",
+  "rank": 1,
+  "title": "Broodjesbar Bo",
+  "categoryName": "Broodjeszaak",
+  "categories": [
+   "Broodjeszaak"
+  ],
+  "address": "Paalstraat 205, 2900 Schoten, België",
+  "street": "Paalstraat 205",
+  "city": "Schoten",
+  "postalCode": "2900",
+  "countryCode": "BE",
+  "website": null,
+  "phone": "03 658 11 11",
+  "phoneUnformatted": "+3236581111",
+  "emails": [],
+  "phones": [],
+  "instagrams": [],
+  "facebooks": [],
+  "linkedIns": [],
+  "location": {
+   "lat": 51.25654072,
+   "lng": 4.50413295
+  },
+  "totalScore": 4.1,
+  "permanentlyClosed": true,
+  "temporarilyClosed": false,
+  "placeId": "ChIJsample-bo",
+  "reviewsCount": 34,
+  "scrapedAt": "2026-09-16T10:00:00.000Z",
+  "openingHours": [],
+  "reviews": [
+   {
+    "publishedAtDate": "2025-11-02T11:00:00.000Z",
+    "stars": 4,
+    "text": "Lekkere broodjes, jammer dat ze gestopt zijn."
+   }
+  ],
+  "url": "https://www.google.com/maps/search/?api=1&query=Broodjesbar%20Bo%20Paalstraat%20205&query_place_id=ChIJsample-bo",
+  "imageUrl": null
+ },
+ {
+  "searchString": "TALONI, Paalstraat 8, 2900 Schoten",
+  "rank": 1,
+  "title": "Schoenmakerij Centrum",
+  "categoryName": "Schoenmaker",
+  "categories": [
+   "Schoenmaker"
+  ],
+  "address": "Kerkstraat 12, 2000 Antwerpen, België",
+  "street": "Kerkstraat 12",
+  "city": "Antwerpen",
+  "postalCode": "2000",
+  "countryCode": "BE",
+  "website": null,
+  "phone": null,
+  "phoneUnformatted": null,
+  "emails": [],
+  "phones": [],
+  "instagrams": [],
+  "facebooks": [],
+  "linkedIns": [],
+  "location": {
+   "lat": 51.2511994,
+   "lng": 4.49898027
+  },
+  "totalScore": 4.8,
+  "permanentlyClosed": false,
+  "temporarilyClosed": false,
+  "placeId": "ChIJsample-other",
+  "reviewsCount": 12,
+  "scrapedAt": "2026-09-16T10:00:00.000Z",
+  "openingHours": [],
+  "reviews": [
+   {
+    "publishedAtDate": "2026-09-01T08:00:00.000Z",
+    "stars": 5,
+    "text": "Snel en goed."
+   }
+  ],
+  "url": "https://www.google.com/maps/search/?api=1&query=Schoenmakerij%20Centrum&query_place_id=ChIJsample-other",
+  "imageUrl": null
+ }
+]

@@ -79,3 +79,8 @@ export function proposalTextLabel(lang: Lang, text: string | null | undefined): 
   const tail = rest.map((p) => (p === 'adres nazien' ? 'check address' : p))
   return [PROPOSAL_TEXT_EN[head] ?? head, ...tail].join('; ')
 }
+
+/** Google Maps match quality codes ('adres' | 'naam' | 'geen') from google_maps_places. */
+export function mapsMatchLabel(lang: Lang, code: string | null | undefined): string {
+  return lookup(lang, 'mapsMatch', code)
+}

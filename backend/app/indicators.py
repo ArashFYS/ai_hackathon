@@ -5,6 +5,7 @@ Pure functions over the record row, its parent and cached lookup payloads; no ne
 import sqlite3
 from datetime import date as _date
 
+from .google_maps import load_places
 from .indicator_cache import cache_get_many
 from .links import enterprise_nr_of
 from .peppol import obliged
@@ -61,35 +62,12 @@ def kbo_indicator(row: dict, parent: dict | None) -> dict:
     return indicator("groen", "Register in orde", text, checked, url)
 
 
-_PLACES_STATUS = {
-    "OPERATIONAL": ("groen", "Vermeld op Google Maps", "Actief volgens Google Maps"),
-    "CLOSED_TEMPORARILY": ("geel", "Tijdelijk gesloten", "Tijdelijk gesloten volgens Google Maps"),
-    "CLOSED_PERMANENTLY": ("rood", "Definitief gesloten", "Definitief gesloten volgens Google Maps"),
-}
-
-
-def _places_indicator(places: dict | None) -> dict:
-    """Cached Places API text search (TICKET-038); 'onbekend' when never checked."""
-    if not places:
-        return indicator("onbekend", "Geen waarneming", "Nog geen Google Maps-waarneming gelogd (tab Kaart & recensies)")
-    checked = (places.get("fetched_at") or "")[:10] or None
-    if not places.get("found"):
-        return indicator("geel", "Geen vermelding", places.get("note") or "Geen Google Maps-vermelding gevonden", checked)
-    level, label, text = _PLACES_STATUS.get(places.get("status") or "", ("geel", "Vermelding zonder status", "Vermeld op Google Maps, status onbekend"))
-    text += f": {places.get('name')}"
-    if places.get("phone"):
-        text += f", tel. {places['phone']}"
-    if places.get("rating") is not None:
-        text += f", {places['rating']} ★ ({places.get('rating_count') or 0})"
-    return indicator(level, label, text, checked, places.get("url"))
-
-
-def google_maps_indicator(evidence: list[dict] | None, places: dict | None = None) -> dict:
-    """Officer-logged observations with source google_maps win; else the cached Places API listing."""
+def _latest_maps_observation(evidence: list[dict] | None) -> dict | None:
     obs = [e for e in (evidence or []) if e.get("source") == "google_maps" and e.get("observed_at")]
-    if not obs:
-        return _places_indicator(places)
-    latest = max(obs, key=lambda e: (e["observed_at"], e.get("id") or 0))
+    return max(obs, key=lambda e: (e["observed_at"], e.get("id") or 0)) if obs else None
+
+
+def _observation_indicator(latest: dict) -> dict:
     date, url, what = latest["observed_at"], latest.get("url"), (latest.get("observation") or "").strip()
     text = f"Waarneming op Google Maps op {date}: {what}" if what else f"Waarneming op Google Maps op {date}"
     conclusion = latest.get("conclusion")
@@ -100,6 +78,39 @@ def google_maps_indicator(evidence: list[dict] | None, places: dict | None = Non
             return indicator("groen", "Recent actief op Google Maps", text, date, url)
         return indicator("geel", "Waarneming ouder dan 6 maanden", text, date, url)
     return indicator("geel", "Onduidelijk", text, date, url)
+
+
+def _place_indicator(p: dict) -> dict:
+    """From a scraped listing (google_maps_places via Apify) that matched the record."""
+    checked, url, title = (p.get("scraped_at") or "")[:10] or None, p.get("url"), p.get("title")
+    hint = " — adres wijkt af van het KBO-adres, nazien" if p.get("match_quality") == "naam" else ""
+    if p.get("match_quality") == "adres_andere_naam":
+        return indicator("geel", "Andere naam op dit adres",
+                         f'Google Maps vermeldt "{title}" op dit adres, niet de geregistreerde naam: andere zaak of onbekende handelsnaam, nazien',
+                         checked, url)
+    if p.get("permanently_closed"):
+        return indicator("rood", "Permanent gesloten volgens Google Maps", f'"{title}" staat als permanent gesloten{hint}', checked, url)
+    if p.get("temporarily_closed"):
+        return indicator("geel", "Tijdelijk gesloten volgens Google Maps", f'"{title}" staat als tijdelijk gesloten{hint}', checked, url)
+    latest, n, score = p.get("latest_review_at"), p.get("reviews_count") or 0, p.get("rating")
+    stats = f"{score}★, {n} recensies" if score is not None else f"{n} recensies"
+    if latest and _days_since(latest) <= RECENT_DAYS:
+        return indicator("groen", "Recent actief op Google Maps", f"Recensie op Google Maps op {latest} ({stats}){hint}", checked, url)
+    return indicator("geel", "Vermeld op Google Maps", f'"{title}" vermeld op Google Maps, laatste recensie {latest or "geen"} ({stats}){hint}', checked, url)
+
+
+def google_maps_indicator(evidence: list[dict] | None, place: dict | None = None) -> dict:
+    """Scraped listing first; an officer observation newer than the scrape wins; else evidence; else onbekend."""
+    obs = _latest_maps_observation(evidence)
+    found = bool(place and place.get("match_quality") != "geen" and place.get("title"))
+    if found and not (obs and obs["observed_at"] > (place.get("scraped_at") or "")[:10]):
+        return _place_indicator(place)
+    if obs:
+        return _observation_indicator(obs)
+    if place:
+        return indicator("geel", "Niet gevonden op Google Maps", f'Geen vermelding gevonden voor "{place.get("search_string")}"',
+                         (place.get("scraped_at") or "")[:10] or None, None)
+    return indicator("onbekend", "Nog niet opgehaald", "Nog niet opgehaald via Apify; log een waarneming of klik \"Ophalen via Apify\"")
 
 
 def einvoice_indicator(payload: dict | None, row: dict, parent: dict | None) -> dict:
@@ -126,27 +137,28 @@ def einvoice_indicator(payload: dict | None, row: dict, parent: dict | None) -> 
 
 
 def build_indicators(row: dict, parent: dict | None, evidence: list[dict] | None, einvoice: dict | None,
-                     places: dict | None = None) -> dict:
+                     place: dict | None = None) -> dict:
     return {
         "kbo": kbo_indicator(row, parent),
-        "google_maps": google_maps_indicator(evidence, places),
+        "google_maps": google_maps_indicator(evidence, place),
         "einvoice": einvoice_indicator(einvoice, row, parent),
     }
 
 
 def load_indicator_cache(conn: sqlite3.Connection, rows: list[dict]) -> dict[str, dict[str, dict]]:
-    """Cached payloads for many rows: {"einvoice": {enterprise_nr: payload},
-    "kbo_public": {nr: payload}, "streetview": {nr: payload}} (TICKET-035/036)."""
+    """Cached payloads for many rows: {"einvoice": {enterprise_nr: payload}, "kbo_public": {nr: payload},
+    "streetview": {nr: payload}, "google_maps": {nr: place}}. No network."""
     ents = sorted({e for e in (enterprise_nr_of(r) for r in rows) if e})
     nrs = sorted({r["nr"] for r in rows if r.get("nr")})
     return {
         "einvoice": cache_get_many(conn, "einvoice", ents) if ents else {},
         "kbo_public": cache_get_many(conn, "kbo_public", nrs) if nrs else {},
         "streetview": cache_get_many(conn, "streetview", nrs) if nrs else {},
-        "places": cache_get_many(conn, "places", nrs) if nrs else {},
+        "google_maps": load_places(conn, nrs) if nrs else {},
     }
 
 
 def indicators_for(row: dict, parent: dict | None, evidence: list[dict] | None, cached: dict | None) -> dict:
-    return build_indicators(row, parent, evidence, (cached or {}).get("einvoice", {}).get(enterprise_nr_of(row)),
-                            (cached or {}).get("places", {}).get(row.get("nr")))
+    c = cached or {}
+    return build_indicators(row, parent, evidence, c.get("einvoice", {}).get(enterprise_nr_of(row)),
+                            c.get("google_maps", {}).get(row["nr"]))

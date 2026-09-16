@@ -1,23 +1,21 @@
-"""Minimal .env loader (backend/.env, gitignored): KEY=value lines, no quotes handling beyond stripping."""
+"""Minimal .env loader (no dependency): KEY=VALUE lines from backend/.env into os.environ."""
 import os
 from pathlib import Path
 
-_ENV_FILE = Path(__file__).resolve().parent.parent / ".env"
+ENV_PATH = Path(__file__).resolve().parent.parent / ".env"
 
 
-def load() -> None:
-    if not _ENV_FILE.exists():
+def load_dotenv(path: Path = ENV_PATH) -> None:
+    """Never overrides variables that are already set. Silently ignores a missing file."""
+    try:
+        lines = path.read_text(encoding="utf-8").splitlines()
+    except OSError:
         return
-    for line in _ENV_FILE.read_text().splitlines():
+    for line in lines:
         line = line.strip()
         if not line or line.startswith("#") or "=" not in line:
             continue
-        k, v = line.split("=", 1)
-        os.environ.setdefault(k.strip(), v.strip().strip('"').strip("'"))
-
-
-load()
-
-
-def maps_embed_key() -> str | None:
-    return os.environ.get("GOOGLE_MAPS_EMBED_KEY") or None
+        key, _, value = line.removeprefix("export ").partition("=")
+        key, value = key.strip(), value.strip().strip("'\"")
+        if key:
+            os.environ.setdefault(key, value)

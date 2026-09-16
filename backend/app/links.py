@@ -1,8 +1,13 @@
 """External evidence URLs for a record (Google Maps, Street View, KBO public search, NBB, web search)."""
+import os
 from urllib.parse import quote
+
 from .geography import coordinate_issue
 
-from .env import maps_embed_key
+
+def maps_embed_key() -> str | None:
+    """Google Maps Platform key from backend/.env (TICKET-041); None → keyless embed, no Places button."""
+    return os.environ.get("GOOGLE_MAPS_EMBED_KEY") or None
 
 
 def enterprise_nr_of(row: dict) -> str | None:

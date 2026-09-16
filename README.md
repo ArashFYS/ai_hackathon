@@ -90,13 +90,14 @@ Data sources — all public, no keys:
 - **KBO Public Search** (FOD Economie) — embedded per enterprise / establishment.
 - **NBB Balanscentrale** — `consult.cbso.nbb.be` public consult API: company status, all filed annual accounts, key figures per filing.
 - **Check Inhoudingsplicht** (RSZ · FOD Financiën · RSVZ) — prefilled, officer clicks (captcha-protected).
-- **Google Maps / Street View** — embedded views; reviews are read by the officer, not scraped.
+- **Google Maps / Street View** — embedded views for the officer, plus (optional) the listing per record scraped through the Apify actor `compass/crawler-google-places`: open / tijdelijk / permanent gesloten, rating, 3 newest reviews, opening hours, phone, e-mail, website. Needs `APIFY_TOKEN` in `backend/.env`, ≈ $0.01 per record; no reviewer personal data is stored.
 - **OpenStreetMap** tiles for the map.
 
 ## Run it
 
 ```bash
-make import      # loads data/raw/*.geojson into backend/data.db (registry numbers as text, blanks and placeholder dates cleaned)
+make import      # optional: backend/data.db is committed with all collected data (KBO, Peppol, Google Maps via Apify); this rebuilds the register part from data/raw/*.geojson
+make google-maps ARGS="--street Paalstraat"   # optional: Google Maps listings via Apify (cp backend/.env.example backend/.env, set APIFY_TOKEN); --dry-run shows queries + cost
 make dev         # backend on :8010 + frontend on :5173
 ```
 Or separately: `cd backend && uv run uvicorn app.main:app --reload --port 8010` · `cd frontend && pnpm dev`.
