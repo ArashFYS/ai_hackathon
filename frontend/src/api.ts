@@ -14,6 +14,11 @@ export interface Reason {
   text: string
   direction: Direction
   weight: Weight
+  /** Provenance: where the reason comes from, so the officer can verify it. */
+  source: string | null
+  field: string | null
+  observed_at: string | null
+  url: string | null
 }
 
 export interface Assessment {
@@ -117,6 +122,8 @@ export interface Links {
   kbo_public_embed: string
   kbo_establishments: string
   nbb_consult: string
+  inhoudingsplicht_embed: string | null
+  inhoudingsplicht: string
   web_search_embed: string
   web_search: string
 }

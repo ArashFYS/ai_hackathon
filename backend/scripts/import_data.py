@@ -21,7 +21,12 @@ def main(path: str) -> None:
     features = data["features"]
     conn = connect()
     conn.executescript(SCHEMA.read_text())
-    rows = [feature_to_row(f, source="starter-geojson") for f in features]
+    # the starter files are a dated snapshot: use its retrieval date, not the import time
+    meta_path = Path(path).with_name("source-metadata.json")
+    snapshot = None
+    if meta_path.exists():
+        snapshot = (json.loads(meta_path.read_text()).get("retrieved_on") or "")[:10] or None
+    rows = [feature_to_row(f, source="starter-geojson", fetched_at=snapshot) for f in features]
     conn.executemany(upsert_sql(), rows)
     conn.commit()
     total, ent, est = conn.execute(

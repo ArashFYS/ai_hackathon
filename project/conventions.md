@@ -22,7 +22,7 @@
 - **Commit messages:** `type(scope): description (TICKET-NNN)`
   - One logical change per commit
   - Always include ticket ID
-- **Branching:** Create a branch per ticket for non-trivial work
+- **Branching:** one branch per ticket, always — `type/TICKET-NNN-short-description` off `main`. **Never push to main**; every change reaches main through a PR (pre-push hook enforces this).
 
 ## Code Quality
 

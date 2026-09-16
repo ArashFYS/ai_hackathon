@@ -1,6 +1,6 @@
 # Tickets -- ai_hackathon (Prefix: TICKET)
 
-> Next ID: TICKET-021
+> Next ID: TICKET-028
 >
 > **Deadline: 16:30 Europe/Brussels, 16 Sep 2026.** Build freeze ~15:00 → record 15:00–15:45 → upload + check + form by 16:15.
 > Anything not demoable by 15:00 is a slide in the video, not a feature.
@@ -9,6 +9,15 @@
 
 ## In Progress
 
+### TICKET-021: Provenance on every reason (source, field, date, verify link) + NBB signal in the assessment
+- **Type:** feat(score)
+- **Created:** 2026-09-16
+- **Description:** A reason is not just a sentence: every entry in `assessment.reasons` carries `source` (KBO via VKBO · Vlaams Adressenregister · VKBO geometrie · NBB Balanscentrale · officer observation), `field` (the register field, e.g. `Rechtstoestand`, `Datum_adresdoorhaling`), `observed_at` (snapshot date of the register row, or the observation date) and `url` (KBO Public Search page of the enterprise or establishment, NBB consult page, officer-supplied URL). Starter rows are stamped with the real snapshot date (2026-09-07 from source-metadata.json) instead of import time. The detail assessment also reads the cached NBB payload: last filing > 24 months → negatief; NBB legal situation ≠ Normale toestand → sterk negatief (second, independent source). UI shows "Bron · veld · datum · Controleer bron ↗" under each reason. Also fixes an intermittent 500 (`check_same_thread`).
+
+### TICKET-023: "Inhoudingsplicht" tab — fiscal and social debts check
+- **Type:** feat(evidence)
+- **Created:** 2026-09-16
+- **Description:** Add https://www.checkinhoudingsplicht.be (RSZ · FOD Financiën · RSVZ) as a minibrowser tab. Verified: no frame restrictions, `?identificationnumber=<nr>` prefills the enterprise number; the lookup is captcha-protected so it stays a click for the officer (no automated calls). Evidence source option "Check Inhoudingsplicht".
 ### TICKET-013: Pitch video and submission
 - **Type:** docs | **Priority:** MVP — hard deadline
 - **Created:** 2026-09-16
@@ -35,6 +44,39 @@
   - Goedgekeurd: rows with `record: null` show `observed_name` and the proposal's address, no detail link.
 - **Done when:** on Paalstraat, adding "Kapsalon Voorbeeld" at nr 20 with bron Street View shows the third-example row; bevestigen moves it to Goedgekeurd and into the CSV export with kind `missing_establishment`.
 - **Out of scope:** matching the observed name against records on nearby addresses (nice-to-have suggestion: "Lijkt op … op nr 22").
+
+### TICKET-024: Filter on activity (sector) in Zoeken and Straatoverzicht
+- **Type:** feat(search) | **Priority:** MVP (small)
+- **Created:** 2026-09-16
+- **Data reality:** the starter data has a NACE activity for only 81/1000 rows (`NACE_hoofdact_RSZ`); the VAT activity is empty for every row. So the filter must be honest: most rows are "Activiteit onbekend" until enriched.
+- **Backend:** `GET /api/records?activity=<sector>`; `GET /api/activities` → `[{ sector, label, count }]`. Sector = NACE 2-digit → Dutch label (47 Detailhandel · 56 Horeca · 86 Gezondheidszorg · 96 Persoonlijke diensten (kapsalons…) · 45 Garages · 68 Vastgoed · 41–43 Bouw · 69–70 Zakelijke diensten · 85 Onderwijs · 94 Verenigingen · overige · onbekend). Sources, in priority order: `nace_rsz` → `nace_vat` → latest officer-observed activity (`evidence.observed_activity`, free text mapped by keyword: kapsalon→96, bakkerij→47, restaurant/café→56 …) → `onbekend`. Each record gets `activity: { sector, label, source: 'KBO (RSZ)'|'KBO (BTW)'|'waarneming'|null }`.
+- **Frontend:** "Activiteit" dropdown next to Type/Status on Zoeken and on Straatoverzicht; activity label + source shown in the results table and in Registergegevens.
+- **Enrichment path (the real fix):** KBO Open Data (economie.fgov.be, free account, monthly full dump) ships `activity.csv` with NACE codes for every enterprise **and establishment** → import by `EntityNumber`. That would fill the sector for ~all rows. Track as TICKET-026.
+
+### TICKET-025: Contact (phone / email / website) per company, with source and date
+- **Type:** feat(detail) | **Priority:** MVP (small) + follow-ups
+- **Created:** 2026-09-16
+- **Data reality:** VKBO gives a phone for 53/1000 rows and an e-mail for 73. No establishment in the sample has a parent with a phone in the dataset. The brief: show the number, whether it belongs to the local establishment or the central office, a clickable source and when it was checked; otherwise "contactgegevens onbekend".
+- **Today (this ticket):**
+  1. Contact block shows every known contact as a row: *waarde · hoort bij (vestiging / zetel) · bron · datum · link*. Register phone/email → bron "KBO (via VKBO)", datum = snapshot date, link = KBO Public Search.
+  2. Establishment without contact → fall back to the parent enterprise's contact labelled **"zetel"** (fetch via VKBO if missing — TICKET-012 button).
+  3. Officer-observed contact: `evidence` gets optional `phone`, `email`, `website` columns; EvidenceForm gets the three fields ("Contact gezien op Google Maps / website"). Shown in the Contact block as "waargenomen via {bron} op {datum}" with the URL.
+  4. `RecordSummary.contact_status`: `register` | `zetel` | `waargenomen` | `onbekend` — filterable later.
+- **Follow-ups (how we get more numbers, ranked):**
+  - **KBO Open Data `contact.csv`** (official, TEL/EMAIL/WEB per enterprise and establishment; free account) → TICKET-026. Best complete source.
+  - **OpenStreetMap via Overpass** (free, no key): `phone`/`contact:phone`/`website`/`opening_hours` tags for shops near the coordinates matched by name; store as evidence with source "OpenStreetMap" + object URL + OSM timestamp. Coverage unverified (Overpass timed out during the check on 2026-09-16) → TICKET-027.
+  - NBB company record (`email`, `website`) — already fetched in the NBB panel; surface when present.
+  - Not: Google Places (key + billing), scraping Google Maps / Gouden Gids (terms of use).
+
+### TICKET-026: Import KBO Open Data (activity.csv, contact.csv, establishment.csv)
+- **Type:** feat(data) | **Priority:** Stretch (needs a free KBO Open Data account; dump is large)
+- **Created:** 2026-09-16
+- **Description:** Register at economie.fgov.be for KBO Open Data, download the monthly full dump, and import for the municipality: NACE activities and official contact data for every enterprise and establishment, plus all establishments of enterprises seated elsewhere. Fills TICKET-024 and TICKET-025 for ~100 % of rows. Record dump date as `observed_at` on the resulting reasons.
+
+### TICKET-027: OpenStreetMap enrichment (phone, website, opening hours, shop type)
+- **Type:** feat(evidence) | **Priority:** Stretch
+- **Created:** 2026-09-16
+- **Description:** "Zoek op OpenStreetMap" button on the detail page: Overpass query within ~60 m of the coordinates, fuzzy-match on name; on a hit create evidence rows (source `openstreetmap`, URL `https://www.openstreetmap.org/<type>/<id>`, observed_at = OSM `timestamp`) with phone/website/opening_hours and the `shop`/`amenity` tag as observed activity. Use a mirror list (overpass-api.de, overpass.kumi.systems) and a proper User-Agent. Verify coverage on Paalstraat first.
 
 ### Stretch — only after MVP is recordable
 
@@ -64,6 +106,12 @@
 - **Description:** `ejustice.just.fgov.be/cgi_tsv/tsv_rech.pl?btw=<nr>` returned HTTP 500 on 2026-09-16; find a working publication-search URL before adding.
 
 ## Done
+
+### TICKET-022: Branch-per-ticket policy, no pushes to main
+- **Type:** chore
+- **Created:** 2026-09-16 | **Completed:** 2026-09-16
+- **Description:** Non-negotiable rule in CLAUDE.md and conventions.md: every ticket on its own branch, main only via PR. `.claude/hooks/pre-push` refuses pushes to main.
+- **Commits:** (this branch)
 
 ### TICKET-005: Company lookup (search)
 - **Type:** feat(search) | **Priority:** MVP

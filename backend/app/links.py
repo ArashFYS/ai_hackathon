@@ -36,6 +36,10 @@ def build_links(row: dict, display_name: str, address: str) -> dict:
             if ent else None
         ),
         "nbb_consult": f"https://consult.cbso.nbb.be/consult-enterprise/{ent}" if ent else None,
+        # RSZ / FOD Financiën: fiscal and social debts (inhoudingsplicht). Prefills the number; the
+        # officer clicks "Controleren" (captcha-protected, so no automated lookup).
+        "inhoudingsplicht_embed": f"https://www.checkinhoudingsplicht.be/?identificationnumber={ent}" if ent else None,
+        "inhoudingsplicht": f"https://www.checkinhoudingsplicht.be/?identificationnumber={ent}" if ent else "https://www.checkinhoudingsplicht.be/",
         "web_search_embed": f"https://www.bing.com/search?q={name_muni}",
         "web_search": f"https://www.google.com/search?q={name_muni}",
     }

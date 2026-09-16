@@ -19,7 +19,24 @@ export default function ReasonsList({ reasons }: { reasons: Reason[] }) {
             <span className={`mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-xs font-bold ${d.cls}`} title={r.direction}>
               {d.sign}
             </span>
-            <span className="flex-1 text-gray-800">{r.text}</span>
+            <span className="flex-1">
+              <span className="text-gray-800">{r.text}</span>
+              {(r.source || r.observed_at || r.url) && (
+                <span className="mt-0.5 block text-xs text-gray-500">
+                  {r.source && <>Bron: {r.source}</>}
+                  {r.field && <> · veld <code className="rounded bg-gray-100 px-1">{r.field}</code></>}
+                  {r.observed_at && <> · {r.observed_at}</>}
+                  {r.url && (
+                    <>
+                      {' · '}
+                      <a href={r.url} target="_blank" rel="noreferrer" className="text-blue-700 underline">
+                        Controleer bron ↗
+                      </a>
+                    </>
+                  )}
+                </span>
+              )}
+            </span>
             <span className="shrink-0 text-xs text-gray-500">{r.weight}</span>
           </li>
         )
