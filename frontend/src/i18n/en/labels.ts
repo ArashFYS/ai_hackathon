@@ -83,4 +83,8 @@ export const enLabels: Record<keyof typeof nlLabels, string> = {
   'sector.financieel': 'Financial services',
   'sector.overige': 'Other',
   'sector.onbekend': 'Unknown',
+
+  'mapsMatch.adres': 'address matches',
+  'mapsMatch.naam': 'name only',
+  'mapsMatch.geen': 'no match',
 }

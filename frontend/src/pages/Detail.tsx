@@ -13,6 +13,7 @@ import ProposalList from '../components/ProposalList'
 import EvidencePanel from '../components/EvidencePanel'
 import ContactBlock from '../components/ContactBlock'
 import IndicatorLights from '../components/IndicatorLights'
+import GoogleMapsCard from '../components/GoogleMapsCard'
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -122,7 +123,7 @@ export default function Detail() {
     return () => {
       cancelled = true
     }
-  }, [nr])
+  }, [nr, tick])
 
   useEffect(() => {
     if (!nr) return
@@ -184,6 +185,7 @@ export default function Detail() {
         <Section title={t('detail.registerData')}><RegisterFacts r={r} lang={lang} /></Section>
         <Section title={t('detail.linkage')}><LinkageCard detail={data} onChanged={reload} /></Section>
         <Section title={t('detail.contact')}><ContactBlock contacts={data.contacts} status={data.contact_status} /></Section>
+        <Section title={t('detail.googleMaps')}><GoogleMapsCard nr={r.nr} place={data.google_maps} onChanged={reload} /></Section>
 
         <Section title={t('detail.evidence')}>
           <EvidenceForm nr={r.nr} onSaved={reload} />

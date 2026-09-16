@@ -85,4 +85,8 @@ export const nlLabels = {
   'sector.financieel': 'Financiële diensten',
   'sector.overige': 'Overige',
   'sector.onbekend': 'Onbekend',
+  // Google Maps listing match (TICKET-035).
+  'mapsMatch.adres': 'adres klopt',
+  'mapsMatch.naam': 'enkel naam',
+  'mapsMatch.geen': 'geen match',
 } as const
