@@ -1,0 +1,41 @@
+"""External evidence URLs for a record (Google Maps, Street View, KBO public search, NBB, web search)."""
+from urllib.parse import quote
+
+
+def enterprise_nr_of(row: dict) -> str | None:
+    """The enterprise number to use for enterprise-level sources."""
+    if row.get("record_type") == "establishment":
+        return row.get("parent_nr")
+    return row.get("nr")
+
+
+def build_links(row: dict, display_name: str, address: str) -> dict:
+    name_addr = quote(f"{display_name} {address}".strip())
+    name_muni = quote(f"{display_name} {row.get('kbo_municipality') or ''}".strip())
+    lat, lng = row.get("lat"), row.get("lng")
+    ent = enterprise_nr_of(row)
+    kbo_public = (
+        f"https://kbopub.economie.fgov.be/kbopub/toonondernemingps.html?ondernemingsnummer={ent}&lang=nl"
+        if ent else None
+    )
+    return {
+        "google_maps_embed": f"https://maps.google.com/maps?q={name_addr}&output=embed",
+        "google_maps": f"https://www.google.com/maps/search/?api=1&query={name_addr}",
+        "street_view_embed": (
+            f"https://www.google.com/maps/embed?pb=!4v0!6m8!1m7!1s!2m2!1d{lat}!2d{lng}!3f0!4f0!5f0.75"
+            if lat is not None and lng is not None else None
+        ),
+        "street_view": (
+            f"https://www.google.com/maps/@?api=1&map_action=pano&viewpoint={lat},{lng}"
+            if lat is not None and lng is not None else None
+        ),
+        "kbo_public": kbo_public,
+        "kbo_public_embed": kbo_public,
+        "kbo_establishments": (
+            f"https://kbopub.economie.fgov.be/kbopub/vestiginglijst.html?ondernemingsnummer={ent}&lang=nl"
+            if ent else None
+        ),
+        "nbb_consult": f"https://consult.cbso.nbb.be/consult-enterprise/{ent}" if ent else None,
+        "web_search_embed": f"https://www.bing.com/search?q={name_muni}",
+        "web_search": f"https://www.google.com/search?q={name_muni}",
+    }

@@ -19,3 +19,15 @@ def get_db():
         yield conn
     finally:
         conn.close()
+
+SCHEMA_PATH = Path(__file__).resolve().parent / "schema.sql"
+
+
+def apply_schema() -> None:
+    """Create any missing tables/indexes (schema.sql is IF NOT EXISTS-safe)."""
+    conn = connect()
+    try:
+        conn.executescript(SCHEMA_PATH.read_text())
+        conn.commit()
+    finally:
+        conn.close()

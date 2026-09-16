@@ -78,3 +78,10 @@ CREATE TABLE IF NOT EXISTS proposals (
 );
 CREATE INDEX IF NOT EXISTS idx_proposals_record ON proposals(record_nr);
 CREATE INDEX IF NOT EXISTS idx_proposals_status ON proposals(status);
+
+-- Cached NBB Balanscentrale responses, keyed by enterprise number (refreshed after 1 day).
+CREATE TABLE IF NOT EXISTS nbb_cache (
+  nr         TEXT PRIMARY KEY,
+  fetched_at TEXT NOT NULL,
+  payload    TEXT NOT NULL
+);
