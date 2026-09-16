@@ -9,10 +9,6 @@
 
 ## In Progress
 
-### TICKET-028: README — features and how the tool works
-- **Type:** docs
-- **Created:** 2026-09-16
-- **Description:** Rewrite README.md: problem, every feature (Zoeken, Straatoverzicht, Detail, minibrowser tabs, Goedgekeurd, Kaart), the rule table with sources, architecture, data sources, run instructions, data caveats, real vs. not, repo workflow.
 ### TICKET-013: Pitch video and submission
 - **Type:** docs | **Priority:** MVP — hard deadline
 - **Created:** 2026-09-16
@@ -46,6 +42,12 @@
 - **Description:** Browser upload of a VKBO export instead of running the import script; reuses TICKET-004 parser.
 
 ## Done
+
+### TICKET-028: README — features and how the tool works
+- **Type:** docs
+- **Created:** 2026-09-16 | **Completed:** 2026-09-16
+- **Description:** Rewrite README.md: problem, every feature (Zoeken, Straatoverzicht, Detail, minibrowser tabs, Goedgekeurd, Kaart), the rule table with sources, architecture, data sources, run instructions, data caveats, real vs. not, repo workflow.
+- **Commits:** `bb50043` (via chore/integrate-r2)
 
 ### TICKET-029: Language toggle — Dutch default, English optional
 - **Type:** feat(ui)
