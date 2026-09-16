@@ -44,7 +44,7 @@ Proposal    { id, record_nr, kind: 'status_change'|'address_check'|'missing_esta
               field, current_value, proposed_value, reason, status: 'open'|'bevestigd'|'afgewezen', created_at, decided_at,
               record?: { display_name, address } }
 Links       { google_maps_embed, google_maps, street_view_embed, street_view, kbo_public, kbo_public_embed,
-              kbo_establishments, nbb_consult, inhoudingsplicht_embed, inhoudingsplicht, web_search_embed, web_search }
+              kbo_establishments, nbb_consult, inhoudingsplicht_embed, inhoudingsplicht, staatsblad, web_search_embed, web_search }
 ```
 
 Endpoints (all under `/api`):
@@ -99,6 +99,7 @@ street_view         https://www.google.com/maps/@?api=1&map_action=pano&viewpoin
 kbo_public / kbo_public_embed  https://kbopub.economie.fgov.be/kbopub/toonondernemingps.html?ondernemingsnummer={enterprise_nr}&lang=nl  (iframe OK)
 kbo_establishments  https://kbopub.economie.fgov.be/kbopub/vestiginglijst.html?ondernemingsnummer={enterprise_nr}&lang=nl
 nbb_consult         https://consult.cbso.nbb.be/consult-enterprise/{enterprise_nr}   (NOT iframeable)
+staatsblad          https://www.ejustice.just.fgov.be/cgi_tsv/rech_res.pl?language=nl&btw={enterprise_nr}  (NOT iframeable — frame-ancestors 'self'; link-out; verified 2026-09-16, `tsv_rech.pl` returns 500)
 inhoudingsplicht_embed / inhoudingsplicht  https://www.checkinhoudingsplicht.be/?identificationnumber={enterprise_nr}  (iframe OK; prefills the number; lookup is captcha-protected → officer clicks "Controleren"; RSZ/FOD Financiën/RSVZ fiscal & social debts)
 web_search_embed    https://html.duckduckgo.com/html/?q={name} {municipality}          (iframe OK)
 web_search          https://www.google.com/search?q={name} {municipality}
