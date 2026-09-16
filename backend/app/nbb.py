@@ -42,6 +42,7 @@ def _company(client: httpx.Client, nr: str) -> dict | None:
     return {
         "name": c.get("name"), "legal_form": c.get("legalForm"), "legal_situation": c.get("legalSituation"),
         "legal_situation_date": c.get("legalSituationDate"), "address": ", ".join(p for p in [street, place] if p),
+        "email": c.get("email"), "website": c.get("website"),
     }
 
 

@@ -28,6 +28,15 @@ def apply_schema() -> None:
     conn = connect()
     try:
         conn.executescript(SCHEMA_PATH.read_text())
+        _add_missing_columns(conn, "evidence", {"phone": "TEXT", "email": "TEXT", "website": "TEXT"})
         conn.commit()
     finally:
         conn.close()
+
+
+def _add_missing_columns(conn: sqlite3.Connection, table: str, columns: dict[str, str]) -> None:
+    """ALTER TABLE ADD COLUMN for columns added after the table was first created."""
+    existing = {r["name"] for r in conn.execute(f"PRAGMA table_info({table})").fetchall()}
+    for name, ddl in columns.items():
+        if name not in existing:
+            conn.execute(f"ALTER TABLE {table} ADD COLUMN {name} {ddl}")

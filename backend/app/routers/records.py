@@ -6,6 +6,7 @@ import sqlite3
 import httpx
 from fastapi import APIRouter, Depends, HTTPException, Query
 
+from ..contact import contact_status, contacts_for
 from ..db import get_db
 from ..links import build_links
 from ..summaries import (
@@ -66,8 +67,10 @@ def record_detail(nr: str, conn: sqlite3.Connection = Depends(get_db)):
         raise HTTPException(404, "Record niet gevonden")
     parent = fetch_record(conn, row["parent_nr"]) if row.get("parent_nr") else None
     evidence = fetch_evidence(conn, nr)
-    record = summarize(row, parent, evidence, full=True, nbb=cached_nbb(conn, row))
+    nbb = cached_nbb(conn, row)
+    record = summarize(row, parent, evidence, full=True, nbb=nbb)
     ensure_auto_proposals(conn, row, record["assessment"])
+    contacts = contacts_for(row, parent, evidence, nbb)
 
     parent_summary = None
     if parent:
@@ -90,6 +93,8 @@ def record_detail(nr: str, conn: sqlite3.Connection = Depends(get_db)):
         "evidence": evidence,
         "proposals": proposals,
         "links": build_links(row, display_name(row), address_of(row)),
+        "contacts": contacts,
+        "contact_status": contact_status(contacts),
     }
 
 
