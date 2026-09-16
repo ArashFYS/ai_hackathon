@@ -1,33 +1,42 @@
-import { Link, Route, Routes } from 'react-router-dom'
+import { NavLink, Route, Routes } from 'react-router-dom'
+import Zoeken from './pages/Zoeken'
+import Detail from './pages/Detail'
+import Straat from './pages/Straat'
+import Goedgekeurd from './pages/Goedgekeurd'
 
-function Home() {
-  return (
-    <p className="text-gray-600">
-      Zoek een onderneming of vestiging om de registergegevens en het bewijs van activiteit te bekijken.
-    </p>
-  )
-}
+const navCls = ({ isActive }: { isActive: boolean }) =>
+  isActive ? 'font-medium text-gray-900' : 'text-gray-600 hover:text-gray-900'
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900">
+    <div className="flex min-h-screen flex-col bg-gray-50 text-gray-900">
       <header className="border-b bg-white">
-        <div className="mx-auto flex max-w-6xl items-center gap-6 px-4 py-3">
-          <Link to="/" className="text-lg font-semibold">
+        <div className="mx-auto flex max-w-7xl items-center gap-6 px-4 py-3">
+          <NavLink to="/" className="text-lg font-semibold">
             Vind de echte ondernemingen
-          </Link>
-          <nav className="flex gap-4 text-sm text-gray-600">
-            <Link to="/">Zoeken</Link>
-            <Link to="/straat">Straatoverzicht</Link>
-            <Link to="/goedgekeurd">Goedgekeurde wijzigingen</Link>
+          </NavLink>
+          <nav className="flex gap-4 text-sm">
+            <NavLink to="/" end className={navCls}>Zoeken</NavLink>
+            <NavLink to="/straat" className={navCls}>Straatoverzicht</NavLink>
+            <NavLink to="/goedgekeurd" className={navCls}>Goedgekeurde wijzigingen</NavLink>
           </nav>
         </div>
       </header>
-      <main className="mx-auto max-w-6xl px-4 py-6">
+      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6">
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Zoeken />} />
+          <Route path="/record/:nr" element={<Detail />} />
+          <Route path="/straat" element={<Straat />} />
+          <Route path="/straat/:street" element={<Straat />} />
+          <Route path="/goedgekeurd" element={<Goedgekeurd />} />
+          <Route path="*" element={<p className="text-gray-600">Pagina niet gevonden.</p>} />
         </Routes>
       </main>
+      <footer className="border-t bg-white">
+        <p className="mx-auto max-w-7xl px-4 py-3 text-xs text-gray-500">
+          Bron: publieke KBO gegevens, verrijkt met adressen uit het Vlaamse Adressenregister (VKBO, Digitaal Vlaanderen).
+        </p>
+      </footer>
     </div>
   )
 }
