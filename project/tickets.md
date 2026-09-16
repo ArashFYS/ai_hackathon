@@ -9,11 +9,6 @@
 
 ## In Progress
 
-### TICKET-036: Bulk Peppol (e-facturatie) check for every record
-- **Type:** feat(score)
-- **Created:** 2026-09-16
-- **Description:** `scripts/fetch_peppol.py` (Makefile `peppol`) runs the Peppol SML DNS check for every enterprise number in the database (or one street), storing results in `indicator_cache` so the e-fact. light is filled on every list and detail page without waiting for a street refresh. Free, no key; cached results younger than 7 days are skipped unless `--force`. Directory enrichment stays lazy on the detail page.
-
 ### TICKET-013: Pitch video and submission
 - **Type:** docs | **Priority:** MVP — hard deadline
 - **Created:** 2026-09-16
@@ -98,6 +93,12 @@
 - **Description:** Browser upload of a VKBO export instead of running the import script; reuses TICKET-004 parser.
 
 ## Done
+
+### TICKET-036: Bulk Peppol (e-facturatie) check for every record
+- **Type:** feat(score)
+- **Created:** 2026-09-16 | **Completed:** 2026-09-16
+- **Description:** `scripts/fetch_peppol.py` (Makefile `peppol`) runs the Peppol SML DNS check for every enterprise number in the database (or one street), storing results in `indicator_cache` so the e-fact. light is filled on every list and detail page without waiting for a street refresh. Free, no key; cached results younger than 7 days are skipped unless `--force`. Directory enrichment stays lazy on the detail page.
+- **Branch:** `feat/TICKET-035-apify-google-maps` | **Commits:** `77b8843`
 
 ### TICKET-035: Google Maps data via Apify (compass/crawler-google-places)
 - **Type:** feat(maps) | **Priority:** Stretch (demo value: real listing, reviews, open/closed status, contacts)
