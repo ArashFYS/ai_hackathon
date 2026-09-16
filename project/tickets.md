@@ -1,6 +1,6 @@
 # Tickets -- ai_hackathon (Prefix: TICKET)
 
-> Next ID: TICKET-034
+> Next ID: TICKET-035
 >
 > **Deadline: 16:30 Europe/Brussels, 16 Sep 2026.** Build freeze ~15:00 → record 15:00–15:45 → upload + check + form by 16:15.
 > Anything not demoable by 15:00 is a slide in the video, not a feature.
@@ -8,6 +8,12 @@
 > Priority: **MVP** = on the critical path for the 3-min screen recording. **Stretch** = only if MVP is recordable.
 
 ## In Progress
+
+### TICKET-034: Live AND/OR search, result sorting and table export
+- **Type:** feat(search) | **Created:** 2026-09-16
+- **Description:** Right-aligned navigation with a red active/hover underline. Debounced single-row search accepting AND/OR, quoted phrases, type words, registry numbers, emails and normalized phones; existing type/status/activity filters still constrain matches. Sort columns; export/copy only displayed results in that order, choosing the full table, columns, unique emails or phones. Contacts include local registry, related headquarters, observations and local NBB cache.
+- **Scope:** Stacked on the locally reviewed TICKET-033 detail/map changes. Search export contains existing record information, not unapproved correction proposals; approval export remains unchanged. Clearly disclose any result cap.
+- **Status:** Implemented locally; review pending. Backend query/contact tests and frontend export/sort tests passed. Limit: 2,000 displayed records, explicitly disclosed when exceeded. No data is sent to external services for contact lookup.
 
 ### TICKET-033: Source selector and aligned, unboxed record details
 - **Type:** feat(ui) | **Created:** 2026-09-16

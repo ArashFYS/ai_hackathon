@@ -20,6 +20,7 @@ Run: `uv run uvicorn app.main:app --reload --port 8010` · Import: `make import`
 Test quickly with `curl localhost:8010/api/...`. Keep files < 300 lines; split routers rather than grow them.
 
 ## Data rules
+- TICKET-034: `/records` accepts `mode=phrase|and|or` (legacy phrase default), AND/OR words, quoted phrases, type keywords and contact queries; returns `total` before `limit`. Contact queries read related local records, observations and NBB cache only. `POST /records/contacts` accepts `{numbers: string[]}` (up to 2,000) and returns `{contacts: {record_nr: Contact[]}}`, without fetching remotely or creating proposals.
 - Registry numbers (`nr`, `parent_nr`) are TEXT with leading zeros. Never cast to int.
 - `record_type` = `enterprise` (legal entity; carries `legal_status`, `legal_form`) or `establishment` (has `parent_nr`).
 - Only 28/543 establishments have their parent in the DB. `parent` may be missing → say so, never invent.

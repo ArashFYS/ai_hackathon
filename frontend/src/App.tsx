@@ -20,13 +20,15 @@ export default function App() {
             <img src="/provincie-antwerpen-logo.svg" width="170" height="52" alt="Provincie Antwerpen" />
             <span>{t('app.title')}</span>
           </NavLink>
+          <div className="site-controls">
           <nav className="site-nav" aria-label="Main navigation">
             <NavLink to="/" end className={navCls}>{t('nav.search')}</NavLink>
             <NavLink to="/straat" className={navCls}>{t('nav.street')}</NavLink>
             <NavLink to="/kaart" className={navCls}>{t('nav.map')}</NavLink>
             <NavLink to="/goedgekeurd" className={navCls}>{t('nav.approved')}</NavLink>
           </nav>
-          <div className="ml-auto"><LanguageToggle /></div>
+          <LanguageToggle />
+          </div>
         </div>
       </header>
       <main className="site-main">

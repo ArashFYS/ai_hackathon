@@ -1,15 +1,17 @@
 """Record search, detail and parent fetching."""
 import json
-import re
 import sqlite3
+from typing import Literal
 
 import httpx
 from fastapi import APIRouter, Depends, HTTPException, Query
 
 from ..contact import contact_status, contacts_for
+from ..contact_selection import contact_matches, known_contacts
 from ..db import get_db
 from ..links import build_links
 from ..scoring import SCHOTEN_BBOX
+from ..search import search_clause
 from ..summaries import (
     address_of, display_name, ensure_auto_proposals, fetch_evidence, fetch_record,
     cached_nbb, now_iso, summarize, summarize_many,
@@ -23,25 +25,24 @@ VKBO_URL = "https://geo.api.vlaanderen.be/VKBO/ogc/features/v1/collections/Vkbo/
 
 @router.get("")
 def list_records(
-    q: str | None = None,
+    q: str | None = Query(None, max_length=500),
     street: str | None = None,
     type: str | None = None,
     status: str | None = None,
     activity: str | None = None,
     limit: int = Query(50, ge=1, le=2000),
+    mode: Literal["phrase", "and", "or"] = "phrase",
     conn: sqlite3.Connection = Depends(get_db),
 ):
     where, params = [], []
     if q:
-        like = f"%{q.strip()}%"
-        clause = ["name LIKE ?", "trade_name LIKE ?", "search_name LIKE ?", "kbo_street LIKE ?"]
-        params += [like, like, like, like]
-        digits = re.sub(r"\D", "", q)
-        if 9 <= len(digits) <= 10:
-            nr = digits.zfill(10)
-            clause += ["nr = ?", "parent_nr = ?"]
-            params += [nr, nr]
-        where.append("(" + " OR ".join(clause) + ")")
+        contact_rows = [dict(row) for row in conn.execute("SELECT * FROM records")]
+        contact_index = known_contacts(conn, contact_rows)
+        conn.create_function("contact_match", 2, lambda nr, term: int(contact_matches(contact_index.get(nr, []), term)))
+        clause, query_params = search_clause(q, mode, with_contacts=True)
+        if clause:
+            where.append(clause)
+            params.extend(query_params)
     if street:
         where.append("kbo_street = ? COLLATE NOCASE")
         params.append(street)
@@ -52,18 +53,13 @@ def list_records(
     if where:
         sql += " WHERE " + " AND ".join(where)
     sql += " ORDER BY kbo_street, kbo_housenr, name"
-    if not status and not activity:  # computed fields → filter in Python, so only limit in SQL when unused
-        sql += " LIMIT ?"
-        params.append(limit)
     rows = [dict(r) for r in conn.execute(sql, params).fetchall()]
     items = summarize_many(conn, rows)
     if status:
         items = [i for i in items if i["assessment"]["status"] == status]
     if activity:
         items = [i for i in items if i["activity"]["sector"] == activity]
-    if status or activity:
-        items = items[:limit]
-    return {"items": items}
+    return {"items": items[:limit], "total": len(items)}
 
 
 @router.get("/geo")

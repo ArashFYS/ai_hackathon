@@ -343,6 +343,7 @@ function qs(params: Record<string, string | number | undefined>): string {
 // ---------- endpoints ----------
 
 export interface RecordsQuery {
+  mode?: 'phrase' | 'and' | 'or'
   q?: string
   street?: string
   type?: RecordType | ''
@@ -354,6 +355,19 @@ export interface RecordsQuery {
 export async function getRecords(query: RecordsQuery): Promise<RecordSummary[]> {
   const data = await api<{ items: RecordSummary[] }>(`/records${qs({ ...query })}`)
   return data.items
+}
+
+export interface SearchResult {
+  items: RecordSummary[]
+  total: number
+}
+
+export function getExportContacts(numbers: string[], signal?: AbortSignal): Promise<{ contacts: Record<string, Contact[]> }> {
+  return api('/records/contacts', { method: 'POST', body: JSON.stringify({ numbers }), signal })
+}
+
+export function getSearchResults(query: RecordsQuery, signal?: AbortSignal): Promise<SearchResult> {
+  return api<SearchResult>(`/records${qs({ ...query })}`, { signal })
 }
 
 export interface GeoQuery {

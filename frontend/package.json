@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "test:map": "node scripts/check-map.cjs",
+    "test:table": "node scripts/check-table-export.cjs",
     "preview": "vite preview"
   },
   "dependencies": {
