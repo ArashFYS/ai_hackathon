@@ -125,6 +125,7 @@ export interface RecordSummary {
   activity: Activity
   contact_status: ContactStatus
   indicators: Indicators
+  has_evidence: boolean
   parent_in_dataset?: boolean
   seat_elsewhere?: boolean
   parent_display_name?: string | null
@@ -381,7 +382,7 @@ export async function api<T>(path: string, init?: RequestInit): Promise<T> {
   return (await res.json()) as T
 }
 
-function qs(params: Record<string, string | number | undefined>): string {
+export function qs(params: Record<string, string | number | boolean | undefined>): string {
   const p = new URLSearchParams()
   for (const [k, v] of Object.entries(params)) {
     if (v !== undefined && v !== '') p.set(k, String(v))
@@ -394,12 +395,22 @@ function qs(params: Record<string, string | number | undefined>): string {
 
 export interface RecordsQuery {
   mode?: 'phrase' | 'and' | 'or'
+  municipality?: string
+  certainty?: Certainty
+  contact?: ContactStatus
+  has_evidence?: boolean
+  parent_missing?: boolean
+  offset?: number
   q?: string
   street?: string
   type?: RecordType | ''
   status?: Status | ''
   activity?: string
   limit?: number
+}
+
+export function getRecordPage(query: RecordsQuery) {
+  return api<{ items: RecordSummary[]; total: number; offset: number; limit: number }>(`/records${qs({ ...query })}`)
 }
 
 export async function getRecords(query: RecordsQuery): Promise<RecordSummary[]> {
@@ -520,12 +531,12 @@ export function getStreet(street: string, activity?: string): Promise<StreetOver
   return api<StreetOverview>(`/streets/${encodeURIComponent(street)}${qs({ activity })}`)
 }
 
-export function getActivities(): Promise<ActivityCount[]> {
-  return api<ActivityCount[]>('/activities')
+export function getActivities(query: Pick<RecordsQuery, "municipality" | "type"> = {}): Promise<ActivityCount[]> {
+  return api<ActivityCount[]>(`/activities${qs({ ...query })}`)
 }
 
-export function getProposals(status?: ProposalStatus): Promise<Proposal[]> {
-  return api<Proposal[]>(`/proposals${qs({ status })}`)
+export function getProposals(status?: ProposalStatus, query: Pick<RecordsQuery, "municipality" | "type" | "activity"> & { linked?: boolean } = {}): Promise<Proposal[]> {
+  return api<Proposal[]>(`/proposals${qs({ ...query, status })}`)
 }
 
 export function decideProposal(id: number, status: 'bevestigd' | 'afgewezen'): Promise<Proposal> {

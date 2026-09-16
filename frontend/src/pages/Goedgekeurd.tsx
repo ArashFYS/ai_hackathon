@@ -1,16 +1,21 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import type { Proposal, ProposalStatus } from '../api'
 import { dash, exportUrl, getProposals, kindLabel, proposalStatusLabel, valueLabel } from '../api'
 import { useLang, useT } from '../i18n'
+import ScopeChips from '../components/ScopeChips'
+import { readRecordQuery } from '../dashboard'
 import { DecideButtons, ProposalStatusChip } from '../components/ProposalList'
 
-const FILTERS: ProposalStatus[] = ['open', 'bevestigd', 'afgewezen']
+const FILTERS: (ProposalStatus | 'all')[] = ['all', 'open', 'bevestigd', 'afgewezen']
 
 export default function Goedgekeurd() {
   const t = useT()
   const { lang } = useLang()
-  const [filter, setFilter] = useState<ProposalStatus>('bevestigd')
+  const [params, setParams] = useSearchParams()
+  const queryString = params.toString()
+  const filter = (params.get('status') || 'bevestigd') as ProposalStatus | 'all'
+  function setFilter(status: string) { const next = new URLSearchParams(params); next.set('status', status); setParams(next) }
   const [items, setItems] = useState<Proposal[] | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
@@ -21,7 +26,9 @@ export default function Goedgekeurd() {
     let cancelled = false
     setLoading(true)
     setError(false)
-    getProposals(filter)
+    const current = new URLSearchParams(queryString)
+    const { municipality, type, activity } = readRecordQuery(current)
+    getProposals(filter === 'all' ? undefined : filter, { municipality, type, activity, linked: current.has('linked') ? current.get('linked') === 'true' : undefined })
       .then((rows) => {
         if (!cancelled) setItems(rows)
       })
@@ -34,7 +41,7 @@ export default function Goedgekeurd() {
     return () => {
       cancelled = true
     }
-  }, [filter, tick])
+  }, [filter, tick, queryString])
 
   return (
     <div className="space-y-4">
@@ -53,6 +60,8 @@ export default function Goedgekeurd() {
         </div>
       </div>
 
+      <ScopeChips params={params} onClear={() => setParams({})} />
+      {(params.has('municipality') || params.has('type') || params.has('activity') || params.has('linked')) && <p className="text-xs text-gray-500">{t('dashboard.exportNote')}</p>}
       <div className="approval-filters flex gap-2 text-sm">
         {FILTERS.map((f) => (
           <button
@@ -62,7 +71,7 @@ export default function Goedgekeurd() {
             aria-pressed={f === filter}
             className={`rounded-full border px-3 py-1 ${f === filter ? 'border-gray-900 bg-gray-900 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}`}
           >
-            {proposalStatusLabel(lang, f)}
+            {f === 'all' ? t('common.all') : proposalStatusLabel(lang, f)}
           </button>
         ))}
       </div>

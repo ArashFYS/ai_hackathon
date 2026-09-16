@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .db import apply_schema
 from .env import load_dotenv
-from .routers import activities, evidence, google_maps, indicators, nacebel, nbb, proposals, records, staatsblad, streets
+from .routers import activities, dashboard, evidence, google_maps, indicators, nacebel, nbb, proposals, records, staatsblad, streets
 
 
 @asynccontextmanager
@@ -37,6 +37,7 @@ app.include_router(evidence.router)
 app.include_router(proposals.router)
 app.include_router(nbb.router)
 app.include_router(indicators.router)
+app.include_router(dashboard.router)
 app.include_router(nacebel.router)
 app.include_router(staatsblad.router)
 app.include_router(google_maps.router)

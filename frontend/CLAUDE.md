@@ -20,7 +20,7 @@ src/components/       StatusBadge · ZekerheidBadge · ReasonsList · EvidencePa
                       GoogleMapsCard (scraped listing: status pill, contact, rating, 3 newest reviews, openingsuren, "Ophalen via Apify"; TICKET-035)
 ```
 
-Routes: `/` Zoeken · `/record/:nr` Detail · `/straat` and `/straat/:street` Straatoverzicht · `/kaart?street=&status=` Kaart · `/goedgekeurd` Goedgekeurde wijzigingen.
+Routes: `/` Dashboard · `/zoeken` Zoeken · `/record/:nr` Detail · `/straat` and `/straat/:street` Straatoverzicht · `/kaart?street=&status=` Kaart · `/goedgekeurd` Goedgekeurde wijzigingen.
 
 ## Province of Antwerp theme — TICKET-030
 TICKET-038: Preserve upstream indicator lights/NACEBEL controls with the locally reviewed detail layout. Seven sources use a native selector defaulting to Map. RecordMap renders valid coordinates directly; rejected coordinates have no pin. Kaart excludes rejected markers and lists them separately, with typed city/street suggestions and loaded-data coverage. Search/export and tests are documented in docs/adr/004-integrated-search-and-maps.md. Earlier local UI/search IDs 033/034 overlapped upstream numbering and are consolidated as TICKET-038.
@@ -56,3 +56,19 @@ Detail section between Contact and Bewijs van activiteit, fed by `RecordDetail.g
 
 ## NbbPanel
 Calls `/api/records/{nr}/nbb`. Shows company (naam, rechtsvorm, rechtstoestand + datum), "Laatste neerlegging: {date} ({months} maanden geleden)", table of deposits: Boekjaar · Model · Omzet · Brutomarge · Winst/verlies · Eigen vermogen · VTE · PDF ↗. Numbers formatted `nl-BE` EUR, null → "—". If `available:false` show the `note` and the "Open in NBB ↗" link. Loading and error states in Dutch.
+
+
+## Dashboard — TICKET-032
+`/` is the municipal dashboard. URL scope: `gemeente`, `soort`, `sector` (default Schoten).
+Legacy root query links using q/type/status/activity/street redirect to `/zoeken` preserving filters.
+`pages/Dashboard.tsx` calls one aggregate endpoint; `DashboardChart` toggles sector/status distributions,
+`DashboardCoverage` shows observation/contact/certainty/parent coverage and saved proposals.
+The first view prioritizes review, assessed activity and observation coverage; the selected total
+and type composition appear once. Missing-information bars overlap, and inapplicable parent or
+sector links are omitted. The chart legend expands in the page without an internal scrollbar.
+`BusinessMap` shares the actual Leaflet renderer with Kaart. All percentages use the selected total;
+missing parents use selected establishments. No historical sparklines or invented counts.
+Dutch/English labels in `i18n/{nl,en}/dashboard.ts`. Empty/loading/error states are distinct.
+Search has exact totals and 100-row pagination. `ScopeChips` exposes dashboard drilldown filters.
+Kaart preserves municipality/type/sector; proposals preserve status and scope in the URL, with a
+separate all-municipality view for unlinked reports. Return to dashboard or window focus refreshes data.
