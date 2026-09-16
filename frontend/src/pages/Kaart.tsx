@@ -45,7 +45,10 @@ export default function Kaart() {
     setError(null)
     getGeo({ street: street || undefined, status: status || undefined, limit: 2000 })
       .then((d) => {
-        if (!cancelled) setItems(d)
+        if (!cancelled) {
+          setItems(d)
+          setFitTick(0) // new data: stay where the officer is, don't re-fit to the outliers
+        }
       })
       .catch(() => {
         if (!cancelled) setError('Kon kaartgegevens niet laden')
@@ -162,7 +165,7 @@ export default function Kaart() {
           </span>
         ))}
         <span className="text-gray-500">
-          Enkele punten liggen ver buiten Schoten: dat wijst op een foute geocodering in het register, niet op een verhuis.
+          Enkele punten liggen ver buiten Schoten: controleer het adres en de coördinaten van die records.
         </span>
       </div>
     </div>
