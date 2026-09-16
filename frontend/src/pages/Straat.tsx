@@ -133,12 +133,12 @@ export default function Straat() {
           </select>
         </label>
         <ActivitySelect value={activity} onChange={setActivity} />
-        <Link to={`/kaart?street=${encodeURIComponent(street)}`} className="pb-2 text-xs text-blue-700 hover:underline">{t('street.showMap')}</Link>
         {data && (
           <span className="pb-2 text-xs text-gray-500">
             {t('street.count', { total, addresses: data.addresses.length })}{missingCount > 0 ? t('street.missingCount', { n: missingCount }) : ''}
           </span>
         )}
+        <Link to={`/kaart?street=${encodeURIComponent(street)}`} className="pb-2 text-xs text-blue-700 hover:underline">{t('street.showMap')}</Link>
         <button type="button" className={`ml-auto mb-0.5 ${missingBtn}`} disabled={!data} onClick={() => setForm({})}>
           + {t('missing.button')}
         </button>
