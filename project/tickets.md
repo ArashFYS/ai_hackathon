@@ -9,6 +9,12 @@
 
 ## In Progress
 
+### TICKET-043: README and run commands up to date
+- **Type:** docs | **Priority:** Stretch (submission polish)
+- **Created:** 2026-09-16
+- **Description:** README still describes the state before the dashboard, indicator lights, KBO Public Search enrichment, Peppol, Staatsblad, Google Places, NL/EN toggle, scoped export and the committed database. Rewrite the feature list, minibrowser table, architecture tree, data sources, run section and data notes to match the code. Makefile: add `kbo-public` (prefetch script) and `test` targets; CLAUDE.md "Build / Test / Run" loses "Test: none yet".
+- **Branch:** `docs/TICKET-043-readme-run-commands`
+
 ### TICKET-038: Integrate reviewed UI, scoped live search/export and trustworthy maps
 - **Type:** feat(integration) | **Created:** 2026-09-16
 - **Base:** Merge latest main a2abe3a while preserving the reviewed detail layout, source selector, direct record map, aligned navigation and single-row live search.

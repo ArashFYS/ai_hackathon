@@ -1,4 +1,4 @@
-.PHONY: dev backend frontend import google-maps peppol
+.PHONY: dev backend frontend import google-maps peppol kbo-public test test-backend test-frontend
 backend:
 	cd backend && uv run uvicorn app.main:app --reload --port 8010
 frontend:
@@ -11,3 +11,10 @@ google-maps:
 	cd backend && uv run python scripts/fetch_google_maps.py $(ARGS)
 peppol:
 	cd backend && uv run python scripts/fetch_peppol.py $(ARGS)
+kbo-public:
+	cd backend && uv run python scripts/prefetch_kbo_public.py $(ARGS)
+test-backend:
+	cd backend && uv run python -m unittest discover -s scripts -p 'test_dashboard.py'
+test-frontend:
+	cd frontend && pnpm tsc -b --noEmit && pnpm test:map && pnpm test:table
+test: test-backend test-frontend

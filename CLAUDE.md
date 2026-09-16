@@ -62,9 +62,10 @@ Hackathon entry for **Challenge 01: Find the Real Businesses** (ns2agi, Province
 - **Run both:** `make dev` (backend on :8010, frontend on :5173 with `/api` proxied)
 - **Backend only:** `cd backend && uv run uvicorn app.main:app --reload --port 8010`
 - **Frontend only:** `cd frontend && pnpm dev`
-- **Import data:** `make import` (loads `data/raw/*.geojson` into `backend/data.db`)
+- **Import data:** `make import` (loads `data/raw/*.geojson` into `backend/data.db`; lookups and officer data are kept)
+- **Collect lookups:** `make kbo-public`, `make peppol`, `make google-maps ARGS="…"` (each takes `ARGS="--street Paalstraat"`; see README)
 - **Typecheck frontend:** `cd frontend && pnpm tsc -b --noEmit`
-- **Test:** none yet
+- **Test:** `make test` = `make test-backend` (`unittest` in `backend/scripts/test_dashboard.py`) + `make test-frontend` (tsc + `pnpm test:map` + `pnpm test:table`)
 
 ## Per-area guides
 
