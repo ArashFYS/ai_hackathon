@@ -14,6 +14,7 @@
 - **Description:** Replace the wrapped source tabs with an accessible source selector defaulting to Map, preserving all seven sources and NL/EN labels. Organize the left record column with aligned label/value rows, grouped provenance, tidy contact information and consistent form spacing; no decorative cards or separator bars.
 - **Scope:** Local review on top of main 7ba8cbf. Preserve backend behavior, current confidence/status values, source links, evidence submission and existing functionality. Main and earlier UI variants remain available.
 - **Status:** Implemented locally; awaiting user review, not published.
+- **Follow-up:** Fix the blank detail map by reusing the installed Leaflet/OpenStreetMap renderer with a marker at valid VKBO coordinates. Missing/invalid coordinates show an explanation; preserve the external address lookup, Google business/reviews link and other sources. Map backgrounds are not proof of business occupancy.
 - **Validation:** TypeScript and production build pass. Browser checks confirm all seven sources, default Map when opening a record, NL/EN labels, retained source links and zero borders around the six detail sections.
 
 ### TICKET-013: Pitch video and submission

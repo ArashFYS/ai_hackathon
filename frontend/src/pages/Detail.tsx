@@ -195,7 +195,7 @@ export default function Detail() {
 
       <div className="record-sources">
         <div>
-          <EvidencePanel key={r.nr} nr={r.nr} links={data.links} />
+          <EvidencePanel key={r.nr} nr={r.nr} links={data.links} record={r} />
         </div>
       </div>
     </div>

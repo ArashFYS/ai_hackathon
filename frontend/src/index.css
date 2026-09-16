@@ -138,6 +138,12 @@ html { background: #fff; }
 .source-guidance { font-size: 12px; line-height: 1.6; color: #786c61; }
 .source-viewport { height: 61vh; min-height: 400px; max-height: 740px; overflow: auto; border: 1px solid #e0d8d0; background: #fff; border-radius: 4px; }
 .source-viewport iframe { display: block; }
+.record-map-wrapper { height: 100%; position: relative; }
+.record-map { height: 100%; width: 100%; z-index: 0; }
+.record-map-marker { background: transparent; border: 0; }
+.record-map-pin { display: block; width: 28px; height: 28px; transform: rotate(-45deg); border-radius: 50% 50% 50% 0; background: #ba0d2e; border: 2px solid #fff; box-shadow: 0 2px 6px #0004; }
+.record-map-pin::after { content: ''; display: block; width: 8px; height: 8px; margin: 8px; background: #fff; border-radius: 50%; }
+.record-map-error { position: absolute; bottom: 26px; left: 12px; right: 12px; padding: 8px; background: #fff; color: #8b570b; font-size: 12px; }
 .source-footer { padding-top: 10px; font-size: 11px; color: #786c61; }
 .source-footer a { text-decoration: none; }
 .source-footer a:hover { text-decoration: underline; }

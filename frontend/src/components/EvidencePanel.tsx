@@ -1,7 +1,9 @@
 import { useState } from 'react'
-import type { Links } from '../api'
+import type { Links, RecordFull } from '../api'
+import { mapLocation } from '../mapLocation'
 import { useT } from '../i18n'
 import NbbPanel from './NbbPanel'
+import RecordMap from './RecordMap'
 
 type TabId = 'kaart' | 'streetview' | 'kbo' | 'nbb' | 'inhoudingsplicht' | 'staatsblad' | 'web'
 
@@ -22,12 +24,13 @@ const TABS: Tab[] = [
   { id: 'web', embed: (l) => l.web_search_embed, open: (l) => l.web_search },
 ]
 
-export default function EvidencePanel({ nr, links }: { nr: string; links: Links }) {
+export default function EvidencePanel({ nr, links, record }: { nr: string; links: Links; record: RecordFull }) {
   const t = useT()
   const [active, setActive] = useState<TabId>('kaart')
   const tab = TABS.find((x) => x.id === active) ?? TABS[0]
-  const embedUrl = tab.embed(links)
-  const openUrl = tab.open(links)
+  const location = mapLocation(record)
+  const embedUrl = tab.id === 'kaart' ? location.embed : tab.embed(links)
+  const openUrl = (tab.id === 'kaart' ? location.open : tab.open(links)) || links.google_maps
   const label = t(`panel.tab.${tab.id}`)
 
   return (
@@ -44,16 +47,23 @@ export default function EvidencePanel({ nr, links }: { nr: string; links: Links 
         </a>
       </div>
       <div className="source-context" aria-live="polite">
-        <p className="source-name">{t(`panel.bron.${tab.id}`)}</p>
+        <p className="source-name">{tab.id === 'kaart' ? 'OpenStreetMap · VKBO' : t(`panel.bron.${tab.id}`)}</p>
         <p className="source-guidance">
-          <span className="font-medium text-gray-800">{t('panel.whatToCheck')}</span> {t(`panel.check.${tab.id}`)}
+          {tab.id === 'kaart' ? (
+            <>{location.hasCoordinates ? t('panel.registerPin') : t('panel.addressLookup')} {record.address}<br />{t('panel.locationUnverified')}</>
+          ) : <><span className="font-medium text-gray-800">{t('panel.whatToCheck')}</span> {t(`panel.check.${tab.id}`)}</>}
         </p>
+        {tab.id === 'kaart' && location.needsReview && <p className="text-xs text-amber-800">{t('panel.locationReview')}</p>}
+        {tab.id === 'kaart' && <a className="text-xs text-blue-700 underline" href={links.google_maps} target="_blank" rel="noopener noreferrer">{t('panel.businessReviews')}</a>}
       </div>
       <div id="source-view" className="source-viewport" role="region" aria-label={label}>
-        {tab.id === 'nbb' ? (
+        {tab.id === 'kaart' ? (
+          location.hasCoordinates ? <RecordMap key={`${record.nr}-${record.lat}-${record.lng}`} latitude={record.lat!} longitude={record.lng!} name={record.display_name || record.nr} address={record.address} />
+            : <p className="p-4 text-sm text-gray-600">{t('panel.noCoordinates')}</p>
+        ) : tab.id === 'nbb' ? (
           <div className="h-full overflow-auto"><NbbPanel nr={nr} nbbConsultUrl={links.nbb_consult} /></div>
         ) : embedUrl ? (
-          <iframe key={tab.id} src={embedUrl} title={label} className="h-full w-full border-0" referrerPolicy="no-referrer" loading="lazy" />
+          <iframe key={`${nr}-${tab.id}`} src={embedUrl} title={label} className="h-full w-full border-0" referrerPolicy="no-referrer" loading="eager" />
         ) : (
           <div className="p-4 text-sm text-gray-600">
             <p>{t('panel.noEmbed')}</p>
