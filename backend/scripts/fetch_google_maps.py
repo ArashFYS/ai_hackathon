@@ -6,6 +6,7 @@ Usage:
   uv run python scripts/fetch_google_maps.py --all [--batch 100]
   uv run python scripts/fetch_google_maps.py --street Paalstraat --dry-run          # queries + cost estimate, no network
   uv run python scripts/fetch_google_maps.py --from-json scripts/samples/apify-google-maps-sample.json   # offline
+  uv run python scripts/fetch_google_maps.py --street Paalstraat --from-run I6fNc5wYRPrnWTbDW            # re-map a finished run (free)
 
 Needs APIFY_TOKEN in backend/.env (except --dry-run / --from-json). Records that already have a
 google_maps_places row are skipped unless --force.
@@ -18,7 +19,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from app.apify import ACTOR_NAME, COST_PER_QUERY_USD, ApifyError, actor_input, fetch_items, start_run, wait_for_run  # noqa: E402
+from app.apify import ACTOR_NAME, COST_PER_QUERY_USD, ApifyError, actor_input, fetch_items, get_run, start_run, wait_for_run  # noqa: E402
 from app.db import DB_PATH, apply_schema, connect  # noqa: E402
 from app.env import load_dotenv  # noqa: E402
 from app.google_maps import queries_for, store_items  # noqa: E402
@@ -52,6 +53,13 @@ def from_json(conn, rows, path: Path) -> None:
     print(f"{path.name}: {len(items)} items → {res}")
 
 
+def from_run(conn, rows, run_id: str, scope: str) -> None:
+    run = {**get_run(run_id), "scope": scope}
+    items = fetch_items(run["dataset_id"])
+    res = store_items(conn, rows, items, run, only_present=True)
+    print(f"run {run_id}: {len(items)} items → {res}")
+
+
 def live(conn, rows, batch: int, scope: str) -> None:
     queries = list(queries_for(rows))
     by_query = queries_for(rows)
@@ -80,11 +88,12 @@ def main() -> None:
     ap.add_argument("--force", action="store_true")
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--from-json", type=Path)
+    ap.add_argument("--from-run", help="Apify run id whose dataset is re-mapped (no new scrape)")
     args = ap.parse_args()
     load_dotenv()
     apply_schema()
     conn = connect()
-    if args.from_json:
+    if args.from_json or args.from_run:
         args.force = True
     rows = select_rows(conn, args)
     queries = queries_for(rows)
@@ -96,6 +105,9 @@ def main() -> None:
         return
     if args.from_json:
         from_json(conn, rows, args.from_json)
+        return
+    if args.from_run:
+        from_run(conn, rows, args.from_run, scope)
         return
     if not rows:
         return

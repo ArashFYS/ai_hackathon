@@ -84,6 +84,10 @@ def _place_indicator(p: dict) -> dict:
     """From a scraped listing (google_maps_places via Apify) that matched the record."""
     checked, url, title = (p.get("scraped_at") or "")[:10] or None, p.get("url"), p.get("title")
     hint = " — adres wijkt af van het KBO-adres, nazien" if p.get("match_quality") == "naam" else ""
+    if p.get("match_quality") == "adres_andere_naam":
+        return indicator("geel", "Andere naam op dit adres",
+                         f'Google Maps vermeldt "{title}" op dit adres, niet de geregistreerde naam: andere zaak of onbekende handelsnaam, nazien',
+                         checked, url)
     if p.get("permanently_closed"):
         return indicator("rood", "Permanent gesloten volgens Google Maps", f'"{title}" staat als permanent gesloten{hint}', checked, url)
     if p.get("temporarily_closed"):

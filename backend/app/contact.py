@@ -65,8 +65,8 @@ def _nbb_contacts(nbb: dict | None) -> list[dict]:
 
 def _maps_contacts(place: dict | None) -> list[dict]:
     """Phone, e-mails and website of the scraped Google Maps listing (only when it matched the record)."""
-    if not place or place.get("match_quality") == "geen" or not place.get("title"):
-        return []
+    if not place or place.get("match_quality") not in ("adres", "naam") or not place.get("title"):
+        return []  # a different name at the address may be another business: never merge its contacts
     date, url = (place.get("scraped_at") or "")[:10] or None, place.get("url")
     out = []
     if (place.get("phone") or "").strip():

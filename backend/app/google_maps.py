@@ -11,7 +11,8 @@ from datetime import datetime, timezone
 
 from .apify import (ACTOR_NAME, SYNC_MAX_QUERIES, actor_input, fetch_items, run_sync, start_run, wait_for_run)
 
-MATCH_ADRES, MATCH_NAAM, MATCH_GEEN = "adres", "naam", "geen"
+MATCH_ADRES, MATCH_ADRES_ANDERE, MATCH_NAAM, MATCH_GEEN = "adres", "adres_andere_naam", "naam", "geen"
+SCORE = {MATCH_ADRES: 3, MATCH_ADRES_ANDERE: 2, MATCH_NAAM: 1, MATCH_GEEN: 0}
 NAME_STOPWORDS = {"bv", "bvba", "nv", "vzw", "cv", "cvba", "vof", "gcv", "comm", "v", "srl", "sa", "de", "het",
                   "een", "en", "van", "der", "the", "and"}
 REVIEWER_FIELDS = ("name", "reviewerId", "reviewerUrl", "reviewerPhotoUrl", "reviewerNumberOfReviews", "isLocalGuide")
@@ -38,8 +39,10 @@ def build_query(row: dict) -> str:
 
 
 def _norm(s: str | None) -> str:
-    s = unicodedata.normalize("NFKD", s or "").encode("ascii", "ignore").decode().lower()
-    return re.sub(r"[^a-z0-9]+", " ", s).strip()
+    """Lowercase ASCII words: accents stripped, emoji/punctuation become separators ("💈Kapsalon✂️schoten💈" → "kapsalon schoten")."""
+    s = unicodedata.normalize("NFKD", s or "")
+    s = "".join(ch if ch.isalnum() or unicodedata.category(ch) == "Mn" else " " for ch in s)
+    return re.sub(r"\s+", " ", s.encode("ascii", "ignore").decode().lower()).strip()
 
 
 def _housenr_tokens(housenr: str | None) -> set[str]:
@@ -52,19 +55,66 @@ def _housenr_tokens(housenr: str | None) -> set[str]:
     return out
 
 
-def match_quality(row: dict, item: dict | None) -> str:
+ADDRESS_CATEGORIES = {"gebouw", "building", "adres", "address", "bouwwerk", "straat", "street"}
+
+
+def is_address_only(item: dict | None) -> bool:
+    """Google returns the bare address (category 'Gebouw', title 'Paalstraat 9') when no business is listed."""
     if not item:
-        return MATCH_GEEN
+        return True
+    if _norm(item.get("categoryName")) in ADDRESS_CATEGORIES:
+        return True
+    has_business = any(item.get(k) for k in ("phone", "website", "totalScore", "reviewsCount"))
+    looks_like_address = bool(re.fullmatch(r"[a-z][a-z ]+ \d+[a-z]?", _norm(item.get("title"))))
+    return looks_like_address and not has_business
+
+
+def _address_ok(row: dict, item: dict) -> bool:
     hay = f"{_norm(item.get('street'))} {_norm(item.get('address'))}"
-    tokens = set(hay.split())
     street = _norm(row.get("kbo_street"))
-    if street and street in hay and tokens & _housenr_tokens(row.get("kbo_housenr")):
-        return MATCH_ADRES
-    name_tokens = {w for w in _norm(_name(row)).split() if len(w) >= 3 and w not in NAME_STOPWORDS}
+    return bool(street and street in hay and set(hay.split()) & _housenr_tokens(row.get("kbo_housenr")))
+
+
+def _name_ok(row: dict, item: dict) -> bool:
+    """Half of the distinctive name words in the title, or one shared word of ≥ 5 letters (surname, brand)."""
+    skip = NAME_STOPWORDS | set(_norm(row.get("kbo_municipality")).split())
+    name_tokens = {w for w in _norm(_name(row)).split() if len(w) >= 2 and w not in skip}
     title_tokens = set(_norm(item.get("title")).split())
-    if name_tokens and len(name_tokens & title_tokens) / len(name_tokens) >= 0.6:
+    shared = name_tokens & title_tokens
+    if not name_tokens:
+        return False
+    return len(shared) / len(name_tokens) >= 0.5 or any(len(w) >= 5 for w in shared)
+
+
+def match_quality(row: dict, item: dict | None) -> str:
+    """adres = address and name agree · adres_andere_naam = address agrees, another name (other shop or unknown
+    trade name) · naam = name agrees elsewhere · geen = neither, or an address-only result."""
+    if is_address_only(item):
+        return MATCH_GEEN
+    addr, name = _address_ok(row, item), _name_ok(row, item)
+    if addr and name:
+        return MATCH_ADRES
+    if addr:
+        return MATCH_ADRES_ANDERE
+    if name:
         return MATCH_NAAM
     return MATCH_GEEN
+
+
+def assign_items(rows: list[dict], items: list[dict]) -> dict[str, dict | None]:
+    """Best item per record nr. The actor returns each place once per run (under the first query that found
+    it), so an item is offered to every record in the batch and goes to the best match; the record it was
+    searched for wins ties. Records left without an item get None."""
+    by_query = queries_for(rows)
+    out: dict[str, dict | None] = {r["nr"]: None for r in rows}
+    best: dict[str, int] = {r["nr"]: -1 for r in rows}
+    for item in items:
+        own = {r["nr"] for r in by_query.get(item.get("searchString") or "", [])}
+        for r in rows:
+            score = SCORE[match_quality(r, item)] * 2 + (1 if r["nr"] in own else 0)
+            if score > best[r["nr"]] and (score >= 2 or r["nr"] in own):
+                best[r["nr"]], out[r["nr"]] = score, item
+    return out
 
 
 def _reviews(item: dict) -> list[dict]:
@@ -162,16 +212,16 @@ def queries_for(rows: list[dict]) -> dict[str, list[dict]]:
 def store_items(conn: sqlite3.Connection, rows: list[dict], items: list[dict], run: dict, only_present: bool = False) -> dict:
     """Upsert one place row per record from actor items (matched on searchString); records the run."""
     queries = queries_for(rows)
-    by_query = {it.get("searchString"): it for it in items if it.get("searchString")}
+    present = {it.get("searchString") for it in items}
+    assigned = assign_items(rows, items)
     scraped_at = run.get("finished_at") or _now()
     found = closed = searched = 0
     for query, recs in queries.items():
-        item = by_query.get(query)
-        if item is None and only_present:
-            continue
+        if only_present and query not in present and all(assigned.get(r["nr"]) is None for r in recs):
+            continue  # partial file/run: leave records this data says nothing about untouched
         searched += 1
         for r in recs:
-            place = item_to_place(r, item, query, run.get("run_id"), scraped_at)
+            place = item_to_place(r, assigned.get(r["nr"]), query, run.get("run_id"), scraped_at)
             upsert_place(conn, place)
             if place["match_quality"] != MATCH_GEEN:
                 found += 1

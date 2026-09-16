@@ -2,7 +2,7 @@
 // Types mirror backend/CLAUDE.md "GoogleMapsPlace"; fetch helpers reuse api() from api.ts.
 import { api } from './api'
 
-export type MapsMatch = 'adres' | 'naam' | 'geen'
+export type MapsMatch = 'adres' | 'adres_andere_naam' | 'naam' | 'geen'
 export type MapsStatus = 'open' | 'tijdelijk_gesloten' | 'permanent_gesloten' | 'niet_gevonden'
 
 export interface GoogleMapsReview {

@@ -58,7 +58,7 @@ export default function GoogleMapsCard({ nr, place: initial, onChanged }: { nr: 
         {found && place?.title && <span className="text-sm font-medium">{place.title}</span>}
         {found && place?.category && <span className="text-xs text-gray-500">{place.category}</span>}
         {place && (
-          <span className={`rounded border px-1.5 py-0.5 text-xs ${place.match_quality === 'adres' ? 'border-green-300 text-green-800' : place.match_quality === 'naam' ? 'border-amber-300 text-amber-800' : 'border-gray-300 text-gray-600'}`}>
+          <span className={`rounded border px-1.5 py-0.5 text-xs ${place.match_quality === 'adres' ? 'border-green-300 text-green-800' : place.match_quality === 'geen' ? 'border-gray-300 text-gray-600' : 'border-amber-300 text-amber-800'}`}>
             {t('maps.match')} {mapsMatchLabel(lang, place.match_quality)}
           </span>
         )}
