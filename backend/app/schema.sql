@@ -67,17 +67,26 @@ CREATE TABLE IF NOT EXISTS evidence (
 CREATE INDEX IF NOT EXISTS idx_evidence_record ON evidence(record_nr);
 
 -- Proposed changes; only status='bevestigd' rows are ever exported ("published").
+-- record_nr is NULL for kind='missing_establishment' (a business seen on the street that has no KBO
+-- record at that address); those rows carry the observed address/name/source instead.
+-- db.apply_schema() migrates an older table (NOT NULL record_nr / missing columns) in place.
 CREATE TABLE IF NOT EXISTS proposals (
-  id             INTEGER PRIMARY KEY AUTOINCREMENT,
-  record_nr      TEXT NOT NULL REFERENCES records(nr),
-  kind           TEXT NOT NULL,                     -- status_change | address_check | missing_establishment | field_correction
-  field          TEXT,
-  current_value  TEXT,
-  proposed_value TEXT,
-  reason         TEXT NOT NULL,
-  status         TEXT NOT NULL DEFAULT 'open',      -- open | bevestigd | afgewezen
-  created_at     TEXT NOT NULL,
-  decided_at     TEXT
+  id                INTEGER PRIMARY KEY AUTOINCREMENT,
+  record_nr         TEXT REFERENCES records(nr),    -- NULL for missing_establishment
+  kind              TEXT NOT NULL,                  -- status_change | address_check | missing_establishment | field_correction
+  field             TEXT,
+  current_value     TEXT,
+  proposed_value    TEXT,
+  reason            TEXT NOT NULL,
+  status            TEXT NOT NULL DEFAULT 'open',   -- open | bevestigd | afgewezen
+  created_at        TEXT NOT NULL,
+  decided_at        TEXT,
+  address           TEXT,                           -- "Paalstraat 20, 2900 Schoten" (missing_establishment)
+  observed_name     TEXT,                           -- name as seen on the street / online
+  observed_activity TEXT,                           -- activity seen (free text)
+  source            TEXT,                           -- google_maps | street_view | terreinbezoek | website | andere
+  source_url        TEXT,
+  observed_at       TEXT                            -- YYYY-MM-DD
 );
 CREATE INDEX IF NOT EXISTS idx_proposals_record ON proposals(record_nr);
 CREATE INDEX IF NOT EXISTS idx_proposals_status ON proposals(status);

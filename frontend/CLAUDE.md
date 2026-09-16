@@ -11,6 +11,8 @@ src/pages/            Zoeken.tsx · Detail.tsx · Straat.tsx · Kaart.tsx · Goe
 src/components/       StatusBadge · ZekerheidBadge · ReasonsList · EvidencePanel (tabs + iframe minibrowser) ·
                       NbbPanel · EvidenceForm · ProposalList · RecordCard · LinkageCard · ActivitySelect (Activiteit dropdown from /api/activities)
                       NbbPanel · EvidenceForm · ProposalList · RecordCard · LinkageCard · ContactBlock
+                      NbbPanel · EvidenceForm · ProposalList · RecordCard · LinkageCard ·
+                      MissingEstablishmentForm (+ MissingRow: "Vestiging ontbreekt op dit adres" form and table row)
 ```
 
 Routes: `/` Zoeken · `/record/:nr` Detail · `/straat` and `/straat/:street` Straatoverzicht · `/kaart?street=&status=` Kaart · `/goedgekeurd` Goedgekeurde wijzigingen.
@@ -31,6 +33,7 @@ Never show an invented value: missing → "onbekend" or "—".
 - **Straatoverzicht** — street picker (from `/streets`, Paalstraat default), then table grouped by address with columns exactly: **Adres · Onderneming / vestiging · Register · Bewijs van activiteit · Laatste waarneming · Zekerheid · Voorstel · [bevestigen] [afwijzen]** (buttons act on the open_proposal; disabled if none). Status filter and Activiteit filter (`?activity=` on the street endpoint). Row name links to detail.
 - **Straatoverzicht** — street picker (from `/streets`, Paalstraat default), then table grouped by address with columns exactly: **Adres · Onderneming / vestiging · Register · Bewijs van activiteit · Laatste waarneming · Zekerheid · Voorstel · [bevestigen] [afwijzen]** (buttons act on the open_proposal; disabled if none). Status filter. Row name links to detail.
 - **Kaart** — Leaflet + OSM tiles (`/api/records/geo`), CircleMarkers coloured by status, popup → detail; filters Straat/Status; "Buiten Schoten: N" button fits the map to the mis-geocoded points.
+- **Straatoverzicht** — street picker (from `/streets`, Paalstraat default), then table grouped by address with columns exactly: **Adres · Onderneming / vestiging · Register · Bewijs van activiteit · Laatste waarneming · Zekerheid · Voorstel · [bevestigen] [afwijzen]** (buttons act on the open_proposal; disabled if none). Status filter. Row name links to detail. Button **"Vestiging ontbreekt op dit adres"** (top + per address group) opens MissingEstablishmentForm → `POST /proposals/missing`; the street's `missing` proposals render as rows "{observed_name} (niet in register op dit adres) · Register — · reason · observed_at · Middel · Nazicht: vestiging ontbreekt of adres verkeerd", merged into the matching house-number group.
 - **Goedgekeurd** — table of proposals with status bevestigd (and a toggle to see afgewezen/open), "Exporteer CSV" and "Exporteer JSON" buttons hitting `/api/proposals/export`. Explain in one line: "Alleen bevestigde wijzigingen verlaten de tool."
 
 ## NbbPanel

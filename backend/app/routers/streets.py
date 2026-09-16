@@ -5,7 +5,7 @@ import sqlite3
 from fastapi import APIRouter, Depends, HTTPException
 
 from ..db import get_db
-from ..summaries import ensure_auto_proposals, load_context, summarize
+from ..summaries import ensure_auto_proposals, load_context, proposal_with_record, summarize
 
 router = APIRouter(prefix="/api/streets", tags=["streets"])
 
@@ -67,4 +67,9 @@ def street_detail(street: str, activity: str | None = None, conn: sqlite3.Connec
     addresses = sorted(groups.values(), key=lambda g: housenr_key(g["housenr"]))
     for g in addresses:
         g["records"].sort(key=lambda i: (i.get("kbo_box") or "", i["display_name"].lower()))
-    return {"street": street_name, "addresses": addresses}
+    # businesses seen at an address on this street that have no KBO record there (TICKET-020)
+    missing = [proposal_with_record(conn, dict(p)) for p in conn.execute(
+        "SELECT * FROM proposals WHERE status = 'open' AND kind = 'missing_establishment'"
+        " AND address LIKE ? ORDER BY id", (street_name + " %",),
+    ).fetchall()]
+    return {"street": street_name, "addresses": addresses, "missing": missing}

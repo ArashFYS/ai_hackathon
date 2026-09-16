@@ -133,7 +133,8 @@ export interface Evidence {
 
 export interface Proposal {
   id: number
-  record_nr: string
+  /** null for kind 'missing_establishment': a business seen on the street with no KBO record there. */
+  record_nr: string | null
   kind: ProposalKind
   field: string | null
   current_value: string | null
@@ -142,7 +143,15 @@ export interface Proposal {
   status: ProposalStatus
   created_at: string
   decided_at: string | null
-  record?: { display_name: string; address: string | null }
+  /** The record's name/address when record_nr is set, else the observed name / observed address. */
+  display_name: string
+  address: string | null
+  observed_name: string | null
+  observed_activity: string | null
+  source: string | null
+  source_url: string | null
+  observed_at: string | null
+  record?: { display_name: string; address: string | null } | null
 }
 
 export interface Links {
@@ -238,6 +247,8 @@ export interface StreetAddress {
 export interface StreetOverview {
   street: string
   addresses: StreetAddress[]
+  /** Open 'missing_establishment' proposals whose address starts with this street. */
+  missing: Proposal[]
 }
 
 /** One map marker: GET /records/geo. */
@@ -272,6 +283,23 @@ export interface ProposalInput {
   field?: string
   current_value?: string
   proposed_value?: string
+  reason: string
+}
+
+export type MissingSource = 'google_maps' | 'street_view' | 'terreinbezoek' | 'website' | 'andere'
+
+/** Body of POST /proposals/missing ("Vestiging ontbreekt op dit adres"). */
+export interface MissingInput {
+  street: string
+  housenr: string
+  box?: string
+  postcode: string
+  municipality: string
+  observed_name: string
+  observed_activity?: string
+  source: MissingSource
+  source_url?: string
+  observed_at: string
   reason: string
 }
 
@@ -357,6 +385,10 @@ export function postEvidence(nr: string, body: EvidenceInput): Promise<Evidence>
 
 export function postProposal(nr: string, body: ProposalInput): Promise<Proposal> {
   return api<Proposal>(`/records/${encodeURIComponent(nr)}/proposals`, { method: 'POST', body: JSON.stringify(body) })
+}
+
+export function postMissing(body: MissingInput): Promise<Proposal> {
+  return api<Proposal>('/proposals/missing', { method: 'POST', body: JSON.stringify(body) })
 }
 
 export function getStreets(): Promise<StreetCount[]> {

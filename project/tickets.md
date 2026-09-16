@@ -23,46 +23,6 @@
 
 ### MVP — critical path (in build order)
 
-### TICKET-020: "Vestiging ontbreekt op dit adres" — record a business that is not in the register
-- **Type:** feat(approval) | **Priority:** MVP (small, ~20 min)
-- **Created:** 2026-09-16
-- **Why:** the jury's worked example has three rows; the third is *Kapsalon Voorbeeld (niet in register op dit adres)* — a shop the officer sees on the street or on Google Maps that has no KBO record at that address. Today the tool can only act on records that exist. Without this, "find missing records" (success criterion 1) is only half covered.
-- **Backend**
-  - `schema.sql`: `proposals.record_nr` becomes nullable; add `address TEXT` (free-text address the officer saw), `observed_name TEXT`, `source TEXT`, `source_url TEXT`, `observed_at TEXT`. Existing rows unaffected (ALTER TABLE ADD COLUMN; for the NOT NULL → nullable change recreate the table in `apply_schema()` only if the old constraint is present, or simply accept that a fresh `make import` rebuilds it).
-  - `POST /api/proposals/missing` body `{ street, housenr, box?, postcode, municipality, observed_name, observed_activity?, source, source_url?, observed_at, reason }` → creates a proposal with `kind='missing_establishment'`, `record_nr=NULL`, `proposed_value=observed_name`, `current_value=NULL`, `address=<formatted>`, status `open`. Returns Proposal (with `record: null`, `address` filled).
-  - `GET /api/streets/{street}` gains `missing: Proposal[]` — open `missing_establishment` proposals whose `address` starts with that street, so the row shows up in the overview.
-  - `GET /api/proposals` and `/export` include these rows; `display_name` = `observed_name`, `address` from the proposal.
-  - `proposal_with_record()` must tolerate `record_nr IS NULL`.
-- **Frontend**
-  - Straatoverzicht: button **"Vestiging ontbreekt op dit adres"** at the top (and per address-group header). Opens an inline form prefilled with the street (and house number when opened from a group): *Huisnummer · Naam zoals waargenomen · Waargenomen activiteit · Bron (Google Maps / Street View / Terreinbezoek / Website / Andere) · URL · Datum waarneming · Toelichting*. Submit → POST → reload.
-  - The resulting row renders in the table exactly like the jury example: **Adres** = the address · **Onderneming / vestiging** = `observed_name` + "(niet in register op dit adres)" · **Register** = "—" · **Bewijs van activiteit** = reason · **Laatste waarneming** = observed_at · **Zekerheid** = "Middel" (fixed) · **Voorstel** = "Nazicht: vestiging ontbreekt of adres verkeerd" · Bevestigen / Afwijzen.
-  - Goedgekeurd: rows with `record: null` show `observed_name` and the proposal's address, no detail link.
-- **Done when:** on Paalstraat, adding "Kapsalon Voorbeeld" at nr 20 with bron Street View shows the third-example row; bevestigen moves it to Goedgekeurd and into the CSV export with kind `missing_establishment`.
-- **Out of scope:** matching the observed name against records on nearby addresses (nice-to-have suggestion: "Lijkt op … op nr 22").
-
-### TICKET-025: Contact (phone / email / website) per company, with source and date
-- **Type:** feat(detail) | **Priority:** MVP (small) + follow-ups
-- **Created:** 2026-09-16
-- **Data reality:** VKBO gives a phone for 53/1000 rows and an e-mail for 73. No establishment in the sample has a parent with a phone in the dataset. The brief: show the number, whether it belongs to the local establishment or the central office, a clickable source and when it was checked; otherwise "contactgegevens onbekend".
-- **Today (this ticket):**
-  1. Contact block shows every known contact as a row: *waarde · hoort bij (vestiging / zetel) · bron · datum · link*. Register phone/email → bron "KBO (via VKBO)", datum = snapshot date, link = KBO Public Search.
-  2. Establishment without contact → fall back to the parent enterprise's contact labelled **"zetel"** (fetch via VKBO if missing — TICKET-012 button).
-  3. Officer-observed contact: `evidence` gets optional `phone`, `email`, `website` columns; EvidenceForm gets the three fields ("Contact gezien op Google Maps / website"). Shown in the Contact block as "waargenomen via {bron} op {datum}" with the URL.
-  4. `RecordSummary.contact_status`: `register` | `zetel` | `waargenomen` | `onbekend` — filterable later.
-- **Follow-ups (how we get more numbers, ranked):**
-  - **KBO Open Data `contact.csv`** (official, TEL/EMAIL/WEB per enterprise and establishment; free account) → TICKET-026. Best complete source.
-  - **OpenStreetMap via Overpass** (free, no key): `phone`/`contact:phone`/`website`/`opening_hours` tags for shops near the coordinates matched by name; store as evidence with source "OpenStreetMap" + object URL + OSM timestamp. Coverage unverified (Overpass timed out during the check on 2026-09-16) → TICKET-027.
-  - NBB company record (`email`, `website`) — already fetched in the NBB panel; surface when present.
-  - Not: Google Places (key + billing), scraping Google Maps / Gouden Gids (terms of use).
-
-### TICKET-024: Filter on activity (sector) in Zoeken and Straatoverzicht
-- **Type:** feat(search) | **Priority:** MVP (small)
-- **Created:** 2026-09-16
-- **Data reality:** the starter data has a NACE activity for only 81/1000 rows (`NACE_hoofdact_RSZ`); the VAT activity is empty for every row. So the filter must be honest: most rows are "Activiteit onbekend" until enriched.
-- **Backend:** `GET /api/records?activity=<sector>`; `GET /api/activities` → `[{ sector, label, count }]`. Sector = NACE 2-digit → Dutch label (47 Detailhandel · 56 Horeca · 86 Gezondheidszorg · 96 Persoonlijke diensten (kapsalons…) · 45 Garages · 68 Vastgoed · 41–43 Bouw · 69–70 Zakelijke diensten · 85 Onderwijs · 94 Verenigingen · overige · onbekend). Sources, in priority order: `nace_rsz` → `nace_vat` → latest officer-observed activity (`evidence.observed_activity`, free text mapped by keyword: kapsalon→96, bakkerij→47, restaurant/café→56 …) → `onbekend`. Each record gets `activity: { sector, label, source: 'KBO (RSZ)'|'KBO (BTW)'|'waarneming'|null }`.
-- **Frontend:** "Activiteit" dropdown next to Type/Status on Zoeken and on Straatoverzicht; activity label + source shown in the results table and in Registergegevens.
-- **Enrichment path (the real fix):** KBO Open Data (economie.fgov.be, free account, monthly full dump) ships `activity.csv` with NACE codes for every enterprise **and establishment** → import by `EntityNumber`. That would fill the sector for ~all rows. Track as TICKET-026.
-
 ### TICKET-026: Import KBO Open Data (activity.csv, contact.csv, establishment.csv)
 - **Type:** feat(data) | **Priority:** Stretch (needs a free KBO Open Data account; dump is large)
 - **Created:** 2026-09-16
@@ -74,16 +34,6 @@
 - **Description:** "Zoek op OpenStreetMap" button on the detail page: Overpass query within ~60 m of the coordinates, fuzzy-match on name; on a hit create evidence rows (source `openstreetmap`, URL `https://www.openstreetmap.org/<type>/<id>`, observed_at = OSM `timestamp`) with phone/website/opening_hours and the `shop`/`amenity` tag as observed activity. Use a mirror list (overpass-api.de, overpass.kumi.systems) and a proper User-Agent. Verify coverage on Paalstraat first.
 
 ### Stretch — only after MVP is recordable
-
-### TICKET-014: Map view
-- **Type:** feat(map) | **Priority:** Stretch
-- **Created:** 2026-09-16
-- **Description:** Leaflet + OpenStreetMap tiles (no key) with records coloured by status; click → detail. Flags the "few points well outside Schoten".
-
-### TICKET-015: Google Maps / Street View embeds and reviews
-- **Type:** feat(evidence) | **Priority:** Stretch — needs a Google Maps API key
-- **Created:** 2026-09-16
-- **Description:** Replace link-outs with Maps Embed API iframes (place + streetview modes; free tier, key required). Google reviews need Places API + billing — likely stays a link-out.
 
 ### TICKET-017: Sector-specific review sources (horeca)
 - **Type:** feat(evidence) | **Priority:** Stretch
@@ -152,6 +102,24 @@
 - **Created:** 2026-09-16 | **Completed:** 2026-09-16
 - **Description:** Leaflet + OpenStreetMap tiles (no key) with records coloured by status; click → detail. Flags the "few points well outside Schoten". `/kaart` page + `GET /api/records/geo`; "Buiten Schoten: N" button fits the map to the mis-geocoded points (60/1000 outside the scoring bbox, one near Paris).
 - **Commits:** `08ee0f7`
+
+### TICKET-020: "Vestiging ontbreekt op dit adres" — record a business that is not in the register
+- **Type:** feat(approval) | **Priority:** MVP (small, ~20 min)
+- **Created:** 2026-09-16 | **Completed:** 2026-09-16
+- **Why:** the jury's worked example has three rows; the third is *Kapsalon Voorbeeld (niet in register op dit adres)* — a shop the officer sees on the street or on Google Maps that has no KBO record at that address. Today the tool can only act on records that exist. Without this, "find missing records" (success criterion 1) is only half covered.
+- **Backend**
+  - `schema.sql`: `proposals.record_nr` becomes nullable; add `address TEXT` (free-text address the officer saw), `observed_name TEXT`, `source TEXT`, `source_url TEXT`, `observed_at TEXT`. Existing rows unaffected (ALTER TABLE ADD COLUMN; for the NOT NULL → nullable change recreate the table in `apply_schema()` only if the old constraint is present, or simply accept that a fresh `make import` rebuilds it).
+  - `POST /api/proposals/missing` body `{ street, housenr, box?, postcode, municipality, observed_name, observed_activity?, source, source_url?, observed_at, reason }` → creates a proposal with `kind='missing_establishment'`, `record_nr=NULL`, `proposed_value=observed_name`, `current_value=NULL`, `address=<formatted>`, status `open`. Returns Proposal (with `record: null`, `address` filled).
+  - `GET /api/streets/{street}` gains `missing: Proposal[]` — open `missing_establishment` proposals whose `address` starts with that street, so the row shows up in the overview.
+  - `GET /api/proposals` and `/export` include these rows; `display_name` = `observed_name`, `address` from the proposal.
+  - `proposal_with_record()` must tolerate `record_nr IS NULL`.
+- **Frontend**
+  - Straatoverzicht: button **"Vestiging ontbreekt op dit adres"** at the top (and per address-group header). Opens an inline form prefilled with the street (and house number when opened from a group): *Huisnummer · Naam zoals waargenomen · Waargenomen activiteit · Bron (Google Maps / Street View / Terreinbezoek / Website / Andere) · URL · Datum waarneming · Toelichting*. Submit → POST → reload.
+  - The resulting row renders in the table exactly like the jury example: **Adres** = the address · **Onderneming / vestiging** = `observed_name` + "(niet in register op dit adres)" · **Register** = "—" · **Bewijs van activiteit** = reason · **Laatste waarneming** = observed_at · **Zekerheid** = "Middel" (fixed) · **Voorstel** = "Nazicht: vestiging ontbreekt of adres verkeerd" · Bevestigen / Afwijzen.
+  - Goedgekeurd: rows with `record: null` show `observed_name` and the proposal's address, no detail link.
+- **Done when:** on Paalstraat, adding "Kapsalon Voorbeeld" at nr 20 with bron Street View shows the third-example row; bevestigen moves it to Goedgekeurd and into the CSV export with kind `missing_establishment`.
+- **Out of scope:** matching the observed name against records on nearby addresses (nice-to-have suggestion: "Lijkt op … op nr 22").
+- **Commits:** `45b175a, e231b16`
 
 ### TICKET-022: Branch-per-ticket policy, no pushes to main
 - **Type:** chore

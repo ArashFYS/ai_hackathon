@@ -1,18 +1,58 @@
 import { Fragment, useCallback, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import type { Status, StreetCount, StreetOverview, StreetRecord } from '../api'
+import type { Proposal, Status, StreetCount, StreetOverview, StreetRecord } from '../api'
 import { STATUS_LABELS, dash, getStreet, getStreets, valueLabel } from '../api'
 import StatusBadge from '../components/StatusBadge'
 import ZekerheidBadge from '../components/ZekerheidBadge'
 import { DecideButtons } from '../components/ProposalList'
 import ActivitySelect from '../components/ActivitySelect'
+import MissingEstablishmentForm, { MissingRow, missingHousenr } from '../components/MissingEstablishmentForm'
 
 const DEFAULT_STREET = 'Paalstraat'
+const MISSING_BUTTON = 'Vestiging ontbreekt op dit adres'
 
 function nameHint(r: StreetRecord): string {
   if (r.record_type === 'enterprise') return '(onderneming)'
   if (r.parent_in_dataset === false) return '(vestiging, moederonderneming niet in dataset)'
   return r.seat_elsewhere ? '(vestiging, zetel elders)' : '(vestiging)'
+}
+
+interface Group {
+  address: string
+  housenr: string | null
+  records: StreetRecord[]
+  missing: Proposal[]
+}
+
+/** Natural sort, same as the backend's housenr_key: numeric prefix first, then the remaining text. */
+function housenrKey(h: string | null): [number, string] {
+  if (!h) return [1e9, '']
+  const m = /^\d+/.exec(h)
+  return [m ? parseInt(m[0], 10) : 1e9, h]
+}
+
+/** Address groups from the backend, with missing-establishment proposals merged in by house number. */
+function buildGroups(data: StreetOverview, status: Status | ''): Group[] {
+  const groups = new Map<string, Group>()
+  for (const a of data.addresses) {
+    const records = status ? a.records.filter((r) => r.assessment.status === status) : a.records
+    groups.set(a.housenr ?? '', { address: a.address, housenr: a.housenr, records, missing: [] })
+  }
+  if (status === '' || status === 'ter_controle') {
+    for (const p of data.missing ?? []) {
+      const h = missingHousenr(p, data.street)
+      const g = groups.get(h ?? '') ?? { address: [data.street, h].filter(Boolean).join(' '), housenr: h, records: [], missing: [] }
+      groups.set(h ?? '', g)
+      g.missing.push(p)
+    }
+  }
+  return [...groups.values()]
+    .filter((g) => g.records.length + g.missing.length > 0)
+    .sort((a, b) => {
+      const [na, sa] = housenrKey(a.housenr)
+      const [nb, sb] = housenrKey(b.housenr)
+      return na - nb || sa.localeCompare(sb)
+    })
 }
 
 export default function Straat() {
@@ -25,6 +65,8 @@ export default function Straat() {
   const [error, setError] = useState<string | null>(null)
   const [status, setStatus] = useState<Status | ''>('')
   const [activity, setActivity] = useState('')
+  // null = closed; { } = form at the top (house number empty); { group } = inline under that address group
+  const [form, setForm] = useState<{ group?: string } | null>(null)
   const [tick, setTick] = useState(0)
   const reload = useCallback(() => setTick((t) => t + 1), [])
 
@@ -36,6 +78,7 @@ export default function Straat() {
     let cancelled = false
     setLoading(true)
     setError(null)
+    setForm(null)
     getStreet(street, activity || undefined)
       .then((d) => {
         if (!cancelled) setData(d)
@@ -51,10 +94,13 @@ export default function Straat() {
     }
   }, [street, activity, tick])
 
-  const addresses = (data?.addresses ?? [])
-    .map((a) => ({ ...a, records: status ? a.records.filter((r) => r.assessment.status === status) : a.records }))
-    .filter((a) => a.records.length > 0)
+  const groups = data ? buildGroups(data, status) : []
   const total = data?.addresses.reduce((n, a) => n + a.records.length, 0) ?? 0
+  const missingCount = data?.missing?.length ?? 0
+  const first = data?.addresses[0]?.records[0]
+  const postcode = first?.kbo_postcode ?? '2900'
+  const municipality = first?.kbo_municipality ?? 'Schoten'
+  const missingBtn = 'rounded border border-amber-400 bg-white px-2 py-1 text-xs font-medium text-amber-900 hover:bg-amber-50'
 
   return (
     <div className="space-y-4">
@@ -86,13 +132,31 @@ export default function Straat() {
         <ActivitySelect value={activity} onChange={setActivity} />
         {data && <span className="pb-2 text-xs text-gray-500">{total} records op {data.addresses.length} adressen</span>}
         <Link to={`/kaart?street=${encodeURIComponent(street)}`} className="pb-2 text-xs text-blue-700 hover:underline">Toon op kaart →</Link>
+        {data && (
+          <span className="pb-2 text-xs text-gray-500">
+            {total} records op {data.addresses.length} adressen{missingCount > 0 ? ` · ${missingCount} niet in register` : ''}
+          </span>
+        )}
+        <button type="button" className={`ml-auto mb-0.5 ${missingBtn}`} disabled={!data} onClick={() => setForm({})}>
+          + {MISSING_BUTTON}
+        </button>
       </div>
+
+      {form && data && form.group === undefined && (
+        <MissingEstablishmentForm
+          street={data.street}
+          postcode={postcode}
+          municipality={municipality}
+          onSaved={() => { setForm(null); reload() }}
+          onCancel={() => setForm(null)}
+        />
+      )}
 
       <div className="overflow-x-auto rounded-lg border bg-white">
         {loading && <p className="p-4 text-sm text-gray-500">Laden…</p>}
         {!loading && error && <p className="p-4 text-sm text-red-700">{error}</p>}
-        {!loading && !error && addresses.length === 0 && <p className="p-4 text-sm text-gray-500">Geen resultaten</p>}
-        {!loading && !error && addresses.length > 0 && (
+        {!loading && !error && groups.length === 0 && <p className="p-4 text-sm text-gray-500">Geen resultaten</p>}
+        {!loading && !error && groups.length > 0 && (
           <table className="w-full text-sm">
             <thead className="bg-gray-50 text-left text-xs uppercase tracking-wide text-gray-500">
               <tr>
@@ -107,11 +171,30 @@ export default function Straat() {
               </tr>
             </thead>
             <tbody className="divide-y">
-              {addresses.map((a) => (
+              {groups.map((a) => (
                 <Fragment key={a.address}>
                   <tr className="bg-gray-100">
-                    <td colSpan={8} className="px-3 py-1.5 text-xs font-semibold text-gray-700">{a.address}</td>
+                    <td colSpan={8} className="px-3 py-1.5 text-xs font-semibold text-gray-700">
+                      <div className="flex items-center justify-between gap-2">
+                        <span>{a.address}</span>
+                        <button type="button" className={missingBtn} onClick={() => setForm({ group: a.address })}>{MISSING_BUTTON}</button>
+                      </div>
+                    </td>
                   </tr>
+                  {form?.group === a.address && data && (
+                    <tr>
+                      <td colSpan={8} className="p-2">
+                        <MissingEstablishmentForm
+                          street={data.street}
+                          postcode={postcode}
+                          municipality={municipality}
+                          housenr={a.housenr ?? undefined}
+                          onSaved={() => { setForm(null); reload() }}
+                          onCancel={() => setForm(null)}
+                        />
+                      </td>
+                    </tr>
+                  )}
                   {a.records.map((r) => (
                     <tr key={r.nr} className="align-top hover:bg-gray-50">
                       <td className="px-3 py-2 text-xs text-gray-500 whitespace-nowrap">{a.housenr ? `nr ${a.housenr}` : dash(a.housenr)}</td>
@@ -135,6 +218,9 @@ export default function Straat() {
                       </td>
                       <td className="px-3 py-2 whitespace-nowrap"><DecideButtons proposal={r.open_proposal} onDecided={reload} size="xs" /></td>
                     </tr>
+                  ))}
+                  {a.missing.map((p) => (
+                    <MissingRow key={`missing-${p.id}`} proposal={p} housenr={a.housenr} onDecided={reload} />
                   ))}
                 </Fragment>
               ))}
