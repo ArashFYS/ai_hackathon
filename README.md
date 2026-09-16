@@ -96,7 +96,7 @@ Data sources — all public, no keys:
 ## Run it
 
 ```bash
-make import      # loads data/raw/*.geojson into backend/data.db (registry numbers as text, blanks and placeholder dates cleaned)
+make import      # optional: backend/data.db is committed with all collected data (KBO, Peppol, Google Maps via Apify); this rebuilds the register part from data/raw/*.geojson
 make google-maps ARGS="--street Paalstraat"   # optional: Google Maps listings via Apify (cp backend/.env.example backend/.env, set APIFY_TOKEN); --dry-run shows queries + cost
 make dev         # backend on :8010 + frontend on :5173
 ```
