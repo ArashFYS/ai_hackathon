@@ -4,7 +4,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .db import apply_schema
-from .routers import activities, evidence, nbb, proposals, record_contacts, records, streets
+from .routers import locations
+from .routers import activities, evidence, indicators, nacebel, nbb, proposals, record_contacts, records, streets
+
 
 
 @asynccontextmanager
@@ -29,9 +31,12 @@ def health():
 
 
 app.include_router(records.router)
+app.include_router(locations.router)
 app.include_router(record_contacts.router)
 app.include_router(activities.router)
 app.include_router(streets.router)
 app.include_router(evidence.router)
 app.include_router(proposals.router)
 app.include_router(nbb.router)
+app.include_router(indicators.router)
+app.include_router(nacebel.router)

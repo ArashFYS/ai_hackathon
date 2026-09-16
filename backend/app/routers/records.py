@@ -6,11 +6,15 @@ from typing import Literal
 import httpx
 from fastapi import APIRouter, Depends, HTTPException, Query
 
+from .. import kbo_public
 from ..contact import contact_status, contacts_for
 from ..contact_selection import contact_matches, known_contacts
+from ..indicator_cache import cache_put
+
 from ..db import get_db
-from ..links import build_links
-from ..scoring import SCHOTEN_BBOX
+from ..links import build_links, enterprise_nr_of
+from ..indicators import load_indicator_cache
+from ..geography import coordinate_issue
 from ..search import search_clause
 from ..summaries import (
     address_of, display_name, ensure_auto_proposals, fetch_evidence, fetch_record,
@@ -65,17 +69,21 @@ def list_records(
 @router.get("/geo")
 def list_geo(
     street: str | None = None,
+    city: str | None = None,
     status: str | None = None,
     limit: int = Query(2000, ge=1, le=5000),
     conn: sqlite3.Connection = Depends(get_db),
 ):
     """Every record with coordinates, reduced to what the map needs (nr, name, status, lat/lng).
     `outside_municipality` flags points outside the Schoten bbox used in scoring."""
-    where, params = ["lat IS NOT NULL", "lng IS NOT NULL"], []
+    where, params = [], []
     if street:
         where.append("kbo_street = ? COLLATE NOCASE")
         params.append(street)
-    sql = "SELECT * FROM records WHERE " + " AND ".join(where) + " ORDER BY kbo_street, kbo_housenr, name"
+    if city:
+        where.append("kbo_municipality = ? COLLATE NOCASE")
+        params.append(city.strip())
+    sql = "SELECT * FROM records" + (" WHERE " + " AND ".join(where) if where else "") + " ORDER BY kbo_street, kbo_housenr, name"
     if not status:
         sql += " LIMIT ?"
         params.append(limit)
@@ -86,15 +94,13 @@ def list_geo(
     out = []
     for i in items:
         lat, lng = i["lat"], i["lng"]
-        inside = (
-            SCHOTEN_BBOX["lat_min"] <= lat <= SCHOTEN_BBOX["lat_max"]
-            and SCHOTEN_BBOX["lng_min"] <= lng <= SCHOTEN_BBOX["lng_max"]
-        )
+        issue = coordinate_issue(i)
         a = i["assessment"]
         out.append({
             "nr": i["nr"], "display_name": i["display_name"], "record_type": i["record_type"],
             "lat": lat, "lng": lng, "status": a["status"], "status_label": a["status_label"],
-            "certainty": a["certainty"], "address": i["address"], "outside_municipality": not inside,
+            "certainty": a["certainty"], "address": i["address"], "outside_municipality": issue is not None,
+            "city": i.get("kbo_municipality"), "location_valid": issue is None, "location_issue": issue,
         })
     return {"items": out}
 
@@ -107,13 +113,15 @@ def record_detail(nr: str, conn: sqlite3.Connection = Depends(get_db)):
     parent = fetch_record(conn, row["parent_nr"]) if row.get("parent_nr") else None
     evidence = fetch_evidence(conn, nr)
     nbb = cached_nbb(conn, row)
-    record = summarize(row, parent, evidence, full=True, nbb=nbb)
+    cached = load_indicator_cache(conn, [row] + ([parent] if parent else []))
+    record = summarize(row, parent, evidence, full=True, nbb=nbb, cached=cached)
     ensure_auto_proposals(conn, row, record["assessment"])
-    contacts = contacts_for(row, parent, evidence, nbb)
+    contacts = contacts_for(row, parent, evidence, nbb, kbo_public=cached["kbo_public"].get(nr),
+                            einvoice=cached["einvoice"].get(enterprise_nr_of(row)))
 
     parent_summary = None
     if parent:
-        parent_summary = summarize(parent, None, fetch_evidence(conn, parent["nr"]))
+        parent_summary = summarize(parent, None, fetch_evidence(conn, parent["nr"]), cached=cached)
     seat_elsewhere = bool(
         parent and (parent.get("kbo_municipality") or "").lower() != (row.get("kbo_municipality") or "").lower()
     )
@@ -131,7 +139,8 @@ def record_detail(nr: str, conn: sqlite3.Connection = Depends(get_db)):
         "establishments": summarize_many(conn, est_rows),
         "evidence": evidence,
         "proposals": proposals,
-        "links": build_links(row, display_name(row), address_of(row)),
+        "links": build_links(row, display_name(row), address_of(row), cached["streetview"].get(nr)),
+        "kbo_public": cached["kbo_public"].get(nr),
         "contacts": contacts,
         "contact_status": contact_status(contacts),
     }
@@ -166,3 +175,15 @@ def fetch_parent(nr: str, conn: sqlite3.Connection = Depends(get_db)):
     conn.commit()
     stored = fetch_record(conn, parent_row["nr"])
     return summarize(stored, None, [])
+
+
+@router.post("/{nr}/kbo-public")
+def refresh_kbo_public(nr: str, conn: sqlite3.Connection = Depends(get_db)):
+    """Live fetch of the record's KBO Public Search page (activities, contact, status); cached (TICKET-035)."""
+    row = fetch_record(conn, nr)
+    if not row:
+        raise HTTPException(404, "Record niet gevonden")
+    payload, ok = kbo_public.fetch_live(row)
+    if ok:
+        cache_put(conn, "kbo_public", nr, payload)
+    return payload

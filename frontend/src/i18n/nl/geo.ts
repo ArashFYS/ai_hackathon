@@ -1,0 +1,18 @@
+export const nlGeo = {
+  'geo.city': 'Stad of gemeente',
+  'geo.cityPlaceholder': 'Typ of kies een gemeente',
+  'geo.streetPlaceholder': 'Typ een straat of kies Straat (Gemeente)',
+  'geo.loaded': '{n} records geladen',
+  'geo.notLoaded': 'Nog geen bedrijfsdata geladen',
+  'geo.coverage': 'Suggesties: provincie Antwerpen. Straatsuggesties komen uit de geladen bedrijfsdata.',
+  'geo.noCityData': 'Voor {city} is nog geen bedrijfsdata geladen. Dit betekent niet dat er geen bedrijven zijn.',
+  'geo.issueCount': '{n} records zonder betrouwbare kaartpositie',
+  'geo.hiddenExplanation': 'Deze records blijven beschikbaar, maar worden niet als bedrijfspin getoond. Broncoördinaten zijn niet gewijzigd.',
+  'geo.shownCount': '{shown} kaartpunten · {hidden} posities te controleren',
+  'geo.issue.invalid_coordinates': 'Ontbrekende of ongeldige coördinaten',
+  'geo.issue.outside_expected_area': 'Coördinaten passen niet bij de gemeente van het adres',
+  'geo.issue.unverified_municipality': 'Ligging in deze gemeente nog niet gevalideerd',
+  'geo.noPins': 'Geen betrouwbare kaartpunten voor deze selectie.',
+  'geo.reset': 'Wis locatiefilters',
+  'geo.positionNote': 'Kaartposities uit brondata; geen bevestiging dat het bedrijf hier nog actief is.',
+} as const

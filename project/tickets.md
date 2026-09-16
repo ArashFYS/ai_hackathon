@@ -1,6 +1,7 @@
 # Tickets -- ai_hackathon (Prefix: TICKET)
 
-> Next ID: TICKET-035
+> Next ID: TICKET-038
+
 >
 > **Deadline: 16:30 Europe/Brussels, 16 Sep 2026.** Build freeze ~15:00 → record 15:00–15:45 → upload + check + form by 16:15.
 > Anything not demoable by 15:00 is a slide in the video, not a feature.
@@ -9,19 +10,28 @@
 
 ## In Progress
 
-### TICKET-034: Live AND/OR search, result sorting and table export
-- **Type:** feat(search) | **Created:** 2026-09-16
-- **Description:** Right-aligned navigation with a red active/hover underline. Debounced single-row search accepting AND/OR, quoted phrases, type words, registry numbers, emails and normalized phones; existing type/status/activity filters still constrain matches. Sort columns; export/copy only displayed results in that order, choosing the full table, columns, unique emails or phones. Contacts include local registry, related headquarters, observations and local NBB cache.
-- **Scope:** Stacked on the locally reviewed TICKET-033 detail/map changes. Search export contains existing record information, not unapproved correction proposals; approval export remains unchanged. Clearly disclose any result cap.
-- **Status:** Implemented locally; review pending. Backend query/contact tests and frontend export/sort tests passed. Limit: 2,000 displayed records, explicitly disclosed when exceeded. No data is sent to external services for contact lookup.
+### TICKET-037: Integrate reviewed UI, scoped live search/export and trustworthy maps
+- **Type:** feat(integration) | **Created:** 2026-09-16
+- **Base:** Merge latest main 6377aa8 while preserving the reviewed detail layout, source selector, direct record map, aligned navigation and single-row live search.
+- **Search/export:** Typed AND/OR, type intent, normalized email/phone lookup; sortable results; table/column/email/phone export limited to displayed record IDs and order. Include all locally cached upstream contact enrichment. Numeric scores and approval semantics are unchanged.
+- **Map follow-up:** Reject unreliable coordinate points instead of plotting Schoten records near Paris; add typed city/street suggestions with municipality labels and honest loaded-data coverage.
+- **History:** Local UI/search iterations used IDs 033/034 before discovering upstream independently used those IDs. This integration is tracked only as TICKET-037; upstream tickets 033–036 are retained.
+- **Status:** Integrated latest main 6377aa8; ready for branch review. Another maintainer merges main.
+- **Validation:** 20 backend tests pass, including upstream-enriched contact search/export, read-only selection scope, city filtering, bad-coordinate rejection and preserved snapped Street View. Frontend typecheck/build and map/export tests pass. Browser checks verified auto-detected establishment type (543 records), normalized phone search and a deduplicated clipboard list scoped to the two matching businesses, seven source choices, indicator colours, 67 city suggestions, street-with-city labels and honest empty-city coverage.
+- **Coordinate evidence:** 36 original Schoten GeoJSON records share 49.2933354, 2.30668925; these source points are rejected, not rewritten. The official Schoten municipality envelope retains 964 plausible map points, including valid northern records rejected by the previous hard-coded envelope.
 
-### TICKET-033: Source selector and aligned, unboxed record details
-- **Type:** feat(ui) | **Created:** 2026-09-16
-- **Description:** Replace the wrapped source tabs with an accessible source selector defaulting to Map, preserving all seven sources and NL/EN labels. Organize the left record column with aligned label/value rows, grouped provenance, tidy contact information and consistent form spacing; no decorative cards or separator bars.
-- **Scope:** Local review on top of main 7ba8cbf. Preserve backend behavior, current confidence/status values, source links, evidence submission and existing functionality. Main and earlier UI variants remain available.
-- **Status:** Implemented locally; awaiting user review, not published.
-- **Follow-up:** Fix the blank detail map by reusing the installed Leaflet/OpenStreetMap renderer with a marker at valid VKBO coordinates. Missing/invalid coordinates show an explanation; preserve the external address lookup, Google business/reviews link and other sources. Map backgrounds are not proof of business occupancy.
-- **Validation:** TypeScript and production build pass. Browser checks confirm all seven sources, default Map when opening a record, NL/EN labels, retained source links and zero borders around the six detail sections.
+### TICKET-035: KBO Public Search enrichment (NACEBEL 2025 activities + contact) and NACEBEL 2025 code list
+- **Type:** feat(data) | **Priority:** MVP (fills activity for ~all rows; official contact source)
+- **Created:** 2026-09-16
+- **Description:** Only 86/1006 rows carry a NACE code and 54 a phone in the VKBO sample. The KBO Public Search pages (`toonvestigingps.html?vestigingsnummer=` / `toonondernemingps.html?ondernemingsnummer=`) list every NACEBEL 2025 activity (Hoofd-/Nevenactiviteit, since date), phone / e-mail / website and the entity status, with the register snapshot date in the footer. `app/kbo_public.py` fetches + parses one page, cached in `indicator_cache` (kind `kbo_public`, key = own nr). `app/nacebel.py` loads the official NACEBEL 2025 list (`app/data/nacebel_2025.csv`, from NACEBEL_2025.xlsx) for canonical Dutch titles at any level. `activity_of()` falls through to the KBO-public main activity (source `KBO (publiek)`), `contacts_for()` adds KBO-public phone/e-mail/website (source `KBO (publieke opzoeking)`). `scripts/prefetch_kbo_public.py` pre-fills the cache for the whole DB; `POST /api/records/{nr}/kbo-public` refreshes one record. `GET /api/nacebel?q=` searches the list.
+- **Branch:** `feat/TICKET-035-kbo-public-enrichment`
+
+### TICKET-036: Street View opens on the wrong street / faces north
+- **Type:** fix(evidence)
+- **Created:** 2026-09-16
+- **Description:** Record coordinates are the Adressenregister position "afgeleid van object" (parcel/building), so Google picks the nearest pano — for deep or corner parcels that is another street (Gelmelenstraat 204 opened on "1 Merelstraat") — and `cbp=11,0,...` always looks north. Fix: Wegenregister (geo.api.vlaanderen.be, OGC Features `Wegsegment`) segments in a small bbox whose left/right street name matches the record's street → nearest point on the street as `cbll`, heading = bearing street point → address point. Cached (`indicator_cache` kind `streetview`) by the prefetch script; falls back to the old URL when nothing is cached.
+- **Branch:** `feat/TICKET-035-kbo-public-enrichment` (same PR)
+
 
 ### TICKET-013: Pitch video and submission
 - **Type:** docs | **Priority:** MVP — hard deadline
@@ -31,72 +41,56 @@
 
 ## Backlog
 
-### TICKET-032: Gemeentedashboard als startpagina — huidige data, statuswiel en uitbreidbare metrics
+### TICKET-032: Gemeentedashboard als startpagina — status, sectoren en datadekking
 - **Type:** feat(dashboard) | **Priority:** Gepland; geen uitbreiding van de pitch-kritieke scope
-- **Created:** 2026-09-16 | **Status:** Gescopeerd, implementatie niet gestart. Deze wijziging bevat uitsluitend ticketplanning.
-- **Doel:** De ambtenaar ziet direct wat de app over de geselecteerde gemeente weet, hoeveel dossiers aandacht vragen en hoe volledig het bewijs is, en kan doorklikken naar de betrokken records. Eén gezamenlijk dashboard, later uit te breiden zonder aparte dashboards per databron.
-- **Bevestigd door gebruiker:** Nieuwe startpagina per gemeente. Eerst scope en gaps uitwerken, nog niet bouwen. Een nog ontbrekend metrics-ticket komt later; dit blokkeert versie 1 niet.
+- **Created / Rescoped:** 2026-09-16 | **Status:** Gescopeerd; implementatie niet gestart. Deze PR bevat uitsluitend planning.
+- **Doel en gebruikerskeuze:** Eén overzicht als nieuwe startpagina per gemeente, eerst Schoten: actuele ingeladen data netjes presenteren, statusverdeling tonen en naar dossiers doorklikken. Herscope op de daadwerkelijk gepullde `main` (`062d0ca`); de dashboardopzet blijft behouden. Toekomstige metrics later op dezelfde pagina aansluiten.
 
-#### Populatie en betekenis
+**Wat nu al bestaat en wordt hergebruikt**
 
-- Standaard Schoten, typefilter **Alle records / Ondernemingen / Vestigingen**; hetzelfde filter geldt voor alle cijfers. In versie 1 alleen ondersteunde gemeenten tonen; een provinciebreed totaal en ondersteuning van nieuwe gemeenten vallen erbuiten.
-- Teleenheid = uniek `records.nr` met het eigen KBO-adres in de gekozen gemeente, vervolgens het gekozen type. Gebruik `kbo_niscode` als gemeentecode waar beschikbaar; definieer een expliciete fallback op genormaliseerde gemeentenaam voor records zonder code. Een opgehaalde moederonderneming buiten de gemeente dient als beoordelingscontext en telt niet mee. Een opgehaalde lokale record telt eenmaal mee; nooit extra tellen door joins met bewijs, voorstellen of vestigingen.
-- **Ingeladen records** is de juiste totaalnaam: ondernemingen en vestigingen kunnen dezelfde economische activiteit vertegenwoordigen. Toon de uitsplitsing; noem hun som niet het aantal unieke bedrijven. Het typefilter Vestigingen helpt lokale activiteit bekijken, maar de steekproef bevat niet noodzakelijk elke vestiging.
-- **Register**, **beoordeling van activiteit**, **zekerheid** en **goedkeuring van voorstellen** zijn verschillende dimensies. Het wiel gebruikt uitsluitend `assessment.status`. Een bevestigde correctie maakt een bedrijf niet automatisch actief; de huidige goedkeuring herschrijft registergegevens niet.
-- **Actief** betekent de actuele beoordeling volgens de bestaande regels, op basis van geregistreerde waarnemingen; geen nieuwe statuslogica of claim van recente, onafhankelijk geverifieerde activiteit. Toon: "Geen aangetoonde activiteit betekent niet dat een onderneming gesloten is."
-- Elk percentage heeft de zichtbare gefilterde recordpopulatie als noemer, tenzij expliciet anders vermeld. `geen_onderneming` blijft meetellen in het recordtotaal en het wiel. Bij nul records: aantallen 0, percentages "—" en een lege toestand; een ontbrekende metric is `null`/"Nog niet beschikbaar", nooit 0.
+- TICKET-024 is geïmplementeerd: `activity_of()`, `RecordSummary.activity`, `/api/activities` en sectorfilter op Zoeken/Straat. Een sectorverdeling op het dashboard hoeft niet op TICKET-026 te wachten; betere dekking wel.
+- TICKET-025 is geïmplementeerd: contactvelden bij waarnemingen, `contacts_for()`, `RecordSummary.contact_status` en ContactBlock met eigenaar/bron/datum. Basiscontactdekking is nu beschikbaar, zonder nieuwe verrijking.
+- TICKET-020 is geïmplementeerd: meldingen van ontbrekende vestigingen met `record_nr=NULL`, voorstellen en export. Die meldingen zijn geen geregistreerde records en hebben nog geen apart opgeslagen gemeentecode/type.
+- TICKET-014 en TICKET-029 zijn geïmplementeerd: Kaart bestaat; de huidige UI heeft Nederlands als standaard en een Engelse taalwissel via `useT()`/`useLang()`. Hergebruik die navigatie, labels en vertalingen. De provinciale visuele stijl is inmiddels geïntegreerd via TICKET-030; hergebruik die bestaande stijl, zonder nieuw herontwerp.
 
-#### Metrics voor versie 1
+**Eerste oplevering: huidige data op één pagina**
 
-| Onderdeel / Nederlands label | Definitie en bron | Gebruik / beperking |
+| Blok | Inhoud en definitie | Gedrag / beperking |
 |---|---|---|
-| Kerncijfer: Ingeladen records | Aantal unieke `records.nr` in de gekozen populatie; subtelling `record_type` | Omvang van de beschikbare data, geen volledige gemeentetelling |
-| Kerncijfers: Actief / Ter controle | Aantal records met respectievelijk `assessment.status=actief` / `ter_controle` | Zelfde beoordeling en populatie als wiel en resultatenlijst |
-| Kerncijfer: Met waarneming | Unieke records met ten minste één `evidence`-rij, aantal en aandeel | Bewijsdekking; ook onduidelijke waarnemingen tellen mee, geen bewijs van juistheid of recentheid |
-| Statuswiel: Beoordeling van activiteit | Exact vier categorieën: Actief, Ter controle, Waarschijnlijk niet actief, Geen onderneming; aantal en percentage | Eén record in één segment; categorieën tellen op tot het totaal |
-| Datakwaliteit: Zekerheid | Aantallen Hoog / Middel / Laag uit dezelfde beoordeling | Apart van status tonen; hoge zekerheid kan ook op inactiviteit slaan |
-| Datakwaliteit: Moederonderneming niet in dataset | Vestigingen waarvan `parent_nr` niet in de volledige database gevonden wordt | Noemer expliciet alle vestigingen binnen de selectie; geen ontbrekende ouders afleiden uit alleen de gemeenteselectie |
-| Werkvoorraad: Opgeslagen voorstellen | Aantal `proposals.id` per open / bevestigd / afgewezen, gekoppeld aan records in de selectie | Meerdere voorstellen per record mogelijk; geen percentage "bedrijven afgehandeld" en geen claim dat alle nodige controles zijn opgeslagen |
+| Kop en filters | Gemeenteoverzicht — Schoten; type Alle records / Ondernemingen / Vestigingen en bestaande sectorcodes, inclusief onbekend | Eén selectie voor alle recordmetrics; geen nieuwe gemeente-import of provinciebreed totaal |
+| Vier kerncijfers | Ingeladen records, Actief, Ter controle, Met waarneming; respectievelijk uniek `nr`, twee bestaande `assessment.status`-waarden en records met minstens één `evidence`-rij | Records uitsplitsen in ondernemingen/vestigingen; Met waarneming is bewijsdekking, geen bewijs van activiteit of recentheid |
+| Statuswiel | Donut met Actief / Ter controle / Waarschijnlijk niet actief / Geen onderneming; totaal in het midden, aantal en percentage in vaste legenda | Bestaande kleuren en codes; alle vier categorieën zichtbaar, ook bij nul; legenda en kerncijfers klikken naar de exacte recordselectie |
+| Sectoren | Compacte horizontale verdeling volgens `activity_of()` (KBO RSZ → BTW → laatste ingevulde waargenomen activiteit met herkend trefwoord → onbekend), met expliciet aandeel onbekend | Alle sectoren behoren tot hetzelfde gefilterde totaal; geen tweede classificatie. Bij gekozen sector toont het blok alleen die selectie; filter wissen herstelt het overzicht |
+| Datadekking | Compacte aantallen/aandelen voor zekerheid Hoog/Middel/Laag, ontbrekende moeder bij vestigingen en contactstatus register/zetel/waargenomen/onbekend | Zekerheid is geen numerieke score. Contactstatus volgt bestaande bronprioriteit; NBB-contacten tellen niet mee. Toon dit als contactdekking uit register/waarnemingen, niet als alle beschikbare contactmogelijkheden |
+| Opgeslagen voorstellen | Aantal voorstelrijen open/bevestigd/afgewezen die via `record_nr` aan de geselecteerde records gekoppeld zijn | Meerdere voorstellen per record mogelijk; tel afzonderlijke werkitems. Noem het geen volledige controlevoorraad en toon expliciet dat meldingen zonder registerkoppeling buiten deze gefilterde telling vallen |
+| Bron en dekking | Bron, ophaaldatum of datumbereik en vermelding Deelbestand — niet alle records van de gemeente | Starterbestand opgehaald 07-09-2026; exacte federale KBO-peildatum onbekend. Geen importtijd of berekentijd presenteren als laatste controle |
 
-#### Pagina en interactie
+**Telregels en betekenis**
 
-- Bovenaan **Gemeenteoverzicht — Schoten**, gemeenteselectie waar zinvol, typefilter, bron en dekking. Daarna vier kerncijfers (records, actief, ter controle, met waarneming), het statuswiel met leesbare legenda, een compact blok datakwaliteit en opgeslagen voorstellen met doorkliks. Geen trendgrafieken of grote lege placeholderkaarten.
-- Wiel als donut met recordtotaal in het midden; vaste statusvolgorde en bestaande kleuren groen/oranje/rood/grijs. Legenda toont altijd alle vier categorieën, ook bij nul. Aantallen zijn leidend; percentages afronden op één decimaal en een eventuele afrondingsafwijking verklaren.
-- Klik op een status, kerncijfer of datakwaliteitsgroep opent de exacte gefilterde recordlijst; voorstellen openen de lijst met dezelfde gemeente/type/status. URL bewaart filters, terugnavigatie herstelt ze. Legenda/doorkliks werken met toetsenbord; tekst en aantallen blijven bruikbaar zonder kleur of hover. Op smalle schermen stapelen de blokken.
-- Routevoorstel: `/` wordt dashboard, `/zoeken` blijft de werkplek voor zoeken. Werk interne teruglinks bij en behoud bestaande zoeklinks `/?q=…`, `/?type=…` en `/?status=…` via een expliciete compatibiliteitsroute/redirect; gebruik andere dashboardfilterparameters om die links te onderscheiden. Stem styling/navigatie af met de lopende UI-branch van TICKET-029.
-- Alle zichtbare tekst in het Nederlands. Toon afzonderlijke laad-, fout-, lege en niet-beschikbare toestanden. Een fout mag geen nulcijfers tonen. Na een waarneming, voorstelbesluit of ouder-ophaling worden de betrokken gegevens bij terugkeer opnieuw geladen; geen automatische externe bronophaling bij het openen van het dashboard.
+- Populatie = unieke `records.nr` met eigen KBO-adres in de gekozen gemeente, daarna type- en sectorfilter. Gebruik `kbo_niscode` met expliciete fallback op genormaliseerde gemeentenaam. Moeders buiten de gemeente blijven beoordelingscontext, maar tellen niet mee. Geen dubbele records door joins met ouders, bewijs of voorstellen.
+- De som van ondernemingen en vestigingen heet **Ingeladen records**, niet unieke bedrijven. Het wiel gebruikt `assessment.status`; Register, Zekerheid en voorstelgoedkeuring blijven afzonderlijk. Bevestiging herschrijft het register of de beoordeling niet. Toon: "Geen aangetoonde activiteit betekent niet dat een onderneming gesloten is."
+- Recordpercentages delen door het zichtbare gefilterde totaal, inclusief Geen onderneming. Ontbrekende moeders delen uitsluitend door de geselecteerde vestigingen en worden opgezocht in de volledige database. Voorstellen zijn aantallen, geen percentage afgehandelde bedrijven. Sectortotalen en contactstatussen tellen elk op tot het recordtotaal.
+- Nulrecords → aantallen 0, percentages "—" en lege toestand. Niet-beschikbare metrics → `null`/Nog niet beschikbaar; een fout is geen nul. Rond percentages op één decimaal af, aantallen zijn leidend. Geen automatische externe bronophaling of voorstelcreatie door dashboardlezen.
 
-#### Gaps die vóór of tijdens implementatie moeten worden opgelost
+**Benodigd werk en nog bestaande gaps — bij implementatie oplossen**
 
-- **Volledigheid en datums:** De starterset is de eerste 1.000 records, opgehaald op 07-09-2026; de exacte federale KBO-peildatum is onbekend. Toon "Deelbestand — niet alle records van de gemeente". Scheid bronophaaldatum, waarnemingsdatum en berekentijd; presenteer `fetched_at`/importtijd niet als laatste controle. Bij gemengde bronnen/dates toon die dekking, geen enkele datum alsof alles toen is gecontroleerd.
-- **Tellen over alle data:** Geen telling uit de eerste 100 zoekresultaten of een andere paginalimiet. Plan een eigen read-only aggregatie-endpoint, bijvoorbeeld `GET /api/dashboard?municipality=<code>&type=<type>`, dat de volledige lokale selectie verwerkt. De huidige zoek- en voorstellen-API mist gemeente-/dekkingfilters; plan gemeente, aanwezigheid van waarneming, zekerheid en ontbrekende ouder als benodigde doorklikfilters, plus een betrouwbaar resultaat-totaal.
-- **Consistente beoordeling:** `summarize_many()` geeft nu geen NBB-cache door; Detail doet dit wel. Dashboard, Zoeken, Straat en Detail moeten dezelfde beoordelingscontext gebruiken, inclusief aanwezige cache, zonder netwerkcalls en zonder een tweede scoreformule. Regelwijzigingen zelf blijven bij TICKET-021; cacheleeftijd en gewijzigde regels mogen niet stilzwijgend als nieuwe waarneming gelden.
-- **Eerlijke werkvoorraad:** `ensure_auto_proposals()` wordt aangeroepen bij dossier-/straatbezoek. Het aantal opgeslagen open voorstellen hangt dus af van bezochte dossiers en is geen volledige controlevoorraad. Gebruik "Ter controle" als primaire actieteller; dashboardlezen mag geen voorstellen aanmaken. Verouderde automatische voorstellen en herbeoordeling bij goedkeuring vragen apart herstelwerk, niet verhullen als actuele adviezen.
-- **Bewijs en historiek:** Er is geen gevalideerde definitie van "recent gecontroleerd", geen snapshots voor groei/trends en geen stabiele auditgeschiedenis voor doorlooptijd/productiviteit. `observed_at` wordt nu alleen op tekstvorm gevalideerd; invalid/future dates moeten apart aangepakt worden voordat ouderdomsmetrics worden ingevoerd. Versie 1 meet uitsluitend aanwezigheid van waarnemingen en de actuele beoordeling.
-- **Uitbreidbaar zonder framework:** Eén getypeerd antwoord met scope, totaal, status-/zekerheidsaantallen, bewijsdekking, voorstellen en bron/dekkingsmetadata; nieuwe secties later additief. Iedere latere metric beschrijft definitie, teleenheid, noemer, bron, datum, beschikbaarheid en doorklikfilter. Geen generieke widgetbouwer, nieuwe analyticsdatabase of periodieke jobs voor versie 1.
+- Plan één read-only aggregatie-endpoint, bijvoorbeeld `GET /api/dashboard?municipality=<code>&type=<type>&activity=<sector>`, met gedeelde scope, totalen, blokken en bron/dekkingsmetadata. Tel over alle geselecteerde records in één consistente databaseleesstand, onafhankelijk van de 100 zoekresultaten en API-limieten. `/api/activities` telt nu over de hele database; hergebruik de classificatie, maar voeg scope toe voordat die tellingen/filteropties het dashboard voeden. Leg de scope van sectoropties vast: gemeente/type, zodat een sectorfilter niet zijn eigen alternatieven verwijdert.
+- Voor doorkliks ontbreekt nog gemeente-/bewijs-/zekerheid-/ouder-/contactfiltering en een betrouwbaar resultaat-totaal op Zoeken; bestaande `type`, `status` en `activity` hergebruiken. Voorstellen hebben alleen statusfiltering en de pagina bewaart die nog niet in de URL: voeg selectie en URL-herstel toe. Meldingen zonder `record_nr` nooit stilzwijgend via een inner join laten verdwijnen uit een als totaal gelabelde teller; bied een apart gelabelde, ongefilterde link naar de bestaande voorstellenpagina waar die meldingen zichtbaar blijven, zonder gemeentelijk aantal te suggereren.
+- `summarize_many()` geeft nog geen NBB-cache aan de beoordeling door, Detail wel. Gebruik dezelfde cachecontext voor dashboard, lijst, straat, kaart en detail; hergebruik `assess()`, geen nieuwe scoreformule of netwerkcalls. Contactstatus volgt juist de bestaande lijstdefinitie zonder NBB; dat is een expliciete afzonderlijke metric, geen reden om NBB-statussignalen te negeren.
+- `/` wordt dashboard, Zoeken verhuist naar `/zoeken`; behoud oude zoeklinks met `q`, `type`, `status` én `activity` via compatibiliteitsrouting. Gebruik aparte dashboard-URL-parameters zodat filters niet onbedoeld naar Zoeken leiden. Werk teruglinks bij en behoud `/kaart`, `/straat` en `/goedgekeurd`. Alle nieuwe UI-teksten en toegankelijke labels in beide bestaande woordenboeken; Nederlands blijft standaard.
+- Legenda/doorkliks werken met toetsenbord, aantallen zijn leesbaar zonder kleur/hover, blokken stapelen op mobiel. Herlaad na wijzigingen bij terugkeer. Opgeslagen voorstellen ontstaan deels bij dossier-/straatbezoek en kunnen verouderen: behoud de feitelijke teller en de beperking; herstel van voorstelgeldigheid is afzonderlijk werk, niet onderdeel van dashboardberekeningen.
 
-#### Latere aansluitingen en scopegrens
+**Latere uitbreiding; geen blokkade voor versie 1**
 
-| Bestaand / toekomstig ticket | Aansluiting op hetzelfde dashboard; niet in versie 1 bouwen |
-|---|---|
-| TICKET-024 sectoren + TICKET-026 KBO Open Data | Sectorverdeling en sectorfilter met expliciete categorie onbekend en brondekking; starterdata heeft slechts 81/1.000 records met een NACE-code |
-| TICKET-025 contact + TICKET-026/027 verrijking | Contactdekking per bron, vestiging versus zetel en waargenomen contact; geen telefoon/e-mail of ontbrekende activiteit verzinnen |
-| TICKET-016 NBB + TICKET-021 beoordeling | Mogelijke NBB-dekking; financiële totalen pas na aparte scope over unieke ondernemingen, boekjaren, ontbrekende waarden en lokale toerekening. Omzet/VTE van één moeder nooit optellen voor elke vestiging |
-| TICKET-029 UI / toekomstige numerieke score | De UI-branch noemt een nog niet beschikbare confidence-score en toekomstige drempels. Versie 1 gebruikt Hoog/Middel/Laag; geen verzonnen numerieke score of gemiddelde. Later de backenddefinitie en verhouding tot handmatige beoordeling afstemmen |
-| TICKET-020 ontbrekende vestigingen | Afzonderlijke meldingen en werkvoorraad met eigen adres/gemeente; niet meetellen als geregistreerd bedrijf zolang geen registerrecord is gekoppeld |
-| TICKET-012/018 import en toekomstige metrics | Datasetdekking, verversing, historiek en nieuwe gemeenteselecties later aansluiten. Gemeentepaging is op de onderzochte main nog niet aanwezig ondanks de Done-beschrijving van TICKET-012 |
+- TICKET-026/027 verhogen sector-/contactdekking via KBO Open Data en OpenStreetMap; hun import/verrijking niet opnieuw bouwen. TICKET-012/018: gemeentepaging/importbeheer en bronhistoriek (paging ontbreekt nog in de huidige importer). TICKET-016: financiële aggregaties pas na aparte definities voor unieke ondernemingen, vergelijkbare boekjaren en lokale toerekening; moederomzet/VTE nooit per vestiging optellen.
+- Een afzonderlijk toekomstig metrics-ticket is ook op gepullde main niet aanwezig. Later koppelen zoals door gebruiker toegestaan: numerieke score/drempels, trends, recente-controledefinitie, productiviteit en gemeentelijke telling van ongekoppelde meldingen. Die laatste vereist betrouwbare gestructureerde gemeentegegevens/backfill; waarnemingsouderdom vereist datumvalidatie. De huidige TICKET-029 is de taalwissel, geen backendscore-ticket. Nieuwe blokken voegen getypeerde velden toe met definitie, bron, datum, noemer en beschikbaarheid; geen generieke widgetbouwer nodig.
 
-- **Nog open:** Geen afzonderlijk metrics-ticket gevonden na remote-fetch en controle van `main` en de integratiebranch. Op instructie van de gebruiker behandelen we dit als toekomstig werk; later het exacte ticket koppelen en de metricdefinities afstemmen. Geen nieuwe targets, trends, sector-/contactverrijking, financiële aggregaties, kaarten of publicatieacties in deze eerste scope.
+**Acceptatie voor uitvoering**
 
-#### Acceptatie voor de latere implementatie
-
-- [ ] Dashboard is de Nederlandse startpagina per ondersteunde gemeente; Zoeken, bestaande links en terugnavigatie blijven werken. Alle blokken gebruiken dezelfde selectie en teldefinities.
-- [ ] Onafhankelijke telling over alle geselecteerde records = som van wielsegmenten = resultaat-totaal bij doorklik. Ook testen met meer dan 100 én 2.000 records, dubbele joins, beide recordtypes en een moeder buiten de gemeente.
-- [ ] Referentie zonder waarnemingen/NBB op starterdata: 1.000 records (457 ondernemingen, 543 vestigingen), Actief 0, Ter controle 789, Waarschijnlijk niet actief 106, Geen onderneming 105; Met waarneming 0. Dit is een reproduceerbare fixture, geen vast te coderen productwaarde.
-- [ ] Nieuwe waarneming verandert beoordeling en bewijsdekking consequent; meerdere waarnemingen tellen één record. Tegenstrijdig bewijs blijft conform bestaande regels Ter controle. Goedkeuring verandert alleen voorstelmetrics; meerdere voorstellen blijven afzonderlijke werkitems.
-- [ ] Lege selectie, nulsegmenten, ontbrekende ouders, niet-beschikbare metrics en API-fouten zijn leesbaar en toegankelijk. Bron, deelbestand, noemer en statusbetekenis zijn zichtbaar zonder tooltip.
-- [ ] Aggregatie gebruikt één consistente databaseleesstand, verricht geen externe calls of writes en hergebruikt de scorelogica. Controleer gelijke beoordelingen tussen lijst, straat en detail met aanwezige NBB-cache; frontendtypecheck en relevante tel-/filtertests slagen.
-- **Onderbouwing scope:** `docs/challenge.md`, `data/raw/source-metadata.json`, `backend/app/{schema.sql,scoring.py,summaries.py}`, routers en frontend op main `991ff3e`. Read-only controle van de lokale database op 16-09-2026 bevestigt bovenstaande statusaantallen, 515 ontbrekende ouders, 0 waarnemingen en 7 opgeslagen open voorstellen; dit laatste is veranderlijke werkstaat, geen acceptatiebaseline. Tickets 024/025 hebben al implementatiewerk op andere branches, maar niet op deze onderzochte main; controleer de merge-status bij uitvoering opnieuw.
+- [ ] Startpagina en doorkliks werken met dezelfde gemeente/type/sector; oude zoeklinks en NL/EN blijven bruikbaar. Wiel, sectoren en contactstatussen tellen elk op tot het gefilterde recordtotaal; het totaal bij doorklik klopt ook boven 100 en 2.000 records.
+- [ ] Test dubbel bewijs/voorstellen, beide recordtypes, een moeder buiten de gemeente, onbekende sector/contacten, sector uit een waarneming en alle nul-/fouttoestanden. Ongekoppelde meldingen blijven apart van registerrecords en hun uitsluiting is zichtbaar bij de voorstelmetric.
+- [ ] Nieuwe waarneming werkt status/bewijs/sector/contactdekking consequent bij; tegenstrijdig bewijs volgt bestaande regels. Goedkeuring wijzigt uitsluitend voorstelmetrics. Controleer gelijke beoordelingen bij aanwezige NBB-cache en de bewust NBB-vrije contactstatus.
+- [ ] Aggregatie doet geen writes of externe calls; bron/deelbestand/noemers zijn zichtbaar. Relevante tel-/filtertests, frontendtypecheck en controle van toetsenbord/mobiele weergave slagen. Geen hardgecodeerde live aantallen.
 
 ### MVP — critical path (in build order)
 
@@ -123,6 +117,20 @@
 - **Description:** Browser upload of a VKBO export instead of running the import script; reuses TICKET-004 parser.
 
 ## Done
+
+### TICKET-033: Activiteitsindicatoren — KBO / Google Maps / e-facturatie (Peppol) traffic lights (merge of Wolfgang's TICKET-028 branch)
+- **Type:** feat(score) | **Priority:** Stretch (demo value: three sources at a glance)
+- **Created:** 2026-09-16 | **Completed:** 2026-09-16
+- **Description:** Every record carries `indicators: { kbo, google_maps, einvoice }`, each `{ level: groen|geel|rood|onbekend, label, text, checked_at, url }`. KBO light is a pure rule on the register (rood on dissolution/faillissement/doorhaling, groen only when every register signal is clean incl. AR address match and a clean parent, geel otherwise). Google Maps light = latest officer-logged evidence with source `google_maps` (see TICKET-034; no Google API). E-facturatie light = Peppol SML DNS check on `0208:<ondernemingsnummer>` (groen registered, rood not registered, geel when the legal form is not obliged), enriched with the Peppol Directory on the detail page. Results cached in `indicator_cache`; list endpoints are cache-only. New endpoints `GET /api/records/{nr}/indicators` and `POST /api/streets/{street}/indicators/refresh`. UI: "Signalen" column (three dots) in Zoeken and Straatoverzicht, detailed block in Beoordeling, "Controleer straat" button. Merged onto the themed i18n main: `IndicatorLights` captions/tooltips go through `t('indicators.*')` (NL + EN), the Straat/Zoeken tables keep the Activiteit/Contact columns and the missing-establishment rows (colSpan 9), `summarize(..., cached=)` sits next to `activity` and `contact_status`.
+- **Out of scope:** feeding these signals into `assess()` reasons/proposals; map view; whole-dataset refresh.
+- **Done when:** Paalstraat rows show three dots; LILLYWORLD (0448335384) is rood/rood; a registered BV is groen for e-fact.; without any key Maps is onbekend and nothing 500s.
+- **Branch:** `feat/TICKET-033-activity-indicators` (was `feat/TICKET-028-activity-indicators`, `45952d8`) | **Commits:** `dc4ad25` (merge)
+
+### TICKET-034: Remove the Google Places API; Google Maps light from logged observations
+- **Type:** refactor(score)
+- **Created:** 2026-09-16 | **Completed:** 2026-09-16
+- **Description:** The Places API needs a billed Google Cloud project, so it is removed (google_places.py, env loader, .env.example, quota counter). The Google Maps light now derives from officer-logged evidence with source `google_maps`: groen when the latest such observation concludes actief within the last 6 months, rood when it concludes niet actief, geel when onduidelijk or older than 6 months, onbekend when nothing is logged. Peppol light unchanged. Was Wolfgang's TICKET-029 on the same branch (`d578eed`); re-numbered because 028/029 were already taken on main.
+- **Branch:** `feat/TICKET-033-activity-indicators` | **Commits:** `d578eed` (merged via TICKET-033)
 
 ### TICKET-030: Province of Antwerp visual theme merged onto main
 - **Type:** feat(ui)

@@ -4,13 +4,14 @@ import { SEARCH_COLUMNS } from '../searchRows'
 import { useT } from '../i18n'
 import StatusBadge from './StatusBadge'
 import ZekerheidBadge from './ZekerheidBadge'
+import IndicatorLights from './IndicatorLights'
 
 export function useSearchHeaders(): Record<SearchColumn, string> {
   const t = useT()
   return {
     name: t('search.col.name'), type: t('search.col.type'), address: t('col.address'),
     activity: t('search.col.activity'), register: t('col.register'), status: t('col.status'),
-    certainty: t('col.certainty'), contact: t('search.col.contact'),
+    certainty: t('col.certainty'), contact: t('search.col.contact'), indicators: t('indicators.title'),
   }
 }
 
@@ -36,6 +37,7 @@ export default function SearchResults({ rows, sort, descending, onSort }: {
         <td><StatusBadge status={record.assessment.status} label={record.assessment.status_label} /></td>
         <td><ZekerheidBadge certainty={record.assessment.certainty} label={record.assessment.certainty_label} /></td>
         <td className="text-xs text-gray-600" title={t('search.contactTitle')}>{cells.contact}</td>
+        <td><IndicatorLights indicators={record.indicators} /></td>
       </tr>)}</tbody>
     </table>
   )

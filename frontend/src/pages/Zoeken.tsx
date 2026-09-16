@@ -13,6 +13,7 @@ import SearchExport from '../components/SearchExport'
 
 const RESULT_LIMIT = 2000
 
+
 export default function Zoeken() {
   const t = useT()
   const { lang } = useLang()
@@ -140,6 +141,7 @@ export default function Zoeken() {
           {pending ? (error ? '' : t('common.loading')) : t('search.resultCount', { shown: rows.length, total: result?.total ?? 0 })}
         </p>
         <SearchExport key={requestKey + sort + descending + lang} headers={exportHeaders} rows={exportRows} numbers={rows.map((row) => row.record.nr)} disabled={pending || error} />
+
       </div>
       {!pending && result && result.total > rows.length && (
         <p className="text-sm text-amber-800" role="status">{t('search.resultLimit', { limit: RESULT_LIMIT })}</p>

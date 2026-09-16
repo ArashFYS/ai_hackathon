@@ -7,7 +7,7 @@ from .summaries import cached_nbb, load_context
 
 
 def known_contacts(conn: sqlite3.Connection, rows: list[dict]) -> dict[str, list[dict]]:
-    parents, evidence = load_context(conn, rows)
+    parents, evidence, indicators = load_context(conn, rows)
     cache = {}
 
     def nbb(row):
@@ -19,9 +19,14 @@ def known_contacts(conn: sqlite3.Connection, rows: list[dict]) -> dict[str, list
     result = {}
     for row in rows:
         parent = parents.get(row.get("parent_nr"))
-        contacts = contacts_for(row, parent, evidence.get(row["nr"], []), nbb(row))
+        enterprise = row.get("parent_nr") or row["nr"]
+        contacts = contacts_for(row, parent, evidence.get(row["nr"], []), nbb(row),
+                                kbo_public=indicators["kbo_public"].get(row["nr"]),
+                                einvoice=indicators["einvoice"].get(enterprise))
         if parent:
-            contacts += contacts_for(parent, None, [], nbb(parent))
+            contacts += contacts_for(parent, None, [], nbb(parent),
+                                     kbo_public=indicators["kbo_public"].get(parent["nr"]),
+                                     einvoice=indicators["einvoice"].get(parent["nr"]))
         result[row["nr"]] = contacts
     return result
 

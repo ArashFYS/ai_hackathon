@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import type { RecordDetail, RecordFull } from '../api'
-import { activitySectorLabel, activitySourceLabel, conclusionLabel, dash, getRecord, onbekend, proposalTextLabel, recordTypeLabel, registerLabel, sourceLabel } from '../api'
+import type { Indicators, KboPublic, RecordDetail, RecordFull } from '../api'
+import { activitySectorLabel, activitySourceLabel, conclusionLabel, dash, getIndicators, getRecord, onbekend, proposalTextLabel, recordTypeLabel, registerLabel, sourceLabel, refreshKboPublic } from '../api'
 import type { Lang, TKey } from '../i18n'
 import { useLang, useT } from '../i18n'
 import StatusBadge from '../components/StatusBadge'
@@ -12,6 +12,7 @@ import EvidenceForm from '../components/EvidenceForm'
 import ProposalList from '../components/ProposalList'
 import EvidencePanel from '../components/EvidencePanel'
 import ContactBlock from '../components/ContactBlock'
+import IndicatorLights from '../components/IndicatorLights'
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -78,6 +79,58 @@ function RegisterFacts({ r, lang }: { r: RecordFull; lang: Lang }) {
   )
 }
 
+/** Every NACEBEL 2025 activity from the KBO Public Search page, with a refresh button (TICKET-035). */
+function NacebelActivities({ nr, kboPublic, onChanged }: { nr: string; kboPublic: KboPublic | null; onChanged: () => void }) {
+  const t = useT()
+  const [busy, setBusy] = useState(false)
+  const [err, setErr] = useState<string | null>(null)
+  const acts = kboPublic?.activities ?? []
+  const refresh = async () => {
+    setBusy(true)
+    setErr(null)
+    try {
+      const p = await refreshKboPublic(nr)
+      if (!p.available) setErr(p.note ?? t('nacebel.error'))
+      onChanged()
+    } catch {
+      setErr(t('nacebel.error'))
+    } finally {
+      setBusy(false)
+    }
+  }
+  return (
+    <div className="space-y-2">
+      <div className="flex flex-wrap items-center gap-3">
+        <span className="text-xs text-gray-500">
+          {kboPublic?.snapshot_date ? t('nacebel.checked', { date: kboPublic.snapshot_date }) : t('nacebel.notChecked')}
+          {kboPublic?.status ? ` · ${t('nacebel.status')}: ${kboPublic.status}` : ''}
+        </span>
+        <button type="button" onClick={refresh} disabled={busy} className="rounded border border-gray-400 px-2 py-0.5 text-xs hover:bg-gray-50 disabled:opacity-50">
+          {busy ? t('common.loading') : t('nacebel.refresh')}
+        </button>
+        {kboPublic?.url && (
+          <a href={kboPublic.url} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-700 underline">{t('common.sourceLink')}</a>
+        )}
+      </div>
+      {err && <p className="text-xs text-red-700">{err}</p>}
+      {acts.length > 0 ? (
+        <ul className="divide-y text-sm">
+          {acts.map((a, i) => (
+            <li key={`${a.code}-${i}`} className="flex flex-wrap items-baseline gap-2 py-1">
+              <span className={`rounded px-1.5 py-0.5 text-xs ${a.kind === 'hoofd' ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-700'}`}>{t(`nacebel.kind.${a.kind}`)}</span>
+              <span className="font-mono text-xs text-gray-600">{a.code}</span>
+              <span>{a.title ?? '—'}</span>
+              {a.since && <span className="text-xs text-gray-500">{t('nacebel.since', { date: a.since })}</span>}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="text-sm text-gray-600">{kboPublic ? t('nacebel.none') : t('nacebel.hint')}</p>
+      )}
+    </div>
+  )
+}
+
 function ActivityFacts({ r, lang }: { r: RecordFull; lang: Lang }) {
   const t = useT()
   const a = r.activity
@@ -101,6 +154,27 @@ export default function Detail() {
   const [error, setError] = useState<'notFound' | 'load' | null>(null)
   const [tick, setTick] = useState(0)
   const reload = useCallback(() => setTick((x) => x + 1), [])
+  const [live, setLive] = useState<Indicators | null>(null)
+  const [checking, setChecking] = useState(false)
+
+  useEffect(() => {
+    // Live Peppol lookup (cached server-side); failures keep the cached dots.
+    if (!nr) return
+    let cancelled = false
+    setLive(null)
+    setChecking(true)
+    getIndicators(nr)
+      .then((ind) => {
+        if (!cancelled) setLive(ind)
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (!cancelled) setChecking(false)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [nr])
 
   useEffect(() => {
     if (!nr) return
@@ -153,11 +227,14 @@ export default function Detail() {
           {a.last_observed && <p className="text-xs text-gray-500">{t('detail.lastObserved')} {a.last_observed}</p>}
           <p className="assessment-proposal"><span>{t('detail.proposal')}</span> <strong>{proposalTextLabel(lang, a.proposal_text)}</strong></p>
           {lang === 'en' && <p className="source-language-note">{t('detail.sourceTextNote')}</p>}
+          <h3 className="mb-1 text-sm font-medium text-gray-800">{t('indicators.title')}{checking && <span className="ml-2 text-xs font-normal text-gray-500">{t('indicators.checking')}</span>}</h3>
+          <div className="mb-3"><IndicatorLights indicators={live ?? r.indicators} detailed /></div>
+
           <h3 className="mb-1 text-sm font-medium text-gray-800">{t('detail.why')}</h3>
           <ReasonsList reasons={a.reasons} />
         </Section>
 
-        <Section title={t('detail.registerData')}><RegisterFacts r={r} lang={lang} /></Section>
+        <Section title={t('detail.registerData')}><RegisterFacts r={r} lang={lang} /><div className="mt-3"><NacebelActivities nr={r.nr} kboPublic={data.kbo_public} onChanged={reload} /></div></Section>
         <Section title={t('detail.linkage')}><LinkageCard detail={data} onChanged={reload} /></Section>
         <Section title={t('detail.contact')}><ContactBlock contacts={data.contacts} status={data.contact_status} /></Section>
 

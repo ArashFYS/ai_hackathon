@@ -1,11 +1,12 @@
 import { Fragment, useCallback, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import type { Proposal, Status, StreetCount, StreetOverview, StreetRecord } from '../api'
-import { STATUS_CODES, dash, getStreet, getStreets, proposalTextLabel, registerLabel, statusLabel, valueLabel } from '../api'
+import type { Proposal, Status, StreetCount, StreetOverview, StreetRecord, StreetRefreshResult } from '../api'
+import { STATUS_CODES, dash, getStreet, getStreets, proposalTextLabel, refreshStreetIndicators, registerLabel, statusLabel, valueLabel } from '../api'
 import type { TKey } from '../i18n'
 import { useLang, useT } from '../i18n'
 import StatusBadge from '../components/StatusBadge'
 import ZekerheidBadge from '../components/ZekerheidBadge'
+import IndicatorLights from '../components/IndicatorLights'
 import { DecideButtons } from '../components/ProposalList'
 import ActivitySelect from '../components/ActivitySelect'
 import MissingEstablishmentForm, { MissingRow, missingHousenr } from '../components/MissingEstablishmentForm'
@@ -72,6 +73,22 @@ export default function Straat() {
   const [form, setForm] = useState<{ group?: string } | null>(null)
   const [tick, setTick] = useState(0)
   const reload = useCallback(() => setTick((x) => x + 1), [])
+  // "Controleer straat": sequential Peppol lookups for every record (cached server-side, TICKET-033)
+  const [checking, setChecking] = useState(false)
+  const [checkResult, setCheckResult] = useState<string | null>(null)
+
+  const checkStreet = () => {
+    setChecking(true)
+    setCheckResult(null)
+    refreshStreetIndicators(street)
+      .then((res: StreetRefreshResult) => {
+        const fmt = (c: Record<string, number>) => t('indicators.tally', c)
+        setCheckResult(t('street.checkResult', { records: res.records, maps: fmt(res.google_maps), einvoice: fmt(res.einvoice) }))
+        reload()
+      })
+      .catch(() => setCheckResult(t('street.checkFailed')))
+      .finally(() => setChecking(false))
+  }
 
   useEffect(() => {
     getStreets().then(setStreets).catch(() => setStreets([]))
@@ -139,9 +156,19 @@ export default function Straat() {
           </span>
         )}
         <Link to={`/kaart?street=${encodeURIComponent(street)}`} className="pb-2 text-xs text-blue-700 hover:underline">{t('street.showMap')}</Link>
-        <button type="button" className={`ml-auto mb-0.5 ${missingBtn}`} disabled={!data} onClick={() => setForm({})}>
+        <button
+          type="button"
+          onClick={checkStreet}
+          disabled={checking || loading}
+          className="ml-auto mb-0.5 rounded border border-gray-800 bg-white px-2 py-1 text-xs font-medium text-gray-900 hover:bg-gray-100 disabled:opacity-50"
+          title={t('street.checkTitle')}
+        >
+          {checking ? t('street.checkBusy') : t('street.checkButton')}
+        </button>
+        <button type="button" className={`mb-0.5 ${missingBtn}`} disabled={!data} onClick={() => setForm({})}>
           + {t('missing.button')}
         </button>
+        {checkResult && <span className="w-full text-xs text-gray-600">{checkResult}</span>}
       </div>
 
       {form && data && form.group === undefined && (
@@ -168,6 +195,7 @@ export default function Straat() {
                 <th className="px-3 py-2">{t('street.col.evidence')}</th>
                 <th className="px-3 py-2">{t('street.col.lastObserved')}</th>
                 <th className="px-3 py-2">{t('col.certainty')}</th>
+                <th className="px-3 py-2">{t('col.signals')}</th>
                 <th className="px-3 py-2">{t('col.proposal')}</th>
                 <th className="px-3 py-2"></th>
               </tr>
@@ -176,7 +204,7 @@ export default function Straat() {
               {groups.map((a) => (
                 <Fragment key={a.address}>
                   <tr className="address-group">
-                    <td colSpan={8} className="px-3 py-1.5 text-xs font-semibold text-gray-700">
+                    <td colSpan={9} className="px-3 py-1.5 text-xs font-semibold text-gray-700">
                       <div className="flex items-center justify-between gap-2">
                         <span>{a.address}</span>
                         <button type="button" className={missingBtn} onClick={() => setForm({ group: a.address })}>{t('missing.button')}</button>
@@ -185,7 +213,7 @@ export default function Straat() {
                   </tr>
                   {form?.group === a.address && data && (
                     <tr>
-                      <td colSpan={8} className="p-2">
+                      <td colSpan={9} className="p-2">
                         <MissingEstablishmentForm
                           street={data.street}
                           postcode={postcode}
@@ -209,6 +237,7 @@ export default function Straat() {
                       <td className="max-w-64 px-3 py-2 text-gray-700">{r.last_evidence?.observation ?? '—'}</td>
                       <td className="px-3 py-2 whitespace-nowrap">{r.last_evidence?.observed_at ?? r.assessment.last_observed ?? '—'}</td>
                       <td className="px-3 py-2"><ZekerheidBadge certainty={r.assessment.certainty} label={r.assessment.certainty_label} /></td>
+                      <td className="px-3 py-2"><IndicatorLights indicators={r.indicators} /></td>
                       <td className="max-w-56 px-3 py-2 text-gray-800">
                         {proposalTextLabel(lang, r.assessment.proposal_text)}
                         {r.open_proposal && (

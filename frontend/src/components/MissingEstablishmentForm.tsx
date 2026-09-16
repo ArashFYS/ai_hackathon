@@ -149,6 +149,7 @@ export function MissingRow({ proposal, housenr, onDecided }: { proposal: Proposa
       </td>
       <td className="px-3 py-2 whitespace-nowrap">{proposal.observed_at ?? '—'}</td>
       <td className="px-3 py-2"><ZekerheidBadge certainty="middel" /></td>
+      <td className="px-3 py-2"></td>
       <td className="max-w-56 px-3 py-2 text-gray-800">{t('missing.proposalText')}</td>
       <td className="px-3 py-2 whitespace-nowrap"><DecideButtons proposal={proposal} onDecided={onDecided} size="xs" /></td>
     </tr>

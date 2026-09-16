@@ -266,6 +266,15 @@ html { background: #fff; }
 .export-columns label { display: flex; align-items: center; gap: 7px; font-size: 12px; }
 .antwerp-app .export-columns input { min-height: 0; padding: 0; width: 16px; height: 16px; accent-color: var(--brand); }
 .export-note { max-width: 650px; font-size: 12px; color: #726961; padding-top: 9px; }
+.map-location-filters { display: flex; flex-wrap: wrap; align-items: end; gap: 16px; }
+.map-location-filters label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
+.map-location-filters .map-street-input { flex: 1 1 280px; }
+.map-location-filters input, .map-location-filters select { width: 100%; min-width: 0; }
+.coordinate-review { margin-block: 18px; font-size: 13px; }
+.coordinate-review summary { cursor: pointer; color: #8b570b; font-weight: 500; }
+.coordinate-review ul { display: grid; gap: 14px; margin-top: 18px; }
+.coordinate-review li { display: grid; grid-template-columns: minmax(170px,1fr) minmax(160px,1fr) minmax(200px,1fr); gap: 16px; }
+@media (max-width: 680px) { .coordinate-review li { grid-template-columns: 1fr; gap: 4px; } }
 .antwerp-app .result-action { padding: 8px 12px; border: 1px solid #d1c8bf; color: #572933; font-size: 13px; background: #fff; }
 .antwerp-app .result-action:hover:not(:disabled) { background: #faf2f4; border-color: var(--brand); }
 .antwerp-app .result-action:disabled { opacity: .45; }

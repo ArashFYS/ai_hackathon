@@ -60,6 +60,17 @@ class ContactSelectionTests(unittest.TestCase):
         result = list_records(q="Shop AND observed@example.org", mode="and", limit=100, conn=self.conn)
         self.assertEqual(result["total"], 1)
 
+    def test_upstream_enriched_contacts_are_searchable_and_exportable(self):
+        self.conn.execute("INSERT INTO indicator_cache(kind,key,fetched_at,payload) VALUES ('kbo_public','0000000002','2026-09-16',?)",
+                          (json.dumps({"available": True, "email": "enriched@example.org"}),))
+        self.conn.execute("INSERT INTO indicator_cache(kind,key,fetched_at,payload) VALUES ('einvoice','0000000001','2026-09-16',?)",
+                          (json.dumps({"directory": {"contacts": [{"email": "peppol@example.org"}]}}),))
+        for email in ("enriched@example.org", "peppol@example.org"):
+            result = list_records(q=email, mode="and", type="establishment", limit=100, conn=self.conn)
+            self.assertEqual(result["total"], 1)
+        contacts = selected_contacts(ContactSelection(numbers=["0000000002"]), self.conn)["contacts"]["0000000002"]
+        self.assertTrue({"enriched@example.org", "peppol@example.org"} <= {contact["value"] for contact in contacts})
+
 
 if __name__ == "__main__":
     unittest.main()

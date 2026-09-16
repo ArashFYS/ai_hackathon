@@ -45,12 +45,35 @@ export interface Assessment {
 }
 
 /** Sector of a record: from KBO NACE (RSZ → BTW) or the latest officer-observed activity; else onbekend. */
+/** One NACEBEL 2025 activity as listed on the KBO Public Search page (TICKET-035). */
+export interface NaceActivity {
+  code: string
+  title: string | null
+  kind: 'hoofd' | 'neven'
+  since: string | null
+}
+
 export interface Activity {
   sector: string
   label: string
-  source: 'KBO (RSZ)' | 'KBO (BTW)' | 'waarneming' | null
+  source: 'KBO (RSZ)' | 'KBO (BTW)' | 'KBO (publiek)' | 'waarneming' | null
   nace: string | null
   description: string | null
+  activities: NaceActivity[]
+}
+
+/** Cached scrape of the record's own KBO Public Search page (null when never fetched). */
+export interface KboPublic {
+  available: boolean
+  url: string
+  status: string | null
+  snapshot_date: string | null
+  phone: string | null
+  email: string | null
+  website: string | null
+  activities: NaceActivity[]
+  note: string | null
+  fetched_at?: string
 }
 
 export interface ActivityCount {
@@ -59,7 +82,25 @@ export interface ActivityCount {
   count: number
 }
 
+export type IndicatorLevel = 'groen' | 'geel' | 'rood' | 'onbekend'
+
+export interface Indicator {
+  level: IndicatorLevel
+  label: string
+  text: string
+  checked_at: string | null
+  url: string | null
+}
+
+export interface Indicators {
+  kbo: Indicator
+  google_maps: Indicator
+  einvoice: Indicator
+}
+
 export interface RecordSummary {
+  location_valid?: boolean
+  location_issue?: 'invalid_coordinates' | 'outside_expected_area' | 'unverified_municipality' | null
   nr: string
   record_type: RecordType
   parent_nr: string | null
@@ -82,6 +123,7 @@ export interface RecordSummary {
   assessment: Assessment
   activity: Activity
   contact_status: ContactStatus
+  indicators: Indicators
   parent_in_dataset?: boolean
   seat_elsewhere?: boolean
   parent_display_name?: string | null
@@ -181,6 +223,7 @@ export interface RecordDetail {
   links: Links
   contacts: Contact[]
   contact_status: ContactStatus
+  kbo_public: KboPublic | null
 }
 
 export interface NbbFigures {
@@ -256,8 +299,11 @@ export interface GeoItem {
   nr: string
   display_name: string
   record_type: RecordType
-  lat: number
-  lng: number
+  lat: number | null
+  lng: number | null
+  city: string | null
+  location_valid: boolean
+  location_issue: 'invalid_coordinates' | 'outside_expected_area' | 'unverified_municipality' | null
   status: Status
   status_label: string
   certainty: Certainty
@@ -371,9 +417,20 @@ export function getSearchResults(query: RecordsQuery, signal?: AbortSignal): Pro
 }
 
 export interface GeoQuery {
+  city?: string
   street?: string
   status?: Status | ''
   limit?: number
+}
+
+export interface LocationOptions {
+  province: string
+  cities: { name: string; count: number }[]
+  streets: { street: string; city: string; count: number }[]
+}
+
+export function getLocationOptions(): Promise<LocationOptions> {
+  return api<LocationOptions>('/locations')
 }
 
 export async function getGeo(query: GeoQuery): Promise<GeoItem[]> {
@@ -385,12 +442,36 @@ export function getRecord(nr: string): Promise<RecordDetail> {
   return api<RecordDetail>(`/records/${encodeURIComponent(nr)}`)
 }
 
+/** Live fetch of the KBO Public Search page (activities, contact, status); cached server-side. */
+export function refreshKboPublic(nr: string): Promise<KboPublic> {
+  return api<KboPublic>(`/records/${encodeURIComponent(nr)}/kbo-public`, { method: 'POST' })
+}
+
 export function fetchParent(nr: string): Promise<RecordSummary> {
   return api<RecordSummary>(`/records/${encodeURIComponent(nr)}/fetch-parent`, { method: 'POST' })
 }
 
 export function getNbb(nr: string): Promise<NbbPanelData> {
   return api<NbbPanelData>(`/records/${encodeURIComponent(nr)}/nbb`)
+}
+
+export interface StreetRefreshResult {
+  street: string
+  records: number
+  kbo: Record<IndicatorLevel, number>
+  google_maps: Record<IndicatorLevel, number>
+  einvoice: Record<IndicatorLevel, number>
+  seconds: number
+}
+
+/** Live (cached) Peppol lookup for one record; KBO and Google Maps lights recomputed. */
+export function getIndicators(nr: string): Promise<Indicators> {
+  return api<Indicators>(`/records/${encodeURIComponent(nr)}/indicators`)
+}
+
+/** Sequential lookups for every record in a street (demo pre-fill); can take ~30 s. */
+export function refreshStreetIndicators(street: string): Promise<StreetRefreshResult> {
+  return api<StreetRefreshResult>(`/streets/${encodeURIComponent(street)}/indicators/refresh`, { method: 'POST' })
 }
 
 export function postEvidence(nr: string, body: EvidenceInput): Promise<Evidence> {
