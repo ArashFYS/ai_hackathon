@@ -4,7 +4,7 @@ import sqlite3
 from datetime import datetime, timedelta, timezone
 from typing import Callable
 
-CACHE_TTL = {"google_maps": timedelta(days=30), "einvoice": timedelta(days=7)}
+CACHE_TTL = {"einvoice": timedelta(days=7)}
 FetchLive = Callable[[], tuple[dict, bool]]
 
 
@@ -41,14 +41,6 @@ def cache_get_many(conn: sqlite3.Connection, kind: str, keys: list[str]) -> dict
             out[row["key"]] = json.loads(row["payload"], strict=False)
     return out
 
-
-def bump_quota(conn: sqlite3.Connection, kind: str) -> int:
-    """Increment and return this calendar month's call counter for `kind`."""
-    key = f"{kind}:{datetime.now(timezone.utc):%Y-%m}"
-    hit = cache_get(conn, "quota", key)
-    count = (hit[0].get("count", 0) if hit else 0) + 1
-    cache_put(conn, "quota", key, {"count": count})
-    return count
 
 
 def get_or_fetch(conn: sqlite3.Connection, kind: str, key: str, fetch_live: FetchLive) -> dict:

@@ -307,11 +307,10 @@ export interface StreetRefreshResult {
   kbo: Record<IndicatorLevel, number>
   google_maps: Record<IndicatorLevel, number>
   einvoice: Record<IndicatorLevel, number>
-  has_api_key: boolean
   seconds: number
 }
 
-/** Live (cached) Google Maps + Peppol lookups for one record. */
+/** Live (cached) Peppol lookup for one record; KBO and Google Maps lights recomputed. */
 export function getIndicators(nr: string): Promise<Indicators> {
   return api<Indicators>(`/records/${encodeURIComponent(nr)}/indicators`)
 }

@@ -82,12 +82,12 @@ def summarize(row: dict, parent: dict | None, evidence: list[dict], full: bool =
               nbb: dict | None = None, cached: dict | None = None) -> dict:
     """RecordSummary; with full=True every column except `raw` is included.
 
-    `cached` = load_indicator_cache() result; without it Google Maps / Peppol lights are 'onbekend'."""
+    `cached` = load_indicator_cache() result; without it the Peppol light is 'onbekend'."""
     base = {k: v for k, v in row.items() if k != "raw"} if full else {k: row.get(k) for k in SUMMARY_COLS}
     base["display_name"] = display_name(row)
     base["address"] = address_of(row)
     base["assessment"] = assess(row, parent, evidence, nbb)
-    base["indicators"] = indicators_for(row, parent, cached)
+    base["indicators"] = indicators_for(row, parent, evidence, cached)
     if row.get("record_type") == "establishment":
         base["parent_in_dataset"] = parent is not None
         # seat is "elsewhere" when the parent is known and sits in another municipality

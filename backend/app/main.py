@@ -4,13 +4,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .db import apply_schema
-from .env import load_dotenv
 from .routers import evidence, indicators, nbb, proposals, records, streets
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    load_dotenv()
     apply_schema()
     yield
 

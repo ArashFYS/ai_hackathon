@@ -36,7 +36,6 @@ export default function Straat() {
       .then((res: StreetRefreshResult) => {
         const fmt = (c: Record<string, number>) => `${c.groen} groen, ${c.geel} geel, ${c.rood} rood, ${c.onbekend} onbekend`
         let msg = `${res.records} records gecontroleerd — Maps: ${fmt(res.google_maps)} · e-fact.: ${fmt(res.einvoice)}`
-        if (!res.has_api_key) msg += ' (geen Google Maps API-sleutel geconfigureerd)'
         setCheckResult(msg)
         reload()
       })
@@ -105,7 +104,7 @@ export default function Straat() {
           onClick={checkStreet}
           disabled={checking || loading}
           className="ml-auto rounded border border-gray-800 bg-white px-3 py-1.5 text-sm font-medium text-gray-900 hover:bg-gray-100 disabled:opacity-50"
-          title="Zoekt elke vestiging op Google Maps en controleert de Peppol-registratie (resultaten worden 30 dagen bewaard)"
+          title="Controleert de Peppol-registratie van elke onderneming in deze straat (resultaten worden 7 dagen bewaard)"
         >
           {checking ? 'Bezig… (kan een halve minuut duren)' : 'Controleer straat'}
         </button>

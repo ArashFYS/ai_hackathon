@@ -1,24 +1,22 @@
-"""Live (cached) indicator lookups: one record, or every record in a street (demo pre-fill)."""
+"""Live (cached) Peppol lookups: one record, or every record in a street (demo pre-fill)."""
 import time
 
 from fastapi import APIRouter, Depends, HTTPException
 
 from ..db import get_db
-from ..google_places import get_google_maps, has_api_key
 from ..indicators import build_indicators
 from ..links import enterprise_nr_of
 from ..peppol import get_einvoice
-from ..summaries import fetch_record
+from ..summaries import fetch_evidence, fetch_record
 
 router = APIRouter(tags=["indicators"])
 
 
 def _lookup(conn, row: dict, with_directory: bool) -> dict:
     parent = fetch_record(conn, row["parent_nr"]) if row.get("parent_nr") else None
-    gm = get_google_maps(conn, row)
     ent = enterprise_nr_of(row)
     ei = get_einvoice(conn, ent, with_directory=with_directory) if ent else None
-    return build_indicators(row, parent, gm, ei)
+    return build_indicators(row, parent, fetch_evidence(conn, row["nr"]), ei)
 
 
 @router.get("/api/records/{nr}/indicators")
@@ -42,5 +40,4 @@ def refresh_street_indicators(street: str, conn=Depends(get_db)) -> dict:
         ind = _lookup(conn, row, with_directory=False)
         for k in tally:
             tally[k][ind[k]["level"]] += 1
-    return {"street": street, "records": len(rows), **tally,
-            "has_api_key": has_api_key(), "seconds": round(time.monotonic() - started, 1)}
+    return {"street": street, "records": len(rows), **tally, "seconds": round(time.monotonic() - started, 1)}

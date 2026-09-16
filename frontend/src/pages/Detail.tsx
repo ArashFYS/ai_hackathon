@@ -110,7 +110,7 @@ export default function Detail() {
   const [checking, setChecking] = useState(false)
 
   useEffect(() => {
-    // Live Google Maps + Peppol lookups (cached server-side); failures keep the cached dots.
+    // Live Peppol lookup (cached server-side); failures keep the cached dots.
     if (!nr) return
     let cancelled = false
     setLive(null)
