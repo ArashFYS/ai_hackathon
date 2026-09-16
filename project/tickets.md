@@ -9,21 +9,6 @@
 
 ## In Progress
 
-### TICKET-025: Contact (phone / email / website) per company, with source and date
-- **Type:** feat(detail) | **Priority:** MVP (small) + follow-ups
-- **Created:** 2026-09-16
-- **Data reality:** VKBO gives a phone for 53/1000 rows and an e-mail for 73. No establishment in the sample has a parent with a phone in the dataset. The brief: show the number, whether it belongs to the local establishment or the central office, a clickable source and when it was checked; otherwise "contactgegevens onbekend".
-- **Today (this ticket):**
-  1. Contact block shows every known contact as a row: *waarde · hoort bij (vestiging / zetel) · bron · datum · link*. Register phone/email → bron "KBO (via VKBO)", datum = snapshot date, link = KBO Public Search.
-  2. Establishment without contact → fall back to the parent enterprise's contact labelled **"zetel"** (fetch via VKBO if missing — TICKET-012 button).
-  3. Officer-observed contact: `evidence` gets optional `phone`, `email`, `website` columns; EvidenceForm gets the three fields ("Contact gezien op Google Maps / website"). Shown in the Contact block as "waargenomen via {bron} op {datum}" with the URL.
-  4. `RecordSummary.contact_status`: `register` | `zetel` | `waargenomen` | `onbekend` — filterable later.
-- **Follow-ups (how we get more numbers, ranked):**
-  - **KBO Open Data `contact.csv`** (official, TEL/EMAIL/WEB per enterprise and establishment; free account) → TICKET-026. Best complete source.
-  - **OpenStreetMap via Overpass** (free, no key): `phone`/`contact:phone`/`website`/`opening_hours` tags for shops near the coordinates matched by name; store as evidence with source "OpenStreetMap" + object URL + OSM timestamp. Coverage unverified (Overpass timed out during the check on 2026-09-16) → TICKET-027.
-  - NBB company record (`email`, `website`) — already fetched in the NBB panel; surface when present.
-  - Not: Google Places (key + billing), scraping Google Maps / Gouden Gids (terms of use).
-
 ### TICKET-021: Provenance on every reason (source, field, date, verify link) + NBB signal in the assessment
 - **Type:** feat(score)
 - **Created:** 2026-09-16
@@ -106,6 +91,23 @@
 - **Description:** `ejustice.just.fgov.be/cgi_tsv/tsv_rech.pl?btw=<nr>` returned HTTP 500 on 2026-09-16; find a working publication-search URL before adding.
 
 ## Done
+
+### TICKET-025: Contact (phone / email / website) per company, with source and date
+- **Type:** feat(detail) | **Priority:** MVP (small) + follow-ups
+- **Created:** 2026-09-16 | **Completed:** 2026-09-16
+- **Data reality:** VKBO gives a phone for 53/1000 rows and an e-mail for 73. No establishment in the sample has a parent with a phone in the dataset. The brief: show the number, whether it belongs to the local establishment or the central office, a clickable source and when it was checked; otherwise "contactgegevens onbekend".
+- **Today (this ticket, done):**
+  1. Contact block shows every known contact as a row: *waarde · hoort bij (vestiging / zetel) · bron · datum · link*. Register phone/email → bron "KBO (via VKBO)", datum = snapshot date, link = KBO Public Search.
+  2. Establishment without contact → fall back to the parent enterprise's contact labelled **"zetel"** (fetch via VKBO if missing — TICKET-012 button).
+  3. Officer-observed contact: `evidence` gets optional `phone`, `email`, `website` columns; EvidenceForm gets the three fields ("Contact gezien op Google Maps / website"). Shown in the Contact block as "waargenomen via {bron} op {datum}" with the URL.
+  4. `RecordSummary.contact_status`: `register` | `zetel` | `waargenomen` | `onbekend` — filterable later.
+- **Follow-ups (how we get more numbers, ranked):**
+  - **KBO Open Data `contact.csv`** (official, TEL/EMAIL/WEB per enterprise and establishment; free account) → TICKET-026. Best complete source.
+  - **OpenStreetMap via Overpass** (free, no key): `phone`/`contact:phone`/`website`/`opening_hours` tags for shops near the coordinates matched by name; store as evidence with source "OpenStreetMap" + object URL + OSM timestamp. Coverage unverified (Overpass timed out during the check on 2026-09-16) → TICKET-027.
+  - NBB company record (`email`, `website`) — already fetched in the NBB panel; surface when present.
+  - Not: Google Places (key + billing), scraping Google Maps / Gouden Gids (terms of use).
+
+- **Commits:** `027cf3d, 21a5226` (branch `feat/TICKET-025-contact-source`; Done-move commit follows)
 
 ### TICKET-022: Branch-per-ticket policy, no pushes to main
 - **Type:** chore
