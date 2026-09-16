@@ -5,7 +5,7 @@ import sqlite3
 from fastapi import APIRouter, Depends, HTTPException
 
 from ..db import get_db
-from ..summaries import ensure_auto_proposals, load_context, summarize
+from ..summaries import ensure_auto_proposals, load_context, proposal_with_record, summarize
 
 router = APIRouter(prefix="/api/streets", tags=["streets"])
 
@@ -28,7 +28,7 @@ def list_streets(conn: sqlite3.Connection = Depends(get_db)):
 
 
 @router.get("/{street}")
-def street_detail(street: str, conn: sqlite3.Connection = Depends(get_db)):
+def street_detail(street: str, activity: str | None = None, conn: sqlite3.Connection = Depends(get_db)):
     rows = [dict(r) for r in conn.execute(
         "SELECT * FROM records WHERE kbo_street = ? COLLATE NOCASE", (street,)
     ).fetchall()]
@@ -49,6 +49,9 @@ def street_detail(street: str, conn: sqlite3.Connection = Depends(get_db)):
         ).fetchall():
             open_props.setdefault(p["record_nr"], dict(p))
 
+    street_name = rows[0]["kbo_street"]
+    if activity:  # sector is a computed field → filter after summarizing
+        rows = [r for r in rows if items[r["nr"]]["activity"]["sector"] == activity]
     groups: dict[str, dict] = {}
     for r in rows:
         ev = evidence.get(r["nr"], [])
@@ -64,4 +67,9 @@ def street_detail(street: str, conn: sqlite3.Connection = Depends(get_db)):
     addresses = sorted(groups.values(), key=lambda g: housenr_key(g["housenr"]))
     for g in addresses:
         g["records"].sort(key=lambda i: (i.get("kbo_box") or "", i["display_name"].lower()))
-    return {"street": rows[0]["kbo_street"], "addresses": addresses}
+    # businesses seen at an address on this street that have no KBO record there (TICKET-020)
+    missing = [proposal_with_record(conn, dict(p)) for p in conn.execute(
+        "SELECT * FROM proposals WHERE status = 'open' AND kind = 'missing_establishment'"
+        " AND address LIKE ? ORDER BY id", (street_name + " %",),
+    ).fetchall()]
+    return {"street": street_name, "addresses": addresses, "missing": missing}

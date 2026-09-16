@@ -1,7 +1,6 @@
-"""Proposed changes: create (manual), list, decide, export confirmed rows."""
+"""Proposed changes: create (manual / missing establishment), list, decide, export confirmed rows."""
 import csv
 import io
-import json
 import sqlite3
 from typing import Literal
 
@@ -10,13 +9,14 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
 from ..db import get_db
-from ..summaries import fetch_record, now_iso, proposal_with_record
+from ..summaries import address_of, fetch_record, now_iso, proposal_with_record
 
 router = APIRouter(prefix="/api", tags=["proposals"])
 
 KINDS = ("status_change", "address_check", "missing_establishment", "field_correction")
 EXPORT_COLS = ["id", "record_nr", "display_name", "address", "kind", "field", "current_value",
-               "proposed_value", "reason", "status", "created_at", "decided_at"]
+               "proposed_value", "reason", "status", "created_at", "decided_at",
+               "observed_name", "observed_activity", "source", "source_url", "observed_at"]
 
 
 class ProposalIn(BaseModel):
@@ -24,6 +24,21 @@ class ProposalIn(BaseModel):
     field: str | None = None
     current_value: str | None = None
     proposed_value: str | None = None
+    reason: str = Field(min_length=1)
+
+
+class MissingIn(BaseModel):
+    """A business the officer saw at an address, but which has no KBO record there."""
+    street: str = Field(min_length=1)
+    housenr: str = Field(min_length=1)
+    box: str | None = None
+    postcode: str = Field(min_length=1)
+    municipality: str = Field(min_length=1)
+    observed_name: str = Field(min_length=1)
+    observed_activity: str | None = None
+    source: Literal["google_maps", "street_view", "terreinbezoek", "website", "andere"]
+    source_url: str | None = None
+    observed_at: str = Field(pattern=r"^\d{4}-\d{2}-\d{2}$")
     reason: str = Field(min_length=1)
 
 
@@ -51,6 +66,25 @@ def add_proposal(nr: str, body: ProposalIn, conn: sqlite3.Connection = Depends(g
     return _get(conn, cur.lastrowid)
 
 
+@router.post("/proposals/missing", status_code=201)
+def add_missing_establishment(body: MissingIn, conn: sqlite3.Connection = Depends(get_db)):
+    """kind='missing_establishment', record_nr=NULL: the observed name is the proposed value."""
+    address = address_of({
+        "kbo_street": body.street.strip(), "kbo_housenr": body.housenr.strip(), "kbo_box": (body.box or "").strip() or None,
+        "kbo_postcode": body.postcode.strip(), "kbo_municipality": body.municipality.strip(),
+    })
+    cur = conn.execute(
+        "INSERT INTO proposals (record_nr, kind, field, current_value, proposed_value, reason, status, created_at,"
+        " address, observed_name, observed_activity, source, source_url, observed_at)"
+        " VALUES (NULL, 'missing_establishment', NULL, NULL, ?, ?, 'open', ?, ?, ?, ?, ?, ?, ?)",
+        (body.observed_name.strip(), body.reason.strip(), now_iso(), address, body.observed_name.strip(),
+         (body.observed_activity or "").strip() or None, body.source, (body.source_url or "").strip() or None,
+         body.observed_at),
+    )
+    conn.commit()
+    return _get(conn, cur.lastrowid)
+
+
 @router.get("/proposals/export")
 def export_proposals(format: Literal["csv", "json"] = "json", conn: sqlite3.Connection = Depends(get_db)):
     rows = [proposal_with_record(conn, dict(r)) for r in conn.execute(
@@ -62,12 +96,7 @@ def export_proposals(format: Literal["csv", "json"] = "json", conn: sqlite3.Conn
     writer = csv.writer(buf, delimiter=";")
     writer.writerow(EXPORT_COLS)
     for p in rows:
-        rec = p.get("record") or {}
-        writer.writerow([
-            p["id"], p["record_nr"], rec.get("display_name", ""), rec.get("address", ""), p["kind"],
-            p["field"] or "", p["current_value"] or "", p["proposed_value"] or "", p["reason"],
-            p["status"], p["created_at"], p["decided_at"] or "",
-        ])
+        writer.writerow([p.get(c) if p.get(c) is not None else "" for c in EXPORT_COLS])
     return StreamingResponse(
         iter(["﻿" + buf.getvalue()]), media_type="text/csv; charset=utf-8",
         headers={"Content-Disposition": 'attachment; filename="bevestigde_voorstellen.csv"'},

@@ -8,6 +8,18 @@ export type Conclusion = 'actief' | 'niet_actief' | 'onduidelijk'
 export type ProposalStatus = 'open' | 'bevestigd' | 'afgewezen'
 export type ProposalKind = 'status_change' | 'address_check' | 'missing_establishment' | 'field_correction'
 export type RecordType = 'enterprise' | 'establishment'
+export type ContactStatus = 'register' | 'zetel' | 'waargenomen' | 'onbekend'
+export type ContactKind = 'phone' | 'email' | 'website'
+
+/** One known contact detail with its owner (vestiging / zetel), source and date. */
+export interface Contact {
+  kind: ContactKind
+  value: string
+  belongs_to: 'vestiging' | 'zetel'
+  source: string
+  observed_at: string | null
+  url: string | null
+}
 
 export interface Reason {
   code: string
@@ -32,6 +44,21 @@ export interface Assessment {
   last_observed: string | null
 }
 
+/** Sector of a record: from KBO NACE (RSZ → BTW) or the latest officer-observed activity; else onbekend. */
+export interface Activity {
+  sector: string
+  label: string
+  source: 'KBO (RSZ)' | 'KBO (BTW)' | 'waarneming' | null
+  nace: string | null
+  description: string | null
+}
+
+export interface ActivityCount {
+  sector: string
+  label: string
+  count: number
+}
+
 export interface RecordSummary {
   nr: string
   record_type: RecordType
@@ -53,6 +80,8 @@ export interface RecordSummary {
   email: string | null
   start_date: string | null
   assessment: Assessment
+  activity: Activity
+  contact_status: ContactStatus
   parent_in_dataset?: boolean
   seat_elsewhere?: boolean
   parent_display_name?: string | null
@@ -97,11 +126,15 @@ export interface Evidence {
   conclusion: Conclusion
   observed_at: string
   created_at: string
+  phone: string | null
+  email: string | null
+  website: string | null
 }
 
 export interface Proposal {
   id: number
-  record_nr: string
+  /** null for kind 'missing_establishment': a business seen on the street with no KBO record there. */
+  record_nr: string | null
   kind: ProposalKind
   field: string | null
   current_value: string | null
@@ -110,7 +143,15 @@ export interface Proposal {
   status: ProposalStatus
   created_at: string
   decided_at: string | null
-  record?: { display_name: string; address: string | null }
+  /** The record's name/address when record_nr is set, else the observed name / observed address. */
+  display_name: string
+  address: string | null
+  observed_name: string | null
+  observed_activity: string | null
+  source: string | null
+  source_url: string | null
+  observed_at: string | null
+  record?: { display_name: string; address: string | null } | null
 }
 
 export interface Links {
@@ -124,6 +165,7 @@ export interface Links {
   nbb_consult: string
   inhoudingsplicht_embed: string | null
   inhoudingsplicht: string
+  staatsblad: string | null
   web_search_embed: string
   web_search: string
 }
@@ -137,6 +179,8 @@ export interface RecordDetail {
   evidence: Evidence[]
   proposals: Proposal[]
   links: Links
+  contacts: Contact[]
+  contact_status: ContactStatus
 }
 
 export interface NbbFigures {
@@ -166,6 +210,8 @@ export interface NbbCompany {
   legal_situation: string | null
   legal_situation_date: string | null
   address: string | null
+  email?: string | null
+  website?: string | null
 }
 
 export interface NbbPanelData {
@@ -201,6 +247,23 @@ export interface StreetAddress {
 export interface StreetOverview {
   street: string
   addresses: StreetAddress[]
+  /** Open 'missing_establishment' proposals whose address starts with this street. */
+  missing: Proposal[]
+}
+
+/** One map marker: GET /records/geo. */
+export interface GeoItem {
+  nr: string
+  display_name: string
+  record_type: RecordType
+  lat: number
+  lng: number
+  status: Status
+  status_label: string
+  certainty: Certainty
+  address: string | null
+  /** lat/lng outside the Schoten bbox used in scoring. */
+  outside_municipality: boolean
 }
 
 export interface EvidenceInput {
@@ -210,6 +273,9 @@ export interface EvidenceInput {
   observed_activity?: string
   conclusion: Conclusion
   observed_at: string
+  phone?: string
+  email?: string
+  website?: string
 }
 
 export interface ProposalInput {
@@ -217,6 +283,23 @@ export interface ProposalInput {
   field?: string
   current_value?: string
   proposed_value?: string
+  reason: string
+}
+
+export type MissingSource = 'google_maps' | 'street_view' | 'terreinbezoek' | 'website' | 'andere'
+
+/** Body of POST /proposals/missing ("Vestiging ontbreekt op dit adres"). */
+export interface MissingInput {
+  street: string
+  housenr: string
+  box?: string
+  postcode: string
+  municipality: string
+  observed_name: string
+  observed_activity?: string
+  source: MissingSource
+  source_url?: string
+  observed_at: string
   reason: string
 }
 
@@ -264,11 +347,23 @@ export interface RecordsQuery {
   street?: string
   type?: RecordType | ''
   status?: Status | ''
+  activity?: string
   limit?: number
 }
 
 export async function getRecords(query: RecordsQuery): Promise<RecordSummary[]> {
   const data = await api<{ items: RecordSummary[] }>(`/records${qs({ ...query })}`)
+  return data.items
+}
+
+export interface GeoQuery {
+  street?: string
+  status?: Status | ''
+  limit?: number
+}
+
+export async function getGeo(query: GeoQuery): Promise<GeoItem[]> {
+  const data = await api<{ items: GeoItem[] }>(`/records/geo${qs({ ...query })}`)
   return data.items
 }
 
@@ -292,12 +387,20 @@ export function postProposal(nr: string, body: ProposalInput): Promise<Proposal>
   return api<Proposal>(`/records/${encodeURIComponent(nr)}/proposals`, { method: 'POST', body: JSON.stringify(body) })
 }
 
+export function postMissing(body: MissingInput): Promise<Proposal> {
+  return api<Proposal>('/proposals/missing', { method: 'POST', body: JSON.stringify(body) })
+}
+
 export function getStreets(): Promise<StreetCount[]> {
   return api<StreetCount[]>('/streets')
 }
 
-export function getStreet(street: string): Promise<StreetOverview> {
-  return api<StreetOverview>(`/streets/${encodeURIComponent(street)}`)
+export function getStreet(street: string, activity?: string): Promise<StreetOverview> {
+  return api<StreetOverview>(`/streets/${encodeURIComponent(street)}${qs({ activity })}`)
+}
+
+export function getActivities(): Promise<ActivityCount[]> {
+  return api<ActivityCount[]>('/activities')
 }
 
 export function getProposals(status?: ProposalStatus): Promise<Proposal[]> {
@@ -312,5 +415,5 @@ export function exportUrl(format: 'csv' | 'json'): string {
   return `/api/proposals/export?format=${format}`
 }
 
-// Shared Dutch labels + display helpers live in labels.ts; re-exported for convenience.
+// Language-aware label helpers + display helpers live in labels.ts (text in src/i18n); re-exported for convenience.
 export * from './labels'

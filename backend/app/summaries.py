@@ -3,6 +3,8 @@ import json
 import sqlite3
 from datetime import datetime, timezone
 
+from .activity import activity_of
+from .contact import contact_status, contacts_for
 from .scoring import assess
 
 SUMMARY_COLS = [
@@ -81,6 +83,8 @@ def summarize(row: dict, parent: dict | None, evidence: list[dict], full: bool =
     base["display_name"] = display_name(row)
     base["address"] = address_of(row)
     base["assessment"] = assess(row, parent, evidence, nbb)
+    base["activity"] = activity_of(row, evidence)
+    base["contact_status"] = contact_status(contacts_for(row, parent, evidence))  # NBB deliberately not counted
     if row.get("record_type") == "establishment":
         base["parent_in_dataset"] = parent is not None
         # seat is "elsewhere" when the parent is known and sits in another municipality
@@ -131,6 +135,11 @@ def ensure_auto_proposals(conn: sqlite3.Connection, row: dict, assessment: dict)
 
 
 def proposal_with_record(conn: sqlite3.Connection, p: dict) -> dict:
+    """Attach `record` (None when record_nr is NULL, e.g. missing_establishment) plus a uniform
+    top-level `display_name` / `address`: the record's when linked, else the observed name/address."""
     row = fetch_record(conn, p["record_nr"]) if p.get("record_nr") else None
     p["record"] = {"display_name": display_name(row), "address": address_of(row)} if row else None
+    p["display_name"] = display_name(row) if row else (p.get("observed_name") or "")
+    if row and not p.get("address"):
+        p["address"] = address_of(row)
     return p

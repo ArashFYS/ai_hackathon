@@ -6,8 +6,10 @@ import sqlite3
 import httpx
 from fastapi import APIRouter, Depends, HTTPException, Query
 
+from ..contact import contact_status, contacts_for
 from ..db import get_db
 from ..links import build_links
+from ..scoring import SCHOTEN_BBOX
 from ..summaries import (
     address_of, display_name, ensure_auto_proposals, fetch_evidence, fetch_record,
     cached_nbb, now_iso, summarize, summarize_many,
@@ -25,6 +27,7 @@ def list_records(
     street: str | None = None,
     type: str | None = None,
     status: str | None = None,
+    activity: str | None = None,
     limit: int = Query(50, ge=1, le=2000),
     conn: sqlite3.Connection = Depends(get_db),
 ):
@@ -49,14 +52,55 @@ def list_records(
     if where:
         sql += " WHERE " + " AND ".join(where)
     sql += " ORDER BY kbo_street, kbo_housenr, name"
-    if not status:  # status is an assessment field → filter in Python, so only limit in SQL when unused
+    if not status and not activity:  # computed fields → filter in Python, so only limit in SQL when unused
+        sql += " LIMIT ?"
+        params.append(limit)
+    rows = [dict(r) for r in conn.execute(sql, params).fetchall()]
+    items = summarize_many(conn, rows)
+    if status:
+        items = [i for i in items if i["assessment"]["status"] == status]
+    if activity:
+        items = [i for i in items if i["activity"]["sector"] == activity]
+    if status or activity:
+        items = items[:limit]
+    return {"items": items}
+
+
+@router.get("/geo")
+def list_geo(
+    street: str | None = None,
+    status: str | None = None,
+    limit: int = Query(2000, ge=1, le=5000),
+    conn: sqlite3.Connection = Depends(get_db),
+):
+    """Every record with coordinates, reduced to what the map needs (nr, name, status, lat/lng).
+    `outside_municipality` flags points outside the Schoten bbox used in scoring."""
+    where, params = ["lat IS NOT NULL", "lng IS NOT NULL"], []
+    if street:
+        where.append("kbo_street = ? COLLATE NOCASE")
+        params.append(street)
+    sql = "SELECT * FROM records WHERE " + " AND ".join(where) + " ORDER BY kbo_street, kbo_housenr, name"
+    if not status:
         sql += " LIMIT ?"
         params.append(limit)
     rows = [dict(r) for r in conn.execute(sql, params).fetchall()]
     items = summarize_many(conn, rows)
     if status:
         items = [i for i in items if i["assessment"]["status"] == status][:limit]
-    return {"items": items}
+    out = []
+    for i in items:
+        lat, lng = i["lat"], i["lng"]
+        inside = (
+            SCHOTEN_BBOX["lat_min"] <= lat <= SCHOTEN_BBOX["lat_max"]
+            and SCHOTEN_BBOX["lng_min"] <= lng <= SCHOTEN_BBOX["lng_max"]
+        )
+        a = i["assessment"]
+        out.append({
+            "nr": i["nr"], "display_name": i["display_name"], "record_type": i["record_type"],
+            "lat": lat, "lng": lng, "status": a["status"], "status_label": a["status_label"],
+            "certainty": a["certainty"], "address": i["address"], "outside_municipality": not inside,
+        })
+    return {"items": out}
 
 
 @router.get("/{nr}")
@@ -66,8 +110,10 @@ def record_detail(nr: str, conn: sqlite3.Connection = Depends(get_db)):
         raise HTTPException(404, "Record niet gevonden")
     parent = fetch_record(conn, row["parent_nr"]) if row.get("parent_nr") else None
     evidence = fetch_evidence(conn, nr)
-    record = summarize(row, parent, evidence, full=True, nbb=cached_nbb(conn, row))
+    nbb = cached_nbb(conn, row)
+    record = summarize(row, parent, evidence, full=True, nbb=nbb)
     ensure_auto_proposals(conn, row, record["assessment"])
+    contacts = contacts_for(row, parent, evidence, nbb)
 
     parent_summary = None
     if parent:
@@ -90,6 +136,8 @@ def record_detail(nr: str, conn: sqlite3.Connection = Depends(get_db)):
         "evidence": evidence,
         "proposals": proposals,
         "links": build_links(row, display_name(row), address_of(row)),
+        "contacts": contacts,
+        "contact_status": contact_status(contacts),
     }
 
 
