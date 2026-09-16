@@ -1,6 +1,6 @@
 # Tickets -- ai_hackathon (Prefix: TICKET)
 
-> Next ID: TICKET-021
+> Next ID: TICKET-023
 >
 > **Deadline: 16:30 Europe/Brussels, 16 Sep 2026.** Build freeze ~15:00 → record 15:00–15:45 → upload + check + form by 16:15.
 > Anything not demoable by 15:00 is a slide in the video, not a feature.
@@ -64,6 +64,12 @@
 - **Description:** `ejustice.just.fgov.be/cgi_tsv/tsv_rech.pl?btw=<nr>` returned HTTP 500 on 2026-09-16; find a working publication-search URL before adding.
 
 ## Done
+
+### TICKET-022: Branch-per-ticket policy, no pushes to main
+- **Type:** chore
+- **Created:** 2026-09-16 | **Completed:** 2026-09-16
+- **Description:** Non-negotiable rule in CLAUDE.md and conventions.md: every ticket on its own branch, main only via PR. `.claude/hooks/pre-push` refuses pushes to main.
+- **Commits:** (this branch)
 
 ### TICKET-005: Company lookup (search)
 - **Type:** feat(search) | **Priority:** MVP

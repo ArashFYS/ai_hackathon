@@ -13,6 +13,7 @@ Hackathon entry for **Challenge 01: Find the Real Businesses** (ns2agi, Province
 <!-- Auto-updated by /project-update. Do not edit manually. -->
 ```
 ./.claude/hooks/enforce-ticket.sh
+./.claude/hooks/pre-push
 ./.claude/settings.json
 ./.gitignore
 ./CLAUDE.md
@@ -96,6 +97,19 @@ Before making ANY code change:
 
 **If you find yourself editing code without a ticket, STOP. Create the ticket first. This is non-negotiable.**
 
+### Every ticket lives on its own branch — NEVER push to main
+
+**Non-negotiable.** `main` only moves through pull requests.
+
+1. Before the first edit for a ticket: `git checkout -b type/TICKET-NNN-short-description main`
+2. Commit on that branch (ticket ID in every message), push **the branch**: `git push -u origin type/TICKET-NNN-short-description`
+3. Open a PR into `main`; the PR title carries the ticket ID. Merge happens in the PR, never locally.
+4. After merge: `git checkout main && git pull`, delete the branch, move the ticket to Done with the merge commit.
+
+This applies to meta files too (CLAUDE.md, tickets.md, ADRs): they change on a branch and arrive on main via PR.
+A `pre-push` hook refuses pushes to main; install it once per clone: `cp .claude/hooks/pre-push .git/hooks/pre-push && chmod +x .git/hooks/pre-push`.
+**If you are on `main` and about to edit, STOP and create the branch first.**
+
 ### Meta files are exempt from ticket enforcement
 
 These files can be edited without an active ticket:
@@ -114,9 +128,9 @@ These files can be edited without an active ticket:
 | Step | Action |
 |------|--------|
 | Pick up work | Find or create ticket in `project/tickets.md` |
-| Claim ticket | Move to "In Progress", write ID to `.claude/active-ticket` |
+| Claim ticket | Move to "In Progress", write ID to `.claude/active-ticket`, `git checkout -b type/TICKET-NNN-desc main` |
 | Work | All edits are linked to the active ticket |
-| Complete | Commit with ticket ID, move to "Done", record commit hash, clear `.claude/active-ticket` |
+| Complete | Commit with ticket ID, push the branch, open a PR; after merge move to "Done", record commit hash, clear `.claude/active-ticket` |
 
 ### Commit message format
 
@@ -133,7 +147,7 @@ fix(api): handle null response (TICKET-004)
 chore: update dependencies (TICKET-005)
 ```
 
-### Branch naming
+### Branch naming (one branch per ticket, PR into main)
 
 ```
 type/TICKET-NNN-short-description

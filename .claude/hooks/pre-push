@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# pre-push hook -- refuses any push to main. Every ticket lives on its own branch and
+# reaches main through a pull request. Install: cp .claude/hooks/pre-push .git/hooks/pre-push && chmod +x .git/hooks/pre-push
+while read -r local_ref local_sha remote_ref remote_sha; do
+  if [ "$remote_ref" = "refs/heads/main" ] || [ "$remote_ref" = "refs/heads/master" ]; then
+    echo "BLOCKED: direct pushes to main are not allowed. Push your ticket branch (type/TICKET-NNN-description) and open a PR." >&2
+    exit 1
+  fi
+done
+exit 0
