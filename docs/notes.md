@@ -15,4 +15,5 @@
 
 <!-- Things to discuss with the user -->
 
-- Which tech stack will the project use? Once decided, record it in ADR-002 and update CLAUDE.md, conventions.md, and .gitignore.
+- ~~Which tech stack?~~ Decided 2026-09-16: FastAPI + SQLite + React/Vite (ADR-002).
+- Port 8000 on this machine is occupied by another local project (quarterly-RAG); backend uses 8010.

@@ -1,31 +1,19 @@
-# Claude Code ephemeral files
-.claude/active-ticket
-.claude/settings.local.json
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Dependencies (stack TBD -- prune once chosen)
-node_modules/
+# Python
 __pycache__/
 *.pyc
 .venv/
-venv/
-vendor/
+backend/data.db
+backend/data.db-*
 
-# Build output (stack TBD -- prune once chosen)
-dist/
-build/
-*.o
-*.exe
+# Node
+node_modules/
+frontend/dist/
 
-# IDE
+# OS / editor
+.DS_Store
 .idea/
 .vscode/
-*.swp
-*.swo
+*.log
 
-# Environment
-.env
-.env.local
+# Claude
+.claude/settings.local.json

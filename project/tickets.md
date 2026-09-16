@@ -9,15 +9,15 @@
 
 ## In Progress
 
-## Backlog
-
-### MVP — critical path (in build order)
-
 ### TICKET-003: Choose stack and scaffold app
 - **Type:** chore | **Priority:** MVP
 - **Created:** 2026-09-16
 - **Description:** Decide the stack (full-stack web app + SQLite), scaffold the project, write ADR-002, fill in CLAUDE.md Build/Test/Run, conventions.md stack section, .gitignore. One command to run locally.
 - **Done when:** `npm run dev` (or equivalent) serves a Dutch-language empty shell page; ADR-002 committed.
+
+## Backlog
+
+### MVP — critical path (in build order)
 
 ### TICKET-004: SQLite schema and starter-data import
 - **Type:** feat(data) | **Priority:** MVP

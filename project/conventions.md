@@ -9,12 +9,11 @@
 
 ## Stack-Specific Conventions
 
-<!-- The tech stack is not yet chosen. Fill in this section once it is decided
-     (formatter, linter, test runner, dependency manager, directory layout). -->
-
-- Stack: TBD
-- Once chosen, record the decision in a new ADR under `docs/adr/` and update
-  the Build / Test / Run section of `CLAUDE.md`
+- **Backend (`backend/`):** FastAPI app in `app/`, one router per resource in `app/routers/`, plain `sqlite3` with `sqlite3.Row`, schema in `app/schema.sql`. Deps via `uv add`. Scripts in `scripts/`.
+- **Frontend (`frontend/`):** pages in `src/pages/`, shared components in `src/components/`, API client in `src/api.ts`. Tailwind utility classes, no CSS files beyond `index.css`. `pnpm tsc -b --noEmit` must pass.
+- **Data rules:** registry numbers are TEXT; a single space `' '` in source data means NULL; `1900-01-01` / `9999-12-31` mean NULL.
+- **Language:** all officer-facing UI text in Dutch; code, comments and commit messages in English. Use the brief's vocabulary: Adres · Register · Bewijs van activiteit · Laatste waarneming · Zekerheid (Hoog/Middel/Laag) · Voorstel · bevestigen/afwijzen · contactgegevens onbekend.
+- **No AI in the product:** status logic is deterministic and every reason is displayed.
 
 ## Git
 

@@ -6,7 +6,7 @@ Hackathon entry for **Challenge 01: Find the Real Businesses** (ns2agi, Province
 **Deadline:** 16:30 Europe/Brussels, 16 Sep 2026 — 3-min YouTube pitch video via Google Form. Demo is an optional bonus.
 **Officer-facing UI text must be in Dutch.**
 
-**Stack:** TBD (not yet chosen)
+**Stack:** Python 3.13 + FastAPI + SQLite (backend, port 8010) · React 19 + TypeScript + Vite + Tailwind v4 (frontend, port 5173). See [ADR-002](docs/adr/002-stack.md).
 
 ## File Structure
 
@@ -16,10 +16,20 @@ Hackathon entry for **Challenge 01: Find the Real Businesses** (ns2agi, Province
 ./.claude/settings.json
 ./.gitignore
 ./CLAUDE.md
+./Makefile
+./backend/app/main.py
+./backend/app/db.py
+./backend/app/routers/
+./backend/scripts/
+./backend/pyproject.toml
+./frontend/src/App.tsx
+./frontend/src/main.tsx
+./frontend/vite.config.ts
 ./data/raw/schoten-kbo-1000-2026-09-07.csv
 ./data/raw/schoten-kbo-1000-2026-09-07.geojson
 ./data/raw/source-metadata.json
 ./docs/adr/001-initial-setup.md
+./docs/adr/002-stack.md
 ./docs/challenge.md
 ./docs/notes.md
 ./project/conventions.md
@@ -30,9 +40,12 @@ Hackathon entry for **Challenge 01: Find the Real Businesses** (ns2agi, Province
 ## Build / Test / Run
 
 <!-- Update these after setting up the stack -->
-- **Build:** `TODO`
-- **Test:** `TODO`
-- **Run:** `TODO`
+- **Run both:** `make dev` (backend on :8010, frontend on :5173 with `/api` proxied)
+- **Backend only:** `cd backend && uv run uvicorn app.main:app --reload --port 8010`
+- **Frontend only:** `cd frontend && pnpm dev`
+- **Import data:** `make import` (loads `data/raw/*.geojson` into `backend/data.db`)
+- **Typecheck frontend:** `cd frontend && pnpm tsc -b --noEmit`
+- **Test:** none yet
 
 ## Coding Conventions
 
