@@ -61,7 +61,7 @@ export default function EvidenceForm({ nr, onSaved }: { nr: string; onSaved: () 
 
   const inp = 'w-full rounded border px-2 py-1 text-sm'
   return (
-    <form onSubmit={submit} className="grid grid-cols-1 gap-2 text-sm sm:grid-cols-2">
+    <form onSubmit={submit} className="evidence-form grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
       <label className="flex flex-col">
         <span className="text-xs text-gray-600">{t('evidence.form.source')}</span>
         <select className={inp} value={source} onChange={(e) => setSource(e.target.value)}>
@@ -96,7 +96,7 @@ export default function EvidenceForm({ nr, onSaved }: { nr: string; onSaved: () 
       </fieldset>
       <fieldset className="sm:col-span-2">
         <legend className="text-xs text-gray-600">{t('evidence.form.conclusion')}</legend>
-        <div className="mt-1 flex gap-4">
+        <div className="mt-2 flex flex-wrap gap-4">
           {CONCLUSIONS.map((c) => (
             <label key={c} className="flex items-center gap-1">
               <input type="radio" name="conclusion" value={c} checked={conclusion === c} onChange={() => setConclusion(c)} />

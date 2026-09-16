@@ -4,7 +4,7 @@ Rules are evaluated in order; the first "sterk negatief" rule fixes the status,
 later rules only add reasons. Every reason is returned so the UI can show them.
 """
 
-SCHOTEN_BBOX = {"lat_min": 51.22, "lat_max": 51.29, "lng_min": 4.44, "lng_max": 4.56}
+from .geography import SCHOTEN_BBOX
 NORMAL_STATUS = "Normale toestand"
 VME = "Vereniging van Mede-eigenaars"
 

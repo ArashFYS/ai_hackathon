@@ -1,5 +1,13 @@
 """External evidence URLs for a record (Google Maps, Street View, KBO public search, NBB, web search)."""
+import os
 from urllib.parse import quote
+
+from .geography import coordinate_issue
+
+
+def maps_embed_key() -> str | None:
+    """Google Maps Platform key from backend/.env (TICKET-041); None → keyless embed, no Places button."""
+    return os.environ.get("GOOGLE_MAPS_EMBED_KEY") or None
 
 
 def enterprise_nr_of(row: dict) -> str | None:
@@ -17,21 +25,31 @@ def build_links(row: dict, display_name: str, address: str, streetview: dict | N
     heading = 0
     if streetview and streetview.get("available"):  # TICKET-036: snap to the street, face the address
         lat, lng, heading = streetview["lat"], streetview["lng"], streetview["heading"]
+    if coordinate_issue({**row, "lat": lat, "lng": lng}) is not None:
+        lat, lng = None, None
     ent = enterprise_nr_of(row)
     kbo_public = (
         f"https://kbopub.economie.fgov.be/kbopub/toonondernemingps.html?ondernemingsnummer={ent}&lang=nl"
         if ent else None
     )
     return {
-        "google_maps_embed": f"https://maps.google.com/maps?q={name_addr}&output=embed",
+        # TICKET-038: with a Maps Embed API key the place panel (phone, website, hours) renders in-tab;
+        # without one, the keyless embed only shows the mini-card.
+        "google_maps_embed": (
+            f"https://www.google.com/maps/embed/v1/place?key={maps_embed_key()}&q={name_addr}&language=nl"
+            if maps_embed_key() else f"https://maps.google.com/maps?q={name_addr}&output=embed"
+        ),
         "google_maps": f"https://www.google.com/maps/search/?api=1&query={name_addr}",
+        # TICKET-038: browser-side Places API (New) Text Search; the key is referrer-restricted, so exposing it is by design.
+        "google_places_key": maps_embed_key(),
+        "google_places_query": f"{display_name} {address}".strip(),
         "street_view_embed": (
             f"https://maps.google.com/maps?q=&layer=c&cbll={lat},{lng}&cbp=11,{heading},0,0,0&output=svembed"
             if lat is not None and lng is not None else None
         ),
         "street_view": (
             f"https://www.google.com/maps/@?api=1&map_action=pano&viewpoint={lat},{lng}&heading={heading}"
-            if lat is not None and lng is not None else None
+            if lat is not None and lng is not None else f"https://www.google.com/maps/search/?api=1&query={quote(address)}"
         ),
         "kbo_public": kbo_public,
         "kbo_public_embed": kbo_public,

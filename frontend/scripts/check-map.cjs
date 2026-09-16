@@ -19,6 +19,8 @@ assert.equal(new URL(locate({ ...base, lat: null }).embed).searchParams.get('q')
 assert.equal(locate({ ...base, lat: Infinity }).hasCoordinates, false);
 assert.equal(locate({ ...base, lng: 181 }).hasCoordinates, false);
 assert.equal(locate({ ...base, lat: null, address: null }).embed, null);
+assert.equal(locate({ ...base, location_valid: false }).hasCoordinates, false);
+assert.equal(new URL(locate({ ...base, location_valid: false }).open).searchParams.get('query'), base.address);
 assert.equal(locate({ ...base, assessment: { reasons: [{ code: 'adres_afwijking' }] } }).needsReview, true);
 assert.equal(locate({ ...base, assessment: { reasons: [{ code: 'buiten_schoten' }] } }).needsReview, true);
 console.log('PASS: coordinate pin, external link, missing/invalid coordinates, empty address and location warnings.');

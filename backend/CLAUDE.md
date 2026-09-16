@@ -8,7 +8,7 @@ app/db.py          connect() / get_db() dependency; DB at backend/data.db
 app/schema.sql     tables: records, evidence, proposals (+ nbb_cache, indicator_cache, google_maps_places, apify_runs)
 app/vkbo.py        VKBO property → row mapping, cleaning rules, upsert SQL
 app/scoring.py     rule-based assessment (status + zekerheid + reasons) — NO AI
-app/links.py       external evidence URLs for a record
+app/links.py       external evidence URLs for a record (+ google_places_key/query when GOOGLE_MAPS_EMBED_KEY is set in backend/.env, see app/env.py)
 app/activity.py    NACE 2-digit → sector (Dutch label); keyword map for officer-observed activity text
 app/nacebel.py     official NACEBEL 2025 list (app/data/nacebel_2025.csv): title(code), describe(code), search(q)
 app/kbo_public.py  KBO Public Search page scraper (NACEBEL 2025 activities, phone/e-mail/website, status) → indicator_cache kind kbo_public
@@ -32,6 +32,8 @@ Run: `uv run uvicorn app.main:app --reload --port 8010` · Import: `make import`
 Test quickly with `curl localhost:8010/api/...`. Keep files < 300 lines; split routers rather than grow them.
 
 ## Data rules
+- TICKET-038 integration: `load_context` returns parents, evidence and indicator cache. `contact_selection.known_contacts` includes upstream KBO/Peppol enrichment and related headquarters. `/api/locations` exposes the provincial city catalogue with loaded counts and grouped street/city suggestions. `/records/geo?city=` returns `location_valid`/`location_issue`; rejected coordinates remain in the response for review but must not be plotted. `geography.py` holds the officially sourced Schoten envelope; original DB coordinates remain unchanged.
+- TICKET-034: `/records` accepts `mode=phrase|and|or` (legacy phrase default), AND/OR words, quoted phrases, type keywords and contact queries; returns `total` before `limit`. Contact queries read related local records, observations and NBB cache only. `POST /records/contacts` accepts `{numbers: string[]}` (up to 2,000) and returns `{contacts: {record_nr: Contact[]}}`, without fetching remotely or creating proposals.
 - Registry numbers (`nr`, `parent_nr`) are TEXT with leading zeros. Never cast to int.
 - `record_type` = `enterprise` (legal entity; carries `legal_status`, `legal_form`) or `establishment` (has `parent_nr`).
 - Only 28/543 establishments have their parent in the DB. `parent` may be missing → say so, never invent.
@@ -91,11 +93,11 @@ Links       { google_maps_embed, google_maps, street_view_embed, street_view, kb
 Endpoints (all under `/api`):
 ```
 GET  /health
-GET  /records?q=&street=&type=&status=&activity=&limit=50  → { items: RecordSummary[] }   q matches name/trade_name/search_name/street (LIKE, case-insensitive);
+GET  /records?q=&street=&type=&status=&activity=&municipality=&limit=50&offset=0 → { items: RecordSummary[], total, offset, limit }   q matches name/trade_name/search_name/street (LIKE, case-insensitive);
                                                          if q stripped of non-digits is 9–10 digits (officers paste '0448.335.384' or 'BE 0448 335 384'), zfill(10) and also match nr/parent_nr
                                                          activity=<Activity.sector> filters on the computed sector (in Python, before limit)
-GET  /activities                                       → [{ sector, label, count }] over all records; count desc, 'onbekend' last; only sectors with count > 0
-GET  /records/geo?street=&status=&limit=2000          → { items: [{ nr, display_name, record_type, lat, lng, status, status_label, certainty, address, outside_municipality }] }
+GET  /activities?municipality=&type=                    → [{ sector, label, count }] over the municipality/type selection; count desc, 'onbekend' last; only sectors with count > 0
+GET  /records/geo?street=&status=&municipality=&type=&activity= → { total, items: [{ nr, display_name, record_type, lat, lng, status, status_label, certainty, address, outside_municipality }] }
                                                          only rows with coordinates; outside_municipality = lat/lng outside SCHOTEN_BBOX (scoring rule 8). Declared before /{nr}.
 GET  /records/{nr}                                     → { record: RecordSummary + every column of `records` except `raw`, parent: RecordSummary|null,
                                                            parent_in_dataset: bool, seat_elsewhere: bool,
@@ -193,3 +195,34 @@ List endpoints (`/records`, `/streets/{street}`) never hit the network: they rea
 
 ## Apify Google Maps client (`apify.py`, `google_maps.py`) — needs `APIFY_TOKEN` in `backend/.env`
 Actor `compass/crawler-google-places` (Google Maps Scraper), REST `https://api.apify.com/v2`: `POST /acts/compass~crawler-google-places/runs?token=&timeout=900` → `data.id`, `data.defaultDatasetId`; `GET /actor-runs/{id}` (status, `usageTotalUsd`); `GET /datasets/{id}/items?clean=true&format=json`; `POST /acts/…/run-sync-get-dataset-items?timeout=300` for ≤ 50 queries. Input per run: `searchStringsArray` = one query per record `"<naam>, <straat> <nr>, <postcode> <gemeente>"` (`google_maps.build_query`; no `locationQuery` → single map screen, Google's order), `maxCrawledPlacesPerSearch: 1`, `language: nl`, `scrapeContacts: true` (e-mail/website/social from the website), `maxReviews: 3`, `reviewsSort: newest`, `scrapeReviewsPersonalData: false`, `skipClosedPlaces: false`. Items echo `searchString`; `store_items` maps them back, `match_quality` = `adres` (address and name agree) · `adres_andere_naam` (address agrees, another name: other shop or unknown trade name → light geel "Andere naam op dit adres", contacts NOT merged) · `naam` (name agrees elsewhere) · `geen` (neither, or an address-only result: category Gebouw / title "Paalstraat 9" without phone, website or rating). Address = KBO street + a whole-token house-number part in item.address/street; name = half of the distinctive name words (stopwords and the municipality removed) in the title, or one shared word of ≥ 5 letters. The actor returns each place once per run under the first query that found it, so `assign_items` offers every item to every record of the batch and the best match wins (own query breaks ties); `--from-run RUN_ID` re-maps a finished run for free after matcher changes. Records sharing a query (enterprise + establishment at one address) cost one search. Reviews keep only date/stars/text; `raw` is stripped of reviewer fields (GDPR). Cost ≈ $0.0075 per query; every run is logged in `apify_runs` (async runs with `cost_usd`). Errors raise `ApifyError` with a Dutch note; routers map missing token → 409, other failures → 502. List endpoints never call Apify: `load_indicator_cache` batch-reads `google_maps_places`. Offline testing: `python3 scripts/fetch_google_maps.py --from-json scripts/samples/apify-google-maps-sample.json` (3 fixture items: open with recent review, permanently closed, non-matching address).
+## Municipal dashboard — TICKET-032
+
+`GET /api/dashboard?municipality=Schoten&type=&activity=` is read-only and uses one SQLite snapshot.
+Only Schoten is offered by the current UI. Record selection is shared with search and map:
+municipality = own KBO NIS code or normalized municipality name, then type and computed sector.
+Parents outside the municipality remain assessment context and do not enter counts.
+No row limit, external lookups, proposal generation or database writes occur during aggregation.
+All list/map/street assessments now batch-load the same NBB cache used by Detail; contact coverage
+continues to exclude NBB. RecordSummary also contains `has_evidence`, `source`, `fetched_at`, `kbo_niscode`.
+
+Response (frontend type in `src/dashboard.ts`):
+- `scope: {municipality, name, type, activity}`, `municipalities: [{code,name}]`
+- `total` = unique record numbers; `types: {enterprise,establishment}`
+- `statuses`, `certainty`, `contacts`: counts keyed by existing enum codes, including zero categories
+- `with_evidence`: records with any evidence row; `missing_parents`: establishments whose parent is absent from the entire DB
+- `sectors`, `sector_options`: `[{sector,label,count}]`; options ignore selected sector and retain municipality/type
+- `proposals: {open,bevestigd,afgewezen}` counts linked proposal rows, not businesses
+- `unlinked_proposals_all_municipalities`: separate global count of proposals with record_nr NULL
+- `map`: all valid finite world coordinates in the existing GeoItem shape; outliers flagged, not discarded
+- `provenance: {retrieved_from,retrieved_to,sources,complete_municipality,registry_snapshot_date,computed_at}`;
+  dates from stored record retrieval timestamps; completeness false for starter data, otherwise null;
+  federal snapshot date unknown. Retrieval is not verification. Empty results have null dates.
+
+`/records` and `/records/geo` additionally accept `certainty`, `contact`, `has_evidence` (bool),
+`parent_missing` (bool), alongside existing q/street/type/status/activity and municipality filters.
+Filtering precedes pagination. Search default/max limit remains 50/2000, offset >= 0, with complete total.
+Geo has no default cap; optional explicit limit <= 5000 retains a complete total.
+`/proposals` additionally accepts municipality/type/activity and `linked=true|false`; scoped proposals
+exclude unlinked reports. Omit status to include all decisions. Export remains all confirmed rows.
+
+Validation: from backend, `python -m unittest discover -s scripts -p 'test_dashboard.py'`.

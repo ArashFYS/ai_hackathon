@@ -5,13 +5,14 @@ from datetime import datetime, timezone
 
 from .activity import activity_of
 from .contact import contact_status, contacts_for
+from .geography import coordinate_issue
 from .indicators import indicators_for, load_indicator_cache
 from .scoring import assess
 
 SUMMARY_COLS = [
     "nr", "record_type", "parent_nr", "name", "trade_name", "legal_form", "legal_status",
     "kbo_street", "kbo_housenr", "kbo_box", "kbo_postcode", "kbo_municipality", "lat", "lng",
-    "phone", "email", "start_date",
+    "phone", "email", "start_date", "source", "fetched_at", "kbo_niscode",
 ]
 
 
@@ -80,14 +81,25 @@ def cached_nbb(conn: sqlite3.Connection, row: dict) -> dict | None:
     return json.loads(hit["payload"], strict=False) if hit else None
 
 
+def load_nbb_context(conn: sqlite3.Connection, rows: list[dict]) -> dict:
+    """Batch-load the same cached annual-account evidence used by the detail view."""
+    nrs = sorted({r.get("parent_nr") if r["record_type"] == "establishment" else r["nr"] for r in rows} - {None})
+    return {r["nr"]: json.loads(r["payload"], strict=False) for r in _chunked_in(
+        conn, "SELECT nr, payload FROM nbb_cache WHERE nr IN ({ph})", nrs
+    )}
+
+
 def summarize(row: dict, parent: dict | None, evidence: list[dict], full: bool = False,
               nbb: dict | None = None, cached: dict | None = None) -> dict:
     """RecordSummary; with full=True every column except `raw` is included.
 
     `cached` = load_indicator_cache() result; without it the Peppol light is 'onbekend'."""
     base = {k: v for k, v in row.items() if k != "raw"} if full else {k: row.get(k) for k in SUMMARY_COLS}
+    base["has_evidence"] = bool(evidence)
     base["display_name"] = display_name(row)
     base["address"] = address_of(row)
+    base["location_valid"] = coordinate_issue(row) is None
+    base["location_issue"] = coordinate_issue(row)
     kbo_public = (cached or {}).get("kbo_public", {}).get(row["nr"])
     # Scoring rules 9/11 look at register contact; a phone/e-mail scraped from the record's own KBO page
     # is register data too, so let assess() see it (TICKET-035).
@@ -111,7 +123,11 @@ def summarize(row: dict, parent: dict | None, evidence: list[dict], full: bool =
 
 def summarize_many(conn: sqlite3.Connection, rows: list[dict]) -> list[dict]:
     parents, evidence, cached = load_context(conn, rows)
-    return [summarize(r, parents.get(r.get("parent_nr")), evidence.get(r["nr"], []), cached=cached) for r in rows]
+    nbb = load_nbb_context(conn, rows)
+    return [summarize(
+        r, parents.get(r.get("parent_nr")), evidence.get(r["nr"], []), cached=cached,
+        nbb=nbb.get(r.get("parent_nr") if r["record_type"] == "establishment" else r["nr"]),
+    ) for r in rows]
 
 
 def ensure_auto_proposals(conn: sqlite3.Connection, row: dict, assessment: dict) -> None:

@@ -100,6 +100,8 @@ export interface Indicators {
 }
 
 export interface RecordSummary {
+  location_valid?: boolean
+  location_issue?: 'invalid_coordinates' | 'outside_expected_area' | 'unverified_municipality' | null
   nr: string
   record_type: RecordType
   parent_nr: string | null
@@ -123,6 +125,7 @@ export interface RecordSummary {
   activity: Activity
   contact_status: ContactStatus
   indicators: Indicators
+  has_evidence: boolean
   parent_in_dataset?: boolean
   seat_elsewhere?: boolean
   parent_display_name?: string | null
@@ -197,6 +200,8 @@ export interface Proposal {
 
 export interface Links {
   google_maps_embed: string
+  google_places_key: string | null
+  google_places_query: string
   google_maps: string
   street_view_embed: string
   street_view: string
@@ -299,8 +304,11 @@ export interface GeoItem {
   nr: string
   display_name: string
   record_type: RecordType
-  lat: number
-  lng: number
+  lat: number | null
+  lng: number | null
+  city: string | null
+  location_valid: boolean
+  location_issue: 'invalid_coordinates' | 'outside_expected_area' | 'unverified_municipality' | null
   status: Status
   status_label: string
   certainty: Certainty
@@ -374,7 +382,7 @@ export async function api<T>(path: string, init?: RequestInit): Promise<T> {
   return (await res.json()) as T
 }
 
-function qs(params: Record<string, string | number | undefined>): string {
+export function qs(params: Record<string, string | number | boolean | undefined>): string {
   const p = new URLSearchParams()
   for (const [k, v] of Object.entries(params)) {
     if (v !== undefined && v !== '') p.set(k, String(v))
@@ -386,6 +394,13 @@ function qs(params: Record<string, string | number | undefined>): string {
 // ---------- endpoints ----------
 
 export interface RecordsQuery {
+  mode?: 'phrase' | 'and' | 'or'
+  municipality?: string
+  certainty?: Certainty
+  contact?: ContactStatus
+  has_evidence?: boolean
+  parent_missing?: boolean
+  offset?: number
   q?: string
   street?: string
   type?: RecordType | ''
@@ -394,15 +409,43 @@ export interface RecordsQuery {
   limit?: number
 }
 
+export function getRecordPage(query: RecordsQuery) {
+  return api<{ items: RecordSummary[]; total: number; offset: number; limit: number }>(`/records${qs({ ...query })}`)
+}
+
 export async function getRecords(query: RecordsQuery): Promise<RecordSummary[]> {
   const data = await api<{ items: RecordSummary[] }>(`/records${qs({ ...query })}`)
   return data.items
 }
 
+export interface SearchResult {
+  items: RecordSummary[]
+  total: number
+}
+
+export function getExportContacts(numbers: string[], signal?: AbortSignal): Promise<{ contacts: Record<string, Contact[]> }> {
+  return api('/records/contacts', { method: 'POST', body: JSON.stringify({ numbers }), signal })
+}
+
+export function getSearchResults(query: RecordsQuery, signal?: AbortSignal): Promise<SearchResult> {
+  return api<SearchResult>(`/records${qs({ ...query })}`, { signal })
+}
+
 export interface GeoQuery {
+  city?: string
   street?: string
   status?: Status | ''
   limit?: number
+}
+
+export interface LocationOptions {
+  province: string
+  cities: { name: string; count: number }[]
+  streets: { street: string; city: string; count: number }[]
+}
+
+export function getLocationOptions(): Promise<LocationOptions> {
+  return api<LocationOptions>('/locations')
 }
 
 export async function getGeo(query: GeoQuery): Promise<GeoItem[]> {
@@ -488,12 +531,12 @@ export function getStreet(street: string, activity?: string): Promise<StreetOver
   return api<StreetOverview>(`/streets/${encodeURIComponent(street)}${qs({ activity })}`)
 }
 
-export function getActivities(): Promise<ActivityCount[]> {
-  return api<ActivityCount[]>('/activities')
+export function getActivities(query: Pick<RecordsQuery, "municipality" | "type"> = {}): Promise<ActivityCount[]> {
+  return api<ActivityCount[]>(`/activities${qs({ ...query })}`)
 }
 
-export function getProposals(status?: ProposalStatus): Promise<Proposal[]> {
-  return api<Proposal[]>(`/proposals${qs({ status })}`)
+export function getProposals(status?: ProposalStatus, query: Pick<RecordsQuery, "municipality" | "type" | "activity"> & { linked?: boolean } = {}): Promise<Proposal[]> {
+  return api<Proposal[]>(`/proposals${qs({ ...query, status })}`)
 }
 
 export function decideProposal(id: number, status: 'bevestigd' | 'afgewezen'): Promise<Proposal> {

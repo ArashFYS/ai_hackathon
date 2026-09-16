@@ -20,12 +20,14 @@ src/components/       StatusBadge · ZekerheidBadge · ReasonsList · EvidencePa
                       GoogleMapsCard (scraped listing: status pill, contact, rating, 3 newest reviews, openingsuren, "Ophalen via Apify"; TICKET-035)
 ```
 
-Routes: `/` Zoeken · `/record/:nr` Detail · `/straat` and `/straat/:street` Straatoverzicht · `/kaart?street=&status=` Kaart · `/goedgekeurd` Goedgekeurde wijzigingen.
+Routes: `/` Dashboard · `/zoeken` Zoeken · `/record/:nr` Detail · `/straat` and `/straat/:street` Straatoverzicht · `/kaart?street=&status=` Kaart · `/goedgekeurd` Goedgekeurde wijzigingen.
 
 ## Province of Antwerp theme — TICKET-030
+TICKET-038: Preserve upstream indicator lights/NACEBEL controls with the locally reviewed detail layout. Seven sources use a native selector defaulting to Map. RecordMap renders valid coordinates directly; rejected coordinates have no pin. Kaart excludes rejected markers and lists them separately, with typed city/street suggestions and loaded-data coverage. Search/export and tests are documented in docs/adr/004-integrated-search-and-maps.md. Earlier local UI/search IDs 033/034 overlapped upstream numbering and are consolidated as TICKET-038.
 Visual restyle from `feat/TICKET-029-provincial-ui` merged on top of the i18n/feature set: `@theme` palette + semantic classes in `src/index.css` (`antwerp-app`, `site-header`/`site-brand`/`site-nav-link`/`site-footer`, `page-filters`, `results-table`/`address-group`, `record-layout`/`record-heading`/`detail-section`/`register-fields`/`address-comparison`, `source-browser`/`source-viewport`, `activity-status[data-status]`, `certainty-label[data-certainty]`), logo `public/provincie-antwerpen-logo.svg`. All text still goes through `t()`/`useT()` (NL default, EN toggle). `ConfidenceScore` and `mapLocation.ts` exist but are not wired in (the API supplies no numeric score; the minibrowser keeps the backend map links).
 
 ## Language / i18n — Dutch default, English toggle (TICKET-029)
+TICKET-034: Search is debounced by 300 ms with cancellation, supports typed AND/OR and inferred type words, and sorts columns locally. Export is scoped to the displayed result IDs and order; users choose table, columns, emails or phones. The UI discloses the 2,000-row cap. Export/contact-only reads do not approve or export proposed corrections.
 No library. `src/i18n/nl/*.ts` is the source of truth (`labels.ts` = enum codes, `ui.ts` = everything else); `src/i18n/en/*.ts` mirrors it and is typed `Record<keyof typeof nl…, string>`, so a key missing in EN is a tsc error. `useT()` gives `t(key, vars?)` with `{name}` interpolation; `useLang()` gives `{ lang, setLang }`. Persisted in `localStorage.lang`, `<html lang>` follows. Default `nl`.
 - **Add a string:** put `'area.name': 'Nederlandse tekst'` in `nl/ui.ts` (or `nl/labels.ts` for a backend code), the English in the same spot of `en/*.ts`, then `t('area.name')` in the component. Never a bare Dutch literal in JSX, `placeholder`, `title` or `aria-label`.
 - **Backend codes** (status, certainty, source, kind, contact_status, sector…) go through the helpers in `labels.ts` (`statusLabel(lang, code)`, `activitySectorLabel(lang, sector, backendLabel)`, `registerLabel(lang, v)`…), never through the backend's `*_label` fields. `STATUS_CODES` replaces `Object.keys(STATUS_LABELS)`.
@@ -54,3 +56,19 @@ Detail section between Contact and Bewijs van activiteit, fed by `RecordDetail.g
 
 ## NbbPanel
 Calls `/api/records/{nr}/nbb`. Shows company (naam, rechtsvorm, rechtstoestand + datum), "Laatste neerlegging: {date} ({months} maanden geleden)", table of deposits: Boekjaar · Model · Omzet · Brutomarge · Winst/verlies · Eigen vermogen · VTE · PDF ↗. Numbers formatted `nl-BE` EUR, null → "—". If `available:false` show the `note` and the "Open in NBB ↗" link. Loading and error states in Dutch.
+
+
+## Dashboard — TICKET-032
+`/` is the municipal dashboard. URL scope: `gemeente`, `soort`, `sector` (default Schoten).
+Legacy root query links using q/type/status/activity/street redirect to `/zoeken` preserving filters.
+`pages/Dashboard.tsx` calls one aggregate endpoint; `DashboardChart` toggles sector/status distributions,
+`DashboardCoverage` shows observation/contact/certainty/parent coverage and saved proposals.
+The first view prioritizes review, assessed activity and observation coverage; the selected total
+and type composition appear once. Missing-information bars overlap, and inapplicable parent or
+sector links are omitted. The chart legend expands in the page without an internal scrollbar.
+`BusinessMap` shares the actual Leaflet renderer with Kaart. All percentages use the selected total;
+missing parents use selected establishments. No historical sparklines or invented counts.
+Dutch/English labels in `i18n/{nl,en}/dashboard.ts`. Empty/loading/error states are distinct.
+Search has exact totals and 100-row pagination. `ScopeChips` exposes dashboard drilldown filters.
+Kaart preserves municipality/type/sector; proposals preserve status and scope in the URL, with a
+separate all-municipality view for unlinked reports. Return to dashboard or window focus refreshes data.

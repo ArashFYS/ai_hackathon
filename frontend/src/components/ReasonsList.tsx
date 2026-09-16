@@ -16,33 +16,32 @@ export default function ReasonsList({ reasons }: { reasons: Reason[] }) {
     return <p className="text-sm text-gray-500">{t('reasons.none')}</p>
   }
   return (
-    <ul className="space-y-1.5">
+    <ul className="assessment-reasons">
       {reasons.map((r, i) => {
         const d = DIR[r.direction] ?? DIR.neutraal
         return (
-          <li key={`${r.code}-${i}`} className="flex items-start gap-2 text-sm">
-            <span className={`mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-xs font-bold ${d.cls}`} title={directionLabel(lang, r.direction)}>
+          <li key={`${r.code}-${i}`} className="reason-entry">
+            <span className={`reason-direction ${d.cls}`} title={directionLabel(lang, r.direction)}>
               {d.sign}
             </span>
-            <span className="flex-1">
-              <span className="text-gray-800">{r.text}</span>
+            <span className="reason-copy">
+              <span className="reason-heading">
+                <span className="text-gray-800">{r.text}</span>
+                <span className="reason-weight">{weightLabel(lang, r.weight)}</span>
+              </span>
               {(r.source || r.observed_at || r.url) && (
-                <span className="mt-0.5 block text-xs text-gray-500">
-                  {r.source && <>{t('reasons.source')} {r.source}</>}
-                  {r.field && <> · {t('reasons.field')} <code className="rounded bg-gray-100 px-1">{r.field}</code></>}
-                  {r.observed_at && <> · {r.observed_at}</>}
+                <span className="reason-reference">
+                  {r.source && <span>{t('reasons.source')} {r.source}</span>}
+                  {r.field && <span>{t('reasons.field')} <code>{r.field}</code></span>}
+                  {r.observed_at && <span>{r.observed_at}</span>}
                   {r.url && (
-                    <>
-                      {' · '}
                       <a href={r.url} target="_blank" rel="noreferrer" className="text-blue-700 underline">
                         {t('reasons.verify')}
                       </a>
-                    </>
                   )}
                 </span>
               )}
             </span>
-            <span className="shrink-0 text-xs text-gray-500">{weightLabel(lang, r.weight)}</span>
           </li>
         )
       })}

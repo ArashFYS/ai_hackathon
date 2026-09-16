@@ -4,6 +4,7 @@ import { ApiError, refreshRecordGoogleMaps } from '../api'
 import type { TKey } from '../i18n'
 import { useLang, useT } from '../i18n'
 import { mapsMatchLabel } from '../labels'
+import GooglePlacesPanel from './GooglePlacesPanel'
 
 type Shown = MapsStatus | 'niet_opgehaald'
 
@@ -27,7 +28,12 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
 }
 
 /** Google Maps listing scraped via Apify; `place` null = never fetched. Text from the listing is shown as delivered. */
-export default function GoogleMapsCard({ nr, place: initial, onChanged }: { nr: string; place: GoogleMapsPlace | null; onChanged: () => void }) {
+// Apify status → Places API businessStatus, so the live check can flag a change.
+const LIVE_STATUS: Partial<Record<MapsStatus, string>> = { open: 'OPERATIONAL', tijdelijk_gesloten: 'CLOSED_TEMPORARILY', permanent_gesloten: 'CLOSED_PERMANENTLY' }
+
+export default function GoogleMapsCard({ nr, place: initial, onChanged, placesKey, placesQuery }: {
+  nr: string; place: GoogleMapsPlace | null; onChanged: () => void; placesKey?: string | null; placesQuery?: string
+}) {
   const t = useT()
   const { lang } = useLang()
   const [place, setPlace] = useState<GoogleMapsPlace | null>(initial)
@@ -119,6 +125,11 @@ export default function GoogleMapsCard({ nr, place: initial, onChanged }: { nr: 
         {place && <span className="text-xs text-gray-500">{t('maps.fetchedAt', { date: place.scraped_at.slice(0, 10) })}</span>}
         {msg && <span className="w-full text-xs text-red-700">{msg}</span>}
       </div>
+      {placesKey && placesQuery && (
+        // Live Places API lookup: the Apify listing is cached and can be stale; this double-checks it (TICKET-041).
+        <GooglePlacesPanel apiKey={placesKey} query={placesQuery}
+          cached={place && found ? { phone: place.phone, website: place.website, status: LIVE_STATUS[place.status] ?? null } : undefined} />
+      )}
     </div>
   )
 }
