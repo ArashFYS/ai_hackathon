@@ -8,6 +8,18 @@ export type Conclusion = 'actief' | 'niet_actief' | 'onduidelijk'
 export type ProposalStatus = 'open' | 'bevestigd' | 'afgewezen'
 export type ProposalKind = 'status_change' | 'address_check' | 'missing_establishment' | 'field_correction'
 export type RecordType = 'enterprise' | 'establishment'
+export type ContactStatus = 'register' | 'zetel' | 'waargenomen' | 'onbekend'
+export type ContactKind = 'phone' | 'email' | 'website'
+
+/** One known contact detail with its owner (vestiging / zetel), source and date. */
+export interface Contact {
+  kind: ContactKind
+  value: string
+  belongs_to: 'vestiging' | 'zetel'
+  source: string
+  observed_at: string | null
+  url: string | null
+}
 
 export interface Reason {
   code: string
@@ -69,6 +81,7 @@ export interface RecordSummary {
   start_date: string | null
   assessment: Assessment
   activity: Activity
+  contact_status: ContactStatus
   parent_in_dataset?: boolean
   seat_elsewhere?: boolean
   parent_display_name?: string | null
@@ -113,6 +126,9 @@ export interface Evidence {
   conclusion: Conclusion
   observed_at: string
   created_at: string
+  phone: string | null
+  email: string | null
+  website: string | null
 }
 
 export interface Proposal {
@@ -154,6 +170,8 @@ export interface RecordDetail {
   evidence: Evidence[]
   proposals: Proposal[]
   links: Links
+  contacts: Contact[]
+  contact_status: ContactStatus
 }
 
 export interface NbbFigures {
@@ -183,6 +201,8 @@ export interface NbbCompany {
   legal_situation: string | null
   legal_situation_date: string | null
   address: string | null
+  email?: string | null
+  website?: string | null
 }
 
 export interface NbbPanelData {
@@ -227,6 +247,9 @@ export interface EvidenceInput {
   observed_activity?: string
   conclusion: Conclusion
   observed_at: string
+  phone?: string
+  email?: string
+  website?: string
 }
 
 export interface ProposalInput {

@@ -10,6 +10,7 @@ app/vkbo.py        VKBO property → row mapping, cleaning rules, upsert SQL
 app/scoring.py     rule-based assessment (status + zekerheid + reasons) — NO AI
 app/links.py       external evidence URLs for a record
 app/activity.py    NACE 2-digit → sector (Dutch label); keyword map for officer-observed activity text
+app/contact.py     contacts_for(row, parent, evidence, nbb) → Contact[] with owner/source/date; contact_status()
 app/nbb.py         NBB Balanscentrale public API client (+ cache)
 app/routers/       records.py · streets.py · evidence.py · proposals.py · nbb.py · activities.py
 scripts/import_data.py
@@ -46,8 +47,16 @@ Activity    { sector: string,                                    // 'detailhande
 RecordSummary { nr, record_type, parent_nr, display_name, name, trade_name, legal_form, legal_status,
                 address, kbo_street, kbo_housenr, kbo_box, kbo_postcode, kbo_municipality, lat, lng,
                 phone, email, start_date, assessment: Assessment, activity: Activity }
+                phone, email, start_date, assessment: Assessment,
+                contact_status: 'register'|'zetel'|'waargenomen'|'onbekend' }   // register contact on the record itself → register;
+                                                                               // parent's → zetel; officer-observed → waargenomen; else onbekend (NBB not counted)
+Contact     { kind: 'phone'|'email'|'website', value, belongs_to: 'vestiging'|'zetel', source: str, observed_at: 'YYYY-MM-DD'|null, url: str|null }
+              sources: "KBO (via VKBO)" (own row; date = snapshot, url = KBO page) · "KBO (via VKBO) — moederonderneming" (establishment without
+              contact → parent's, belongs_to zetel) · "Waargenomen via {Google Maps|Street View|Website|Terreinbezoek|KBO|NBB|Check Inhoudingsplicht|Andere}"
+              (evidence.phone/email/website, date = observed_at, url = evidence.url) · "NBB Balanscentrale" (cached company.email/website, zetel).
+              Deduped on (kind, normalized value); vestiging before zetel, then observed_at desc.
 Evidence    { id, record_nr, source, url, observation, observed_activity, conclusion: 'actief'|'niet_actief'|'onduidelijk',
-              observed_at, created_at }
+              observed_at, created_at, phone: str|null, email: str|null, website: str|null }
 Proposal    { id, record_nr, kind: 'status_change'|'address_check'|'missing_establishment'|'field_correction',
               field, current_value, proposed_value, reason, status: 'open'|'bevestigd'|'afgewezen', created_at, decided_at,
               record?: { display_name, address } }
@@ -65,14 +74,14 @@ GET  /activities                                       → [{ sector, label, cou
 GET  /records/{nr}                                     → { record: RecordSummary + every column of `records` except `raw`, parent: RecordSummary|null,
                                                            parent_in_dataset: bool, seat_elsewhere: bool,
                                                            establishments: RecordSummary[], evidence: Evidence[], proposals: Proposal[],
-                                                           links: Links }
+                                                           links: Links, contacts: Contact[], contact_status: ContactStatus }
                                                          side effect: (re)generate open proposals from the assessment, idempotently
 POST /records/{nr}/fetch-parent                        → RecordSummary  (VKBO API by Ondernemingsnr; 404 if not found)
-GET  /records/{nr}/nbb                                 → { available: bool, enterprise_nr, url, company: {name, legal_form, legal_situation, legal_situation_date, address}|null,
+GET  /records/{nr}/nbb                                 → { available: bool, enterprise_nr, url, company: {name, legal_form, legal_situation, legal_situation_date, address, email, website}|null,
                                                            deposits: [{ id, year, period_start, period_end, model, deposit_date, pdf_url,
                                                                         figures: { omzet, brutomarge, bedrijfsresultaat, winst_verlies, eigen_vermogen, balanstotaal, vte } }],
                                                            last_deposit_date, months_since_last_deposit, fetched_at, note }
-POST /records/{nr}/evidence  body {source,url?,observation,observed_activity?,conclusion,observed_at}  → Evidence
+POST /records/{nr}/evidence  body {source,url?,observation,observed_activity?,conclusion,observed_at,phone?,email?,website?}  → Evidence
 POST /records/{nr}/proposals body {kind,field?,current_value?,proposed_value?,reason}                 → Proposal
 GET  /streets                                          → [{ street, count }]  sorted by count desc
 GET  /streets/{street}?activity=                       → { street, addresses: [{ address, housenr, lat, lng, records: RecordSummary[] (+ last_evidence: Evidence|null, open_proposal: Proposal|null) }] }

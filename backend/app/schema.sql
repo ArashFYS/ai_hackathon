@@ -59,7 +59,10 @@ CREATE TABLE IF NOT EXISTS evidence (
   observed_activity TEXT,                           -- activity seen on the ground (compare with NACE)
   conclusion        TEXT NOT NULL,                  -- actief | niet_actief | onduidelijk
   observed_at       TEXT NOT NULL,                  -- YYYY-MM-DD
-  created_at        TEXT NOT NULL
+  created_at        TEXT NOT NULL,
+  phone             TEXT,                           -- officer-observed contact (TICKET-025)
+  email             TEXT,
+  website           TEXT
 );
 CREATE INDEX IF NOT EXISTS idx_evidence_record ON evidence(record_nr);
 

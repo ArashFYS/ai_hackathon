@@ -4,6 +4,7 @@ import sqlite3
 from datetime import datetime, timezone
 
 from .activity import activity_of
+from .contact import contact_status, contacts_for
 from .scoring import assess
 
 SUMMARY_COLS = [
@@ -83,6 +84,7 @@ def summarize(row: dict, parent: dict | None, evidence: list[dict], full: bool =
     base["address"] = address_of(row)
     base["assessment"] = assess(row, parent, evidence, nbb)
     base["activity"] = activity_of(row, evidence)
+    base["contact_status"] = contact_status(contacts_for(row, parent, evidence))  # NBB deliberately not counted
     if row.get("record_type") == "establishment":
         base["parent_in_dataset"] = parent is not None
         # seat is "elsewhere" when the parent is known and sits in another municipality
