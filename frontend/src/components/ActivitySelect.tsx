@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react'
 import type { ActivityCount } from '../api'
-import { getActivities } from '../api'
+import { activitySectorLabel, getActivities } from '../api'
+import { useLang, useT } from '../i18n'
 
 /** "Activiteit" dropdown: sectors with counts from /api/activities (onbekend last). */
 export default function ActivitySelect({ value, onChange }: { value: string; onChange: (sector: string) => void }) {
   const [options, setOptions] = useState<ActivityCount[] | null>(null)
+  const t = useT()
+  const { lang } = useLang()
 
   useEffect(() => {
     let cancelled = false
@@ -22,12 +25,12 @@ export default function ActivitySelect({ value, onChange }: { value: string; onC
 
   return (
     <label className="flex flex-col text-sm">
-      <span className="mb-1 text-gray-600">Activiteit</span>
+      <span className="mb-1 text-gray-600">{t('activity.label')}</span>
       <select className="max-w-64 rounded border px-2 py-1.5" value={value} onChange={(e) => onChange(e.target.value)}>
-        <option value="">Alle</option>
+        <option value="">{t('common.all')}</option>
         {options === null && value && <option value={value}>{value}</option>}
         {options?.map((a) => (
-          <option key={a.sector} value={a.sector}>{a.label} ({a.count})</option>
+          <option key={a.sector} value={a.sector}>{activitySectorLabel(lang, a.sector, a.label)} ({a.count})</option>
         ))}
       </select>
     </label>

@@ -1,6 +1,6 @@
 # Tickets -- ai_hackathon (Prefix: TICKET)
 
-> Next ID: TICKET-029
+> Next ID: TICKET-030
 >
 > **Deadline: 16:30 Europe/Brussels, 16 Sep 2026.** Build freeze ~15:00 → record 15:00–15:45 → upload + check + form by 16:15.
 > Anything not demoable by 15:00 is a slide in the video, not a feature.
@@ -8,6 +8,11 @@
 > Priority: **MVP** = on the critical path for the 3-min screen recording. **Stretch** = only if MVP is recordable.
 
 ## In Progress
+
+### TICKET-029: Language toggle — Dutch default, English optional
+- **Type:** feat(ui)
+- **Created:** 2026-09-16
+- **Description:** NL | EN toggle in the header. Dutch is the default and the officer-facing language (challenge requirement); English is for the jury/video. Frontend-only i18n: `src/i18n/` with `nl.ts` and `en.ts` dictionaries, a `LanguageProvider` + `useT()` hook, persisted in localStorage (`lang`), `<html lang>` updated. All static UI text (nav, headings, table columns, buttons, form labels, placeholders, hints, status/zekerheid/source/contact/activity labels, empty/loading/error states, minibrowser tab labels and "wat te controleren" texts) goes through `t()`. Backend-generated free text (reason sentences, proposal texts, register values, NBB model names) stays as delivered — in EN mode it is shown unchanged with a small note "(brontekst in het Nederlands / source text in Dutch)" on the Beoordeling block. The challenge vocabulary (Adres, Register, Bewijs van activiteit, Laatste waarneming, Zekerheid, Voorstel, bevestigen/afwijzen, contactgegevens onbekend) is translated literally in EN (Address, Register, Evidence of activity, Last observation, Certainty, Proposal, confirm/reject, contact details unknown).
 
 ### TICKET-028: README — features and how the tool works
 - **Type:** docs

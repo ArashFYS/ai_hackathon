@@ -4,9 +4,11 @@ pnpm. Dev server on 5173; `/api/*` is proxied to the backend on 8010 (see `vite.
 `pnpm tsc -b --noEmit` must pass. Keep files < 300 lines.
 
 ```
-src/main.tsx          BrowserRouter
-src/App.tsx           layout (header + nav) and routes
+src/main.tsx          LanguageProvider + BrowserRouter
+src/App.tsx           layout (header + nav + LanguageToggle) and routes
 src/api.ts            typed fetch helpers for every backend endpoint (types mirror backend/CLAUDE.md)
+src/labels.ts         language-aware label helpers for enum codes (statusLabel, sourceLabel, activitySectorLabel, …) — re-exported by api.ts
+src/i18n/             index.tsx (LanguageProvider · useLang · useT · translate) · nl/{labels,ui}.ts · en/{labels,ui}.ts
 src/pages/            Zoeken.tsx · Detail.tsx · Straat.tsx · Kaart.tsx · Goedgekeurd.tsx
 src/components/       StatusBadge · ZekerheidBadge · ReasonsList · EvidencePanel (tabs + iframe minibrowser) ·
                       NbbPanel · EvidenceForm · ProposalList · RecordCard · LinkageCard · ActivitySelect (Activiteit dropdown from /api/activities)
@@ -20,6 +22,12 @@ Routes: `/` Zoeken · `/record/:nr` Detail · `/straat` and `/straat/:street` St
 ## Language and vocabulary — officer-facing text is Dutch
 Use the challenge's own words: **Adres · Onderneming / vestiging · Register · Bewijs van activiteit · Laatste waarneming · Zekerheid (Hoog / Middel / Laag) · Voorstel · bevestigen / afwijzen · contactgegevens onbekend · zetel elders · moederonderneming niet in dataset**.
 Never show an invented value: missing → "onbekend" or "—".
+
+## Language / i18n — Dutch default, English toggle (TICKET-029)
+No library. `src/i18n/nl/*.ts` is the source of truth (`labels.ts` = enum codes, `ui.ts` = everything else); `src/i18n/en/*.ts` mirrors it and is typed `Record<keyof typeof nl…, string>`, so a key missing in EN is a tsc error. `useT()` gives `t(key, vars?)` with `{name}` interpolation; `useLang()` gives `{ lang, setLang }`. Persisted in `localStorage.lang`, `<html lang>` follows. Default `nl`.
+- **Add a string:** put `'area.name': 'Nederlandse tekst'` in `nl/ui.ts` (or `nl/labels.ts` for a backend code), the English in the same spot of `en/*.ts`, then `t('area.name')` in the component. Never a bare Dutch literal in JSX, `placeholder`, `title` or `aria-label`.
+- **Backend codes** (status, certainty, source, kind, contact_status, sector…) go through the helpers in `labels.ts` (`statusLabel(lang, code)`, `activitySectorLabel(lang, sector, backendLabel)`, `registerLabel(lang, v)`…), never through the backend's `*_label` fields. `STATUS_CODES` replaces `Object.keys(STATUS_LABELS)`.
+- **Left in Dutch on purpose** (backend free text, shown as delivered): reason sentences, `proposal_text`, `reason` on proposals, KBO register values (rechtsvorm, rechtstoestand, doorhalingsreden), NBB model / legal situation / note, `Contact.source`, `activity.source` other than `waarneming`. In EN the Beoordeling block shows "(brontekst in het Nederlands / source text in Dutch)". Dates stay ISO, numbers stay `nl-BE`.
 
 ## Status colours (Tailwind)
 `actief` green · `ter_controle` amber · `waarschijnlijk_niet_actief` red · `geen_onderneming` gray. Zekerheid: hoog solid, middel outline, laag dashed/light.

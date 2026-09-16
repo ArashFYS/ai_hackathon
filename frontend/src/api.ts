@@ -415,5 +415,5 @@ export function exportUrl(format: 'csv' | 'json'): string {
   return `/api/proposals/export?format=${format}`
 }
 
-// Shared Dutch labels + display helpers live in labels.ts; re-exported for convenience.
+// Language-aware label helpers + display helpers live in labels.ts (text in src/i18n); re-exported for convenience.
 export * from './labels'

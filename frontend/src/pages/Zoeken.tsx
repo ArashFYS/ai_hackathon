@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import type { RecordSummary, RecordType, Status } from '../api'
-import { CONTACT_STATUS_LABELS, getRecords, RECORD_TYPE_LABELS, STATUS_LABELS, dash } from '../api'
+import { STATUS_CODES, activitySectorLabel, activitySourceLabel, contactStatusLabel, dash, getRecords, recordTypeLabel, registerLabel, statusLabel } from '../api'
+import { useLang, useT } from '../i18n'
 import StatusBadge from '../components/StatusBadge'
 import ZekerheidBadge from '../components/ZekerheidBadge'
 import ActivitySelect from '../components/ActivitySelect'
 
 export default function Zoeken() {
+  const t = useT()
+  const { lang } = useLang()
   const [params, setParams] = useSearchParams()
   const q = params.get('q') ?? ''
   const type = (params.get('type') ?? '') as RecordType | ''
@@ -15,7 +18,7 @@ export default function Zoeken() {
   const [input, setInput] = useState(q)
   const [items, setItems] = useState<RecordSummary[] | null>(null)
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState(false)
 
   useEffect(() => {
     setInput(q)
@@ -24,13 +27,13 @@ export default function Zoeken() {
   useEffect(() => {
     let cancelled = false
     setLoading(true)
-    setError(null)
+    setError(false)
     getRecords({ q, type, status, activity, limit: 100 })
       .then((rows) => {
         if (!cancelled) setItems(rows)
       })
       .catch(() => {
-        if (!cancelled) setError('Kon gegevens niet laden')
+        if (!cancelled) setError(true)
       })
       .finally(() => {
         if (!cancelled) setLoading(false)
@@ -52,11 +55,11 @@ export default function Zoeken() {
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-xl font-semibold">Zoeken</h1>
+        <h1 className="text-xl font-semibold">{t('search.title')}</h1>
         <p className="text-sm text-gray-600">
-          Zoek een onderneming of vestiging om de registergegevens en het bewijs van activiteit te bekijken.
-          {' '}Of bekijk een hele straat in het{' '}
-          <Link to="/straat" className="text-blue-700 underline">Straatoverzicht</Link>.
+          {t('search.intro')}
+          {' '}{t('search.introStreet')}{' '}
+          <Link to="/straat" className="text-blue-700 underline">{t('nav.street')}</Link>.
         </p>
       </div>
 
@@ -68,53 +71,53 @@ export default function Zoeken() {
         }}
       >
         <label className="flex min-w-64 flex-1 flex-col text-sm">
-          <span className="mb-1 text-gray-600">Zoekterm</span>
+          <span className="mb-1 text-gray-600">{t('search.term')}</span>
           <input
             className="rounded border px-3 py-1.5"
-            placeholder="Naam, ondernemingsnummer of straat"
+            placeholder={t('search.placeholder')}
             value={input}
             onChange={(e) => setInput(e.target.value)}
           />
         </label>
         <label className="flex flex-col text-sm">
-          <span className="mb-1 text-gray-600">Type</span>
+          <span className="mb-1 text-gray-600">{t('search.type')}</span>
           <select className="rounded border px-2 py-1.5" value={type} onChange={(e) => update({ type: e.target.value })}>
-            <option value="">Alle</option>
-            <option value="enterprise">Onderneming</option>
-            <option value="establishment">Vestiging</option>
+            <option value="">{t('common.all')}</option>
+            <option value="enterprise">{t('type.enterprise')}</option>
+            <option value="establishment">{t('type.establishment')}</option>
           </select>
         </label>
         <label className="flex flex-col text-sm">
-          <span className="mb-1 text-gray-600">Status</span>
+          <span className="mb-1 text-gray-600">{t('common.status')}</span>
           <select className="rounded border px-2 py-1.5" value={status} onChange={(e) => update({ status: e.target.value })}>
-            <option value="">Alle</option>
-            {(Object.keys(STATUS_LABELS) as Status[]).map((s) => (
-              <option key={s} value={s}>{STATUS_LABELS[s]}</option>
+            <option value="">{t('common.all')}</option>
+            {STATUS_CODES.map((s) => (
+              <option key={s} value={s}>{statusLabel(lang, s)}</option>
             ))}
           </select>
         </label>
         <ActivitySelect value={activity} onChange={(v) => update({ activity: v })} />
         <button type="submit" className="rounded bg-gray-900 px-4 py-1.5 text-sm font-medium text-white hover:bg-gray-700">
-          Zoeken
+          {t('search.button')}
         </button>
       </form>
 
       <div className="overflow-x-auto rounded-lg border bg-white">
-        {loading && <p className="p-4 text-sm text-gray-500">Laden…</p>}
-        {!loading && error && <p className="p-4 text-sm text-red-700">{error}</p>}
-        {!loading && !error && items && items.length === 0 && <p className="p-4 text-sm text-gray-500">Geen resultaten</p>}
+        {loading && <p className="p-4 text-sm text-gray-500">{t('common.loading')}</p>}
+        {!loading && error && <p className="p-4 text-sm text-red-700">{t('common.loadError')}</p>}
+        {!loading && !error && items && items.length === 0 && <p className="p-4 text-sm text-gray-500">{t('common.noResults')}</p>}
         {!loading && !error && items && items.length > 0 && (
           <table className="w-full text-sm">
             <thead className="bg-gray-50 text-left text-xs uppercase tracking-wide text-gray-500">
               <tr>
-                <th className="px-3 py-2">Naam</th>
-                <th className="px-3 py-2">Type</th>
-                <th className="px-3 py-2">Adres</th>
-                <th className="px-3 py-2">Activiteit</th>
-                <th className="px-3 py-2">Register</th>
-                <th className="px-3 py-2">Status</th>
-                <th className="px-3 py-2">Zekerheid</th>
-                <th className="px-3 py-2">Contact</th>
+                <th className="px-3 py-2">{t('search.col.name')}</th>
+                <th className="px-3 py-2">{t('search.col.type')}</th>
+                <th className="px-3 py-2">{t('col.address')}</th>
+                <th className="px-3 py-2">{t('search.col.activity')}</th>
+                <th className="px-3 py-2">{t('col.register')}</th>
+                <th className="px-3 py-2">{t('col.status')}</th>
+                <th className="px-3 py-2">{t('col.certainty')}</th>
+                <th className="px-3 py-2">{t('search.col.contact')}</th>
               </tr>
             </thead>
             <tbody className="divide-y">
@@ -126,16 +129,16 @@ export default function Zoeken() {
                     </Link>
                     <div className="text-xs text-gray-500">{r.nr}</div>
                   </td>
-                  <td className="px-3 py-2 text-gray-700">{RECORD_TYPE_LABELS[r.record_type] ?? r.record_type}</td>
+                  <td className="px-3 py-2 text-gray-700">{recordTypeLabel(lang, r.record_type)}</td>
                   <td className="px-3 py-2 text-gray-700">{dash(r.address)}</td>
                   <td className="px-3 py-2 text-gray-700">
-                    {r.activity?.sector === 'onbekend' ? <span className="text-gray-400">onbekend</span> : r.activity?.label}
-                    {r.activity?.source && <div className="text-xs text-gray-500">{r.activity.source}</div>}
+                    {r.activity?.sector === 'onbekend' ? <span className="text-gray-400">{t('common.unknown')}</span> : activitySectorLabel(lang, r.activity?.sector, r.activity?.label)}
+                    {r.activity?.source && <div className="text-xs text-gray-500">{activitySourceLabel(lang, r.activity.source)}</div>}
                   </td>
-                  <td className="px-3 py-2 text-gray-700">{dash(r.assessment?.register_label)}</td>
+                  <td className="px-3 py-2 text-gray-700">{registerLabel(lang, r.assessment?.register_label)}</td>
                   <td className="px-3 py-2"><StatusBadge status={r.assessment.status} label={r.assessment.status_label} /></td>
                   <td className="px-3 py-2"><ZekerheidBadge certainty={r.assessment.certainty} label={r.assessment.certainty_label} /></td>
-                  <td className="px-3 py-2 text-xs text-gray-600" title="Contactgegevens: register · zetel · waargenomen">{CONTACT_STATUS_LABELS[r.contact_status] ?? '—'}</td>
+                  <td className="px-3 py-2 text-xs text-gray-600" title={t('search.contactTitle')}>{contactStatusLabel(lang, r.contact_status)}</td>
                 </tr>
               ))}
             </tbody>
@@ -143,7 +146,7 @@ export default function Zoeken() {
         )}
       </div>
       {items && items.length >= 100 && (
-        <p className="text-xs text-gray-500">Enkel de eerste 100 resultaten worden getoond. Verfijn de zoekterm.</p>
+        <p className="text-xs text-gray-500">{t('search.limit')}</p>
       )}
     </div>
   )
