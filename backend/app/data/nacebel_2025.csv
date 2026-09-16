@@ -1,0 +1,2025 @@
+level,code,title_nl
+1,A,"LANDBOUW, BOSBOUW EN VISSERIJ"
+2,01,"Teelt van gewassen, veeteelt, jacht en diensten in verband met deze activiteiten"
+3,01.1,Teelt van eenjarige gewassen
+4,01.11,"Teelt van andere granen dan rijst, en van peulgewassen en oliehoudende zaden"
+5,01.110,"Teelt van andere granen dan rijst, en van peulgewassen en oliehoudende zaden"
+4,01.12,Teelt van rijst
+5,01.120,Teelt van rijst
+4,01.13,"Teelt van groenten, meloenen en wortel- en knolgewassen"
+5,01.130,"Teelt van groenten, meloenen en wortel- en knolgewassen"
+4,01.14,Teelt van suikerriet
+5,01.140,Teelt van suikerriet
+4,01.15,Teelt van tabak
+5,01.150,Teelt van tabak
+4,01.16,Teelt van vezelgewassen
+5,01.160,Teelt van vezelgewassen
+4,01.19,Teelt van andere eenjarige gewassen
+5,01.191,Teelt van bloemen
+5,01.199,"Teelt van andere eenjarige gewassen, n.e.g."
+3,01.2,Teelt van meerjarige gewassen
+4,01.21,Teelt van druiven
+5,01.210,Teelt van druiven
+4,01.22,Teelt van tropisch en subtropisch fruit
+5,01.220,Teelt van tropisch en subtropisch fruit
+4,01.23,Teelt van citrusvruchten
+5,01.230,Teelt van citrusvruchten
+4,01.24,Teelt van pit- en steenvruchten
+5,01.240,Teelt van pit- en steenvruchten
+4,01.25,"Teelt van andere boomvruchten, kleinfruit en noten"
+5,01.250,"Teelt van andere boomvruchten, kleinfruit en noten"
+4,01.26,Teelt van oliehoudende vruchten
+5,01.260,Teelt van oliehoudende vruchten
+4,01.27,Teelt van gewassen bestemd voor de vervaardiging van dranken
+5,01.270,Teelt van gewassen bestemd voor de vervaardiging van dranken
+4,01.28,Teelt van specerijgewassen en van aromatische en medicinale gewassen
+5,01.280,Teelt van specerijgewassen en van aromatische en medicinale gewassen
+4,01.29,Teelt van andere meerjarige gewassen
+5,01.290,Teelt van andere meerjarige gewassen
+3,01.3,Plantenvermeerdering
+4,01.30,Plantenvermeerdering
+5,01.301,"Boomkwekerijen, m.u.v. bosboomkwekerijen"
+5,01.309,Overige plantenvermeerdering
+3,01.4,Veeteelt
+4,01.41,Fokken en houden van melkvee
+5,01.410,Fokken en houden van melkvee
+4,01.42,Fokken en houden van andere runderen en buffels
+5,01.420,Fokken en houden van andere runderen en buffels
+4,01.43,Fokken en houden van paarden en andere paardachtigen
+5,01.430,Fokken en houden van paarden en andere paardachtigen
+4,01.44,Fokken en houden van kamelen en andere kameelachtigen
+5,01.440,Fokken en houden van kamelen en andere kameelachtigen
+4,01.45,Fokken en houden van schapen en geiten
+5,01.450,Fokken en houden van schapen en geiten
+4,01.46,Fokken en houden van varkens
+5,01.461,Fokvarkenshouderijen
+5,01.462,Varkensvetmesterijen
+4,01.47,Fokken en houden van pluimvee
+5,01.471,Kippenkwekerijen
+5,01.472,Productie van eieren van pluimvee
+5,01.479,"Pluimveehouderijen, m.u.v. kippenkwekerijen"
+4,01.48,Fokken en houden van andere dieren
+5,01.480,Fokken en houden van andere dieren
+3,01.5,Gemengd landbouwbedrijf
+4,01.50,Gemengd landbouwbedrijf
+5,01.500,Gemengd landbouwbedrijf
+3,01.6,Ondersteunende activiteiten in verband met de landbouw; activiteiten met betrekking tot gewassen na de oogst
+4,01.61,Ondersteunende activiteiten in verband met de teelt van gewassen
+5,01.610,Ondersteunende activiteiten in verband met de teelt van gewassen
+4,01.62,Ondersteunende activiteiten in verband met de veeteelt
+5,01.620,Ondersteunende activiteiten in verband met de veeteelt
+4,01.63,Behandeling van gewassen na de oogst en van zaden voor vermeerdering
+5,01.630,Behandeling van gewassen na de oogst en van zaden voor vermeerdering
+3,01.7,"Jacht, zetten van vallen en diensten in verband met deze activiteiten"
+4,01.70,"Jacht, zetten van vallen en diensten in verband met deze activiteiten"
+5,01.700,"Jacht, zetten van vallen en diensten in verband met deze activiteiten"
+2,02,Bosbouw en exploitatie van bossen
+3,02.1,Bosbouw en bosbouwactiviteiten
+4,02.10,Bosbouw en bosbouwactiviteiten
+5,02.100,Bosbouw en bosbouwactiviteiten
+3,02.2,Exploitatie van bossen
+4,02.20,Exploitatie van bossen
+5,02.200,Exploitatie van bossen
+3,02.3,Verzamelen van in het wild groeiende producten met uitzondering van hout
+4,02.30,Verzamelen van in het wild groeiende producten met uitzondering van hout
+5,02.300,Verzamelen van in het wild groeiende producten met uitzondering van hout
+3,02.4,Ondersteunende diensten in verband met de bosbouw
+4,02.40,Ondersteunende diensten in verband met de bosbouw
+5,02.400,Ondersteunende diensten in verband met de bosbouw
+2,03,Visserij en aquacultuur
+3,03.1,Visserij
+4,03.11,Zeevisserij
+5,03.110,Zeevisserij
+4,03.12,Binnenvisserij
+5,03.120,Binnenvisserij
+3,03.2,Aquacultuur
+4,03.21,Mariene aquacultuur
+5,03.210,Mariene aquacultuur
+4,03.22,Aquacultuur in zoet water
+5,03.220,Aquacultuur in zoet water
+3,03.3,Ondersteunende activiteiten voor visserij en aquacultuur
+4,03.30,Ondersteunende activiteiten voor visserij en aquacultuur
+5,03.300,Ondersteunende activiteiten voor visserij en aquacultuur
+1,B,WINNING VAN DELFSTOFFEN
+2,05,Winning van steenkool en bruinkool
+3,05.1,Winning van steenkool
+4,05.10,Winning van steenkool
+5,05.100,Winning van steenkool
+3,05.2,Winning van bruinkool
+4,05.20,Winning van bruinkool
+5,05.200,Winning van bruinkool
+2,06,Winning van aardolie en aardgas
+3,06.1,Winning van aardolie
+4,06.10,Winning van aardolie
+5,06.100,Winning van aardolie
+3,06.2,Winning van aardgas
+4,06.20,Winning van aardgas
+5,06.200,Winning van aardgas
+2,07,Winning van metaalertsen
+3,07.1,Winning van ijzererts
+4,07.10,Winning van ijzererts
+5,07.100,Winning van ijzererts
+3,07.2,Winning van non-ferrometaalertsen
+4,07.21,Winning van uranium- en thoriumerts
+5,07.210,Winning van uranium- en thoriumerts
+4,07.29,Winning van andere non-ferrometaalertsen
+5,07.290,Winning van andere non-ferrometaalertsen
+2,08,Overige winning van delfstoffen
+3,08.1,"Winning van steen, zand en klei"
+4,08.11,"Winning van siersteen, kalksteen, gips, leisteen en andere steen"
+5,08.111,Winning van sier- en bouwsteen
+5,08.112,"Winning van kalksteen, gips, leisteen en andere steen"
+4,08.12,"Winning van grind, zand, klei en kaolien"
+5,08.121,Winning van grind
+5,08.122,Winning van zand
+5,08.123,Winning van klei en kaolien
+3,08.9,"Winning van delfstoffen, n.e.g."
+4,08.91,Winning van mineralen voor de chemische en de kunstmestindustrie
+5,08.910,Winning van mineralen voor de chemische en de kunstmestindustrie
+4,08.92,Winning van turf
+5,08.920,Winning van turf
+4,08.93,Zoutwinning
+5,08.930,Zoutwinning
+4,08.99,"Overige winning van delfstoffen, n.e.g."
+5,08.990,"Overige winning van delfstoffen, n.e.g."
+2,09,Ondersteunende activiteiten in verband met de mijnbouw
+3,09.1,Ondersteunende activiteiten in verband met de aardolie- en aardgaswinning
+4,09.10,Ondersteunende activiteiten in verband met de aardolie- en aardgaswinning
+5,09.100,Ondersteunende activiteiten in verband met de aardolie- en aardgaswinning
+3,09.9,Ondersteunende activiteiten in verband met de overige winning van delfstoffen
+4,09.90,Ondersteunende activiteiten in verband met de overige winning van delfstoffen
+5,09.900,Ondersteunende activiteiten in verband met de overige winning van delfstoffen
+1,C,INDUSTRIE
+2,10,Vervaardiging van voedingsmiddelen
+3,10.1,Verwerking en conservering van vlees en vervaardiging van vleesproducten
+4,10.11,"Verwerking en conservering van vlees, met uitzondering van vlees van gevogelte"
+5,10.111,Activiteiten van slachthuizen
+5,10.112,Activiteiten van uitsnijderijen
+5,10.113,Verwerking van afgeleide producten van vlees
+5,10.119,"Overige verwerking en conservering van vlees, met uitzondering van vlees van gevogelte"
+4,10.12,Verwerking en conservering van vlees van gevogelte
+5,10.120,Verwerking en conservering van vlees van gevogelte
+4,10.13,Vervaardiging van producten van vlees of van vlees van gevogelte
+5,10.130,Vervaardiging van producten van vlees of van vlees van gevogelte
+3,10.2,Verwerking en conservering van vis en van schaal- en weekdieren
+4,10.20,Verwerking en conservering van vis en van schaal- en weekdieren
+5,10.200,Verwerking en conservering van vis en van schaal- en weekdieren
+3,10.3,Verwerking en conservering van groenten en fruit
+4,10.31,Verwerking en conservering van aardappelen
+5,10.311,"Verwerking en conservering van aardappelen, exclusief productie van diepgevroren aardappelbereidingen"
+5,10.312,Productie van diepgevroren aardappelbereidingen
+4,10.32,Vervaardiging van groente- en fruitsappen
+5,10.320,Vervaardiging van groente- en fruitsappen
+4,10.39,Overige verwerking en conservering van groenten en fruit
+5,10.391,"Verwerking en conservering van groenten, exclusief productie van diepgevroren groenten"
+5,10.392,"Verwerking en conservering van fruit, exclusief productie van diepgevroren fruit"
+5,10.393,Productie van diepgevroren groenten en fruit
+3,10.4,Vervaardiging van plantaardige en dierlijke oliën en vetten
+4,10.41,Vervaardiging van oliën en vetten
+5,10.410,Vervaardiging van oliën en vetten
+4,10.42,Vervaardiging van margarine en andere spijsvetten
+5,10.420,Vervaardiging van margarine en andere spijsvetten
+3,10.5,Vervaardiging van zuivelproducten en consumptie-ijs
+4,10.51,Vervaardiging van zuivelproducten
+5,10.510,Vervaardiging van zuivelproducten
+4,10.52,Vervaardiging van roomijs en ander consumptie-ijs
+5,10.520,Vervaardiging van roomijs en ander consumptie-ijs
+3,10.6,"Vervaardiging van maalderijproducten, zetmeel en zetmeelproducten"
+4,10.61,Vervaardiging van maalderijproducten
+5,10.610,Vervaardiging van maalderijproducten
+4,10.62,Vervaardiging van zetmeel en zetmeelproducten
+5,10.620,Vervaardiging van zetmeel en zetmeelproducten
+3,10.7,Vervaardiging van bakkerijproducten en deegwaren
+4,10.71,Vervaardiging van brood; vervaardiging van vers banketbakkerswerk
+5,10.711,Industriële vervaardiging van brood en van vers banketbakkerswerk
+5,10.712,Ambachtelijke vervaardiging van brood en van vers banketbakkerswerk
+4,10.72,"Vervaardiging van beschuit, biscuit en houdbaar banketbakkerswerk"
+5,10.720,"Vervaardiging van beschuit, biscuit en houdbaar banketbakkerswerk"
+4,10.73,Vervaardiging van deegwaren
+5,10.730,Vervaardiging van deegwaren
+3,10.8,Vervaardiging van andere voedingsmiddelen
+4,10.81,Vervaardiging van suiker
+5,10.810,Vervaardiging van suiker
+4,10.82,"Vervaardiging van cacao, chocolade en suikerwerk"
+5,10.820,"Vervaardiging van cacao, chocolade en suikerwerk"
+4,10.83,Verwerking van thee en koffie
+5,10.830,Verwerking van thee en koffie
+4,10.84,"Vervaardiging van specerijen, sauzen en kruiderijen"
+5,10.840,"Vervaardiging van specerijen, sauzen en kruiderijen"
+4,10.85,Vervaardiging van bereide maaltijden en schotels
+5,10.850,Vervaardiging van bereide maaltijden en schotels
+4,10.86,Vervaardiging van gehomogeniseerde voedingspreparaten en dieetvoeding
+5,10.860,Vervaardiging van gehomogeniseerde voedingspreparaten en dieetvoeding
+4,10.89,"Vervaardiging van andere voedingsmiddelen, n.e.g."
+5,10.890,"Vervaardiging van andere voedingsmiddelen, n.e.g."
+3,10.9,Vervaardiging van diervoeders
+4,10.91,Vervaardiging van veevoeders
+5,10.910,Vervaardiging van veevoeders
+4,10.92,Vervaardiging van voeders voor huisdieren
+5,10.920,Vervaardiging van voeders voor huisdieren
+2,11,Vervaardiging van dranken
+3,11.0,Vervaardiging van dranken
+4,11.01,"Vervaardiging van gedistilleerde dranken door distilleren, rectificeren en mengen"
+5,11.010,"Vervaardiging van gedistilleerde dranken door distilleren, rectificeren en mengen"
+4,11.02,Vervaardiging van wijn uit druiven
+5,11.020,Vervaardiging van wijn uit druiven
+4,11.03,Vervaardiging van cider en andere gefermenteerde vruchtendranken
+5,11.030,Vervaardiging van cider en andere gefermenteerde vruchtendranken
+4,11.04,Vervaardiging van andere niet-gedistilleerde gegiste dranken
+5,11.040,Vervaardiging van andere niet-gedistilleerde gegiste dranken
+4,11.05,Vervaardiging van bier
+5,11.050,Vervaardiging van bier
+4,11.06,Vervaardiging van mout
+5,11.060,Vervaardiging van mout
+4,11.07,Vervaardiging van frisdranken en water in flessen
+5,11.070,Vervaardiging van frisdranken en water in flessen
+2,12,Vervaardiging van tabaksproducten
+3,12.0,Vervaardiging van tabaksproducten
+4,12.00,Vervaardiging van tabaksproducten
+5,12.000,Vervaardiging van tabaksproducten
+2,13,Vervaardiging van textiel
+3,13.1,Bewerken en spinnen van textielvezels
+4,13.10,Bewerken en spinnen van textielvezels
+5,13.100,Bewerken en spinnen van textielvezels
+3,13.2,Weven van textiel
+4,13.20,Weven van textiel
+5,13.200,Weven van textiel
+3,13.3,Textielveredeling
+4,13.30,Textielveredeling
+5,13.300,Textielveredeling
+3,13.9,Vervaardiging van andere textielproducten
+4,13.91,Vervaardiging van gebreide en gehaakte stoffen
+5,13.910,Vervaardiging van gebreide en gehaakte stoffen
+4,13.92,Vervaardiging van huishoudtextiel en geconfectioneerde artikelen voor stoffering
+5,13.921,"Vervaardiging van beddengoed, tafellinnen en textielwaren voor huishoudelijk gebruik"
+5,13.929,"Vervaardiging van overige geconfectioneerde artikelen van textiel, m.u.v. kleding"
+4,13.93,Vervaardiging van vloerkleden en tapijt
+5,13.930,Vervaardiging van vloerkleden en tapijt
+4,13.94,"Vervaardiging van koord, bindgaren, touw en netten"
+5,13.940,"Vervaardiging van koord, bindgaren, touw en netten"
+4,13.95,Vervaardiging van ongeweven stoffen en artikelen van ongeweven stoffen
+5,13.950,Vervaardiging van ongeweven stoffen en artikelen van ongeweven stoffen
+4,13.96,Vervaardiging van ander technisch en industrieel textiel
+5,13.960,Vervaardiging van ander technisch en industrieel textiel
+4,13.99,"Vervaardiging van andere textielproducten, n.e.g."
+5,13.990,"Vervaardiging van andere textielproducten, n.e.g."
+2,14,Vervaardiging van kleding
+3,14.1,Vervaardiging van gebreide en gehaakte kleding
+4,14.10,Vervaardiging van gebreide en gehaakte kleding
+5,14.100,Vervaardiging van gebreide en gehaakte kleding
+3,14.2,Vervaardiging van andere kleding en toebehoren
+4,14.21,Vervaardiging van bovenkleding
+5,14.210,Vervaardiging van bovenkleding
+4,14.22,Vervaardiging van onderkleding
+5,14.220,Vervaardiging van onderkleding
+4,14.23,Vervaardiging van werkkleding
+5,14.230,Vervaardiging van werkkleding
+4,14.24,Vervaardiging van kleding van leer en van bont
+5,14.240,Vervaardiging van kleding van leer en van bont
+4,14.29,"Vervaardiging van andere kleding en toebehoren, n.e.g."
+5,14.291,Vervaardiging van hoeden en petten
+5,14.299,"Vervaardiging van overige kleding en toebehoren, n.e.g."
+2,15,"Vervaardiging van leer, lederwaren en soortgelijke producten van andere materialen"
+3,15.1,"Looien, bereiden en verven van leder en bont; vervaardiging van koffers, tassen, zadel- en tuigmakerswerk"
+4,15.11,"Looien, bereiden en verven van leder en bont"
+5,15.110,"Looien, bereiden en verven van leder en bont"
+4,15.12,"Vervaardiging van koffers, tassen, zadel- en tuigmakerswerk van ongeacht welk materiaal"
+5,15.120,"Vervaardiging van koffers, tassen, zadel- en tuigmakerswerk van ongeacht welk materiaal"
+3,15.2,Vervaardiging van schoeisel
+4,15.20,Vervaardiging van schoeisel
+5,15.200,Vervaardiging van schoeisel
+2,16,"Houtindustrie en vervaardiging van artikelen van hout en kurk, exclusief meubelen; vervaardiging van artikelen van riet en van vlechtwerk"
+3,16.1,Zagen en schaven van hout; verwerking en afwerking van hout
+4,16.11,Zagen en schaven van hout
+5,16.110,Zagen en schaven van hout
+4,16.12,Verwerking en afwerking van hout
+5,16.120,Verwerking en afwerking van hout
+3,16.2,"Vervaardiging van artikelen van hout, kurk, riet of vlechtwerk"
+4,16.21,Vervaardiging van fineer en van panelen op basis van hout
+5,16.210,Vervaardiging van fineer en van panelen op basis van hout
+4,16.22,Vervaardiging van geassembleerde parketvloeren
+5,16.220,Vervaardiging van geassembleerde parketvloeren
+4,16.23,Vervaardiging van ander schrijn- en timmerwerk
+5,16.230,Vervaardiging van ander schrijn- en timmerwerk
+4,16.24,Vervaardiging van houten emballage
+5,16.240,Vervaardiging van houten emballage
+4,16.25,Vervaardiging van houten deuren en vensters
+5,16.250,Vervaardiging van houten deuren en vensters
+4,16.26,Vervaardiging van vaste brandstoffen uit plantaardige biomassa
+5,16.260,Vervaardiging van vaste brandstoffen uit plantaardige biomassa
+4,16.27,Afwerking van houten producten
+5,16.270,Afwerking van houten producten
+4,16.28,"Vervaardiging van andere artikelen van hout en van artikelen van kurk, riet of vlechtwerk"
+5,16.281,Vervaardiging van andere artikelen van hout
+5,16.282,"Vervaardiging van artikelen van kurk, riet of vlechtwerk"
+2,17,Vervaardiging van papier en papierwaren
+3,17.1,"Vervaardiging van papierpulp, papier en karton"
+4,17.11,Vervaardiging van papierpulp
+5,17.110,Vervaardiging van papierpulp
+4,17.12,Vervaardiging van papier en karton
+5,17.120,Vervaardiging van papier en karton
+3,17.2,Vervaardiging van artikelen van papier of karton
+4,17.21,"Vervaardiging van gegolfd papier, golfkarton en verpakkingsmateriaal van papier en karton"
+5,17.210,"Vervaardiging van gegolfd papier, golfkarton en verpakkingsmateriaal van papier en karton"
+4,17.22,Vervaardiging van huishoudelijke en sanitaire papierwaren
+5,17.220,Vervaardiging van huishoudelijke en sanitaire papierwaren
+4,17.23,Vervaardiging van kantoorbenodigdheden van papier
+5,17.230,Vervaardiging van kantoorbenodigdheden van papier
+4,17.24,Vervaardiging van behangpapier
+5,17.240,Vervaardiging van behangpapier
+4,17.25,Vervaardiging van andere artikelen van papier of karton
+5,17.250,Vervaardiging van andere artikelen van papier of karton
+2,18,Activiteiten op het gebied van drukwerk en reproductie van opgenomen media
+3,18.1,Activiteiten op het gebied van drukwerk en gerelateerde dienstverlening
+4,18.11,Drukken van dagbladen
+5,18.110,Drukken van dagbladen
+4,18.12,Overige activiteiten op het gebied van drukwerk
+5,18.120,Overige activiteiten op het gebied van drukwerk
+4,18.13,Prepress- en premediadiensten
+5,18.130,Prepress- en premediadiensten
+4,18.14,Activiteiten van binderijen en aanverwante diensten
+5,18.140,Activiteiten van binderijen en aanverwante diensten
+3,18.2,Reproductie van opgenomen media
+4,18.20,Reproductie van opgenomen media
+5,18.200,Reproductie van opgenomen media
+2,19,Vervaardiging van cokes en van geraffineerde aardolieproducten
+3,19.1,Vervaardiging van cokesovenproducten
+4,19.10,Vervaardiging van cokesovenproducten
+5,19.100,Vervaardiging van cokesovenproducten
+3,19.2,Vervaardiging van geraffineerde aardolieproducten en van producten uit fossiele brandstoffen
+4,19.20,Vervaardiging van geraffineerde aardolieproducten en van producten uit fossiele brandstoffen
+5,19.200,Vervaardiging van geraffineerde aardolieproducten en van producten uit fossiele brandstoffen
+2,20,Vervaardiging van chemische producten
+3,20.1,"Vervaardiging van chemische basisproducten, kunstmeststoffen en stikstofverbindingen en van kunststoffen en synthetische rubber in primaire vormen"
+4,20.11,Vervaardiging van industriële gassen
+5,20.110,Vervaardiging van industriële gassen
+4,20.12,Vervaardiging van kleurstoffen en pigmenten
+5,20.120,Vervaardiging van kleurstoffen en pigmenten
+4,20.13,Vervaardiging van andere anorganische chemische basisproducten
+5,20.130,Vervaardiging van andere anorganische chemische basisproducten
+4,20.14,Vervaardiging van andere organische chemische basisproducten
+5,20.140,Vervaardiging van andere organische chemische basisproducten
+4,20.15,Vervaardiging van kunstmeststoffen en stikstofverbindingen
+5,20.150,Vervaardiging van kunstmeststoffen en stikstofverbindingen
+4,20.16,Vervaardiging van kunststoffen in primaire vormen
+5,20.160,Vervaardiging van kunststoffen in primaire vormen
+4,20.17,Vervaardiging van synthetische rubber in primaire vormen
+5,20.170,Vervaardiging van synthetische rubber in primaire vormen
+3,20.2,"Vervaardiging van verdelgingsmiddelen, ontsmettingsmiddelen en andere chemische producten voor de landbouw"
+4,20.20,"Vervaardiging van verdelgingsmiddelen, ontsmettingsmiddelen en andere chemische producten voor de landbouw"
+5,20.200,"Vervaardiging van verdelgingsmiddelen, ontsmettingsmiddelen en andere chemische producten voor de landbouw"
+3,20.3,"Vervaardiging van verf, vernis e.d., drukinkt en mastiek"
+4,20.30,"Vervaardiging van verf, vernis e.d., drukinkt en mastiek"
+5,20.300,"Vervaardiging van verf, vernis e.d., drukinkt en mastiek"
+3,20.4,"Vervaardiging van was-, poets- en reinigingsmiddelen"
+4,20.41,"Vervaardiging van zeep en wasmiddelen, poets- en reinigingsmiddelen"
+5,20.411,Vervaardiging van zeep en wasmiddelen
+5,20.412,Vervaardiging van poets- en reinigingsmiddelen
+4,20.42,Vervaardiging van parfums en toiletartikelen
+5,20.420,Vervaardiging van parfums en toiletartikelen
+3,20.5,Vervaardiging van andere chemische producten
+4,20.51,Vervaardiging van vloeibare biobrandstoffen
+5,20.510,Vervaardiging van vloeibare biobrandstoffen
+4,20.59,"Vervaardiging van andere chemische producten, n.e.g."
+5,20.590,"Vervaardiging van andere chemische producten, n.e.g."
+3,20.6,Vervaardiging van synthetische en kunstmatige vezels
+4,20.60,Vervaardiging van synthetische en kunstmatige vezels
+5,20.600,Vervaardiging van synthetische en kunstmatige vezels
+2,21,Vervaardiging van farmaceutische grondstoffen en producten
+3,21.1,Vervaardiging van farmaceutische grondstoffen
+4,21.10,Vervaardiging van farmaceutische grondstoffen
+5,21.100,Vervaardiging van farmaceutische grondstoffen
+3,21.2,Vervaardiging van farmaceutische producten
+4,21.20,Vervaardiging van farmaceutische producten
+5,21.201,Vervaardiging van geneesmiddelen
+5,21.209,Vervaardiging van overige farmaceutische producten
+2,22,Vervaardiging van producten van rubber of kunststof
+3,22.1,Vervaardiging van producten van rubber
+4,22.11,Vervaardiging en loopvlakvernieuwing van rubberbanden en vervaardiging van binnenbanden
+5,22.110,Vervaardiging en loopvlakvernieuwing van rubberbanden en vervaardiging van binnenbanden
+4,22.12,Vervaardiging van andere producten van rubber
+5,22.120,Vervaardiging van andere producten van rubber
+3,22.2,Vervaardiging van producten van kunststof
+4,22.21,"Vervaardiging van platen, vellen, buizen en profielen van kunststof"
+5,22.210,"Vervaardiging van platen, vellen, buizen en profielen van kunststof"
+4,22.22,Vervaardiging van verpakkingsmateriaal van kunststof
+5,22.220,Vervaardiging van verpakkingsmateriaal van kunststof
+4,22.23,Vervaardiging van deuren en vensters van kunststof
+5,22.230,Vervaardiging van deuren en vensters van kunststof
+4,22.24,Vervaardiging van kunststofartikelen voor de bouw
+5,22.240,Vervaardiging van kunststofartikelen voor de bouw
+4,22.25,Verwerking en afwerking van kunststofproducten
+5,22.250,Verwerking en afwerking van kunststofproducten
+4,22.26,Vervaardiging van andere producten van kunststof
+5,22.260,Vervaardiging van andere producten van kunststof
+2,23,Vervaardiging van andere niet-metaalhoudende minerale producten
+3,23.1,Vervaardiging van glas en glaswerk
+4,23.11,Vervaardiging van vlakglas
+5,23.110,Vervaardiging van vlakglas
+4,23.12,Vormen en bewerken van vlakglas
+5,23.120,Vormen en bewerken van vlakglas
+4,23.13,Vervaardiging van holglas
+5,23.130,Vervaardiging van holglas
+4,23.14,Vervaardiging van glasvezels
+5,23.140,Vervaardiging van glasvezels
+4,23.15,"Vervaardiging en bewerking van overig glas, inclusief technisch glaswerk"
+5,23.150,"Vervaardiging en bewerking van overig glas, inclusief technisch glaswerk"
+3,23.2,Vervaardiging van vuurvaste producten
+4,23.20,Vervaardiging van vuurvaste producten
+5,23.200,Vervaardiging van vuurvaste producten
+3,23.3,"Vervaardiging van producten voor de bouw, van klei"
+4,23.31,Vervaardiging van keramische tegels en plavuizen
+5,23.310,Vervaardiging van keramische tegels en plavuizen
+4,23.32,"Vervaardiging van bakstenen, tegels en producten voor de bouw, van gebakken klei"
+5,23.321,Vervaardiging van bakstenen
+5,23.322,"Vervaardiging dakpannen, tegels en andere producten voor de bouw, van gebakken klei"
+3,23.4,Vervaardiging van andere keramische producten
+4,23.41,Vervaardiging van huishoudelijk en sieraardewerk
+5,23.410,Vervaardiging van huishoudelijk en sieraardewerk
+4,23.42,Vervaardiging van sanitair aardewerk
+5,23.420,Vervaardiging van sanitair aardewerk
+4,23.43,"Vervaardiging van isolatoren en isolatiemateriaal, van keramische stoffen"
+5,23.430,"Vervaardiging van isolatoren en isolatiemateriaal, van keramische stoffen"
+4,23.44,Vervaardiging van ander technisch aardewerk
+5,23.440,Vervaardiging van ander technisch aardewerk
+4,23.45,Vervaardiging van andere keramische producten
+5,23.450,Vervaardiging van andere keramische producten
+3,23.5,"Vervaardiging van cement, kalk en gips"
+4,23.51,Vervaardiging van cement
+5,23.510,Vervaardiging van cement
+4,23.52,Vervaardiging van kalk en gips
+5,23.520,Vervaardiging van kalk en gips
+3,23.6,"Vervaardiging van artikelen van beton, cement en gips"
+4,23.61,Vervaardiging van artikelen van beton voor de bouw
+5,23.610,Vervaardiging van artikelen van beton voor de bouw
+4,23.62,Vervaardiging van artikelen van gips voor de bouw
+5,23.620,Vervaardiging van artikelen van gips voor de bouw
+4,23.63,Vervaardiging van stortklare beton
+5,23.630,Vervaardiging van stortklare beton
+4,23.64,Vervaardiging van mortel
+5,23.640,Vervaardiging van mortel
+4,23.65,Vervaardiging van producten van vezelcement
+5,23.650,Vervaardiging van producten van vezelcement
+4,23.66,"Vervaardiging van andere artikelen van beton, cement en gips"
+5,23.660,"Vervaardiging van andere artikelen van beton, cement en gips"
+3,23.7,"Houwen, bewerken en afwerken van natuursteen"
+4,23.70,"Houwen, bewerken en afwerken van natuursteen"
+5,23.700,"Houwen, bewerken en afwerken van natuursteen"
+3,23.9,Vervaardiging van andere schuurmiddelen en niet-metaalhoudende minerale producten n.e.g.
+4,23.91,Vervaardiging van schuurmiddelen
+5,23.910,Vervaardiging van schuurmiddelen
+4,23.99,"Vervaardiging van andere niet-metaalhoudende minerale producten, n.e.g."
+5,23.990,"Vervaardiging van andere niet-metaalhoudende minerale producten, n.e.g."
+2,24,Vervaardiging van metalen in primaire vorm
+3,24.1,Vervaardiging van ijzer en staal en van ferrolegeringen
+4,24.10,Vervaardiging van ijzer en staal en van ferrolegeringen
+5,24.100,Vervaardiging van ijzer en staal en van ferrolegeringen
+3,24.2,"Vervaardiging van buizen, pijpen, holle profielen en fittings daarvoor, van staal"
+4,24.20,"Vervaardiging van buizen, pijpen, holle profielen en fittings daarvoor, van staal"
+5,24.200,"Vervaardiging van buizen, pijpen, holle profielen en fittings daarvoor, van staal"
+3,24.3,Vervaardiging van andere producten van de eerste verwerking van staal
+4,24.31,Koudtrekken van staven
+5,24.310,Koudtrekken van staven
+4,24.32,Koudwalsen van bandstaal
+5,24.320,Koudwalsen van bandstaal
+4,24.33,Koudvervormen of koudfelsen
+5,24.330,Koudvervormen of koudfelsen
+4,24.34,Koudtrekken van draad
+5,24.340,Koudtrekken van draad
+3,24.4,Productie van edelmetalen en van andere non-ferrometalen
+4,24.41,Productie van edelmetalen
+5,24.410,Productie van edelmetalen
+4,24.42,Productie van aluminium
+5,24.420,Productie van aluminium
+4,24.43,"Productie van lood, zink en tin"
+5,24.430,"Productie van lood, zink en tin"
+4,24.44,Productie van koper
+5,24.440,Productie van koper
+4,24.45,Productie van andere non-ferrometalen
+5,24.450,Productie van andere non-ferrometalen
+4,24.46,Bewerking van splijt- en kweekstoffen
+5,24.460,Bewerking van splijt- en kweekstoffen
+3,24.5,Gieten van metalen
+4,24.51,Gieten van ijzer
+5,24.510,Gieten van ijzer
+4,24.52,Gieten van staal
+5,24.520,Gieten van staal
+4,24.53,Gieten van lichte metalen
+5,24.530,Gieten van lichte metalen
+4,24.54,Gieten van andere non-ferrometalen
+5,24.540,Gieten van andere non-ferrometalen
+2,25,"Vervaardiging van producten van metaal, exclusief machines en apparatuur"
+3,25.1,Vervaardiging van metalen constructiewerken
+4,25.11,Vervaardiging van metalen constructiewerken en delen daarvan
+5,25.110,Vervaardiging van metalen constructiewerken en delen daarvan
+4,25.12,Vervaardiging van metalen deuren en vensters
+5,25.120,Vervaardiging van metalen deuren en vensters
+3,25.2,"Vervaardiging van tanks, reservoirs en bergingsmiddelen, van metaal"
+4,25.21,"Vervaardiging van radiatoren, stoomketels en ketels voor centrale verwarming"
+5,25.210,"Vervaardiging van radiatoren, stoomketels en ketels voor centrale verwarming"
+4,25.22,"Vervaardiging van andere tanks, reservoirs en bergingsmiddelen, van metaal"
+5,25.220,"Vervaardiging van andere tanks, reservoirs en bergingsmiddelen, van metaal"
+3,25.3,Vervaardiging van wapens en munitie
+4,25.30,Vervaardiging van wapens en munitie
+5,25.300,Vervaardiging van wapens en munitie
+3,25.4,Smeden en bewerken van metaal en poedermetallurgie
+4,25.40,Smeden en bewerken van metaal en poedermetallurgie
+5,25.401,Smeden van metaal
+5,25.402,Bewerken van metaal en poedermetallurgie
+3,25.5,Oppervlaktebehandeling van metalen; verspanend bewerken van metalen
+4,25.51,Coating van metalen
+5,25.510,Coating van metalen
+4,25.52,Warmtebehandeling van metaal
+5,25.520,Warmtebehandeling van metaal
+4,25.53,Verspanend bewerken van metalen
+5,25.530,Verspanend bewerken van metalen
+3,25.6,"Vervaardiging van scharen, messen, bestekken, gereedschap en ijzerwaren"
+4,25.61,"Vervaardiging van scharen, messen, bestekken enz."
+5,25.610,"Vervaardiging van scharen, messen, bestekken enz."
+4,25.62,Vervaardiging van hang- en sluitwerk
+5,25.620,Vervaardiging van hang- en sluitwerk
+4,25.63,Vervaardiging van gereedschap
+5,25.631,Vervaardiging van vormkasten en gietvormen
+5,25.639,"Vervaardiging van gereedschap, m.u.v. vormkasten en gietvormen"
+3,25.9,Vervaardiging van andere producten van metaal
+4,25.91,Vervaardiging van stalen vaten en dergelijke
+5,25.910,Vervaardiging van stalen vaten en dergelijke
+4,25.92,Vervaardiging van verpakkingsmiddelen van licht metaal
+5,25.920,Vervaardiging van verpakkingsmiddelen van licht metaal
+4,25.93,Vervaardiging van artikelen van draad en van kettingen en veren
+5,25.930,Vervaardiging van artikelen van draad en van kettingen en veren
+4,25.94,"Vervaardiging van bouten, schroeven en moeren"
+5,25.940,"Vervaardiging van bouten, schroeven en moeren"
+4,25.99,Vervaardiging van andere producten van metaal n.e.g.
+5,25.991,Vervaardiging van huishoudelijke en sanitaire producten van metaal
+5,25.999,"Vervaardiging van overige producten van metaal, n.e.g."
+2,26,Vervaardiging van informaticaproducten en van elektronische en optische producten
+3,26.1,Vervaardiging van elektronische onderdelen en printplaten
+4,26.11,Vervaardiging van elektronische onderdelen
+5,26.110,Vervaardiging van elektronische onderdelen
+4,26.12,Vervaardiging van elektronische printplaten
+5,26.120,Vervaardiging van elektronische printplaten
+3,26.2,Vervaardiging van computers en randapparatuur
+4,26.20,Vervaardiging van computers en randapparatuur
+5,26.200,Vervaardiging van computers en randapparatuur
+3,26.3,Vervaardiging van communicatieapparatuur
+4,26.30,Vervaardiging van communicatieapparatuur
+5,26.300,Vervaardiging van communicatieapparatuur
+3,26.4,Vervaardiging van consumentenelektronica
+4,26.40,Vervaardiging van consumentenelektronica
+5,26.400,Vervaardiging van consumentenelektronica
+3,26.5,"Vervaardiging van meet-en controle-instrumenten, klokken en horloges"
+4,26.51,"Vervaardiging van meet-, controle- en navigatie-instrumenten en -apparatuur"
+5,26.510,"Vervaardiging van meet-, controle- en navigatie-instrumenten en -apparatuur"
+4,26.52,Vervaardiging van klokken en horloges
+5,26.520,Vervaardiging van klokken en horloges
+3,26.6,Vervaardiging van bestralingsapparatuur en van elektromedische en elektrotherapeutische apparatuur
+4,26.60,Vervaardiging van bestralingsapparatuur en van elektromedische en elektrotherapeutische apparatuur
+5,26.600,Vervaardiging van bestralingsapparatuur en van elektromedische en elektrotherapeutische apparatuur
+3,26.7,"Vervaardiging van optische instrumenten, magnetische en optische dragers en fotografische apparatuur"
+4,26.70,"Vervaardiging van optische instrumenten, magnetische en optische dragers en fotografische apparatuur"
+5,26.700,"Vervaardiging van optische instrumenten, magnetische en optische dragers en fotografische apparatuur"
+2,27,Vervaardiging van elektrische apparatuur
+3,27.1,"Vervaardiging van elektromotoren, van elektrische generatoren en transformatoren en van schakel- en verdeelinrichtingen"
+4,27.11,Vervaardiging van elektromotoren en van elektrische generatoren en transformatoren
+5,27.110,Vervaardiging van elektromotoren en van elektrische generatoren en transformatoren
+4,27.12,Vervaardiging van schakel- en verdeelinrichtingen
+5,27.120,Vervaardiging van schakel- en verdeelinrichtingen
+3,27.2,Vervaardiging van batterijen en accumulatoren
+4,27.20,Vervaardiging van batterijen en accumulatoren
+5,27.200,Vervaardiging van batterijen en accumulatoren
+3,27.3,"Vervaardiging van kabels en van schakelaars, stekkers, stopcontacten e.d."
+4,27.31,Vervaardiging van kabels van optische vezels
+5,27.310,Vervaardiging van kabels van optische vezels
+4,27.32,Vervaardiging van andere elektrische en elektronische draden en kabels
+5,27.320,Vervaardiging van andere elektrische en elektronische draden en kabels
+4,27.33,Vervaardiging van onderdelen van elektrische installaties
+5,27.330,Vervaardiging van onderdelen van elektrische installaties
+3,27.4,Vervaardiging van verlichtingsbenodigdheden
+4,27.40,Vervaardiging van verlichtingsbenodigdheden
+5,27.401,Vervaardiging van lampen
+5,27.402,Vervaardiging van verlichtingsapparaten
+3,27.5,Vervaardiging van huishoudapparaten
+4,27.51,Vervaardiging van elektrische huishoudapparaten
+5,27.510,Vervaardiging van elektrische huishoudapparaten
+4,27.52,Vervaardiging van niet-elektrische huishoudapparaten
+5,27.520,Vervaardiging van niet-elektrische huishoudapparaten
+3,27.9,Vervaardiging van andere elektrische apparatuur
+4,27.90,Vervaardiging van andere elektrische apparatuur
+5,27.900,Vervaardiging van andere elektrische apparatuur
+2,28,"Vervaardiging van machines, apparaten en werktuigen, n.e.g"
+3,28.1,Vervaardiging van machines en apparaten voor algemeen gebruik
+4,28.11,"Vervaardiging van motoren en turbines, exclusief motoren voor luchtvaartuigen, motorvoertuigen en bromfietsen"
+5,28.110,"Vervaardiging van motoren en turbines, exclusief motoren voor luchtvaartuigen, motorvoertuigen en bromfietsen"
+4,28.12,Vervaardiging van hydraulische en pneumatische apparatuur
+5,28.120,Vervaardiging van hydraulische en pneumatische apparatuur
+4,28.13,Vervaardiging van andere pompen en compressoren
+5,28.130,Vervaardiging van andere pompen en compressoren
+4,28.14,Vervaardiging van andere kranen en dergelijke artikelen
+5,28.140,Vervaardiging van andere kranen en dergelijke artikelen
+4,28.15,"Vervaardiging van tandwielen, lagers en andere drijfwerkelementen"
+5,28.150,"Vervaardiging van tandwielen, lagers en andere drijfwerkelementen"
+3,28.2,Vervaardiging van andere machines en apparaten voor algemeen gebruik
+4,28.21,Vervaardiging van ovens en permanente verwarmingstoestellen voor huishoudelijk gebruik
+5,28.210,Vervaardiging van ovens en permanente verwarmingstoestellen voor huishoudelijk gebruik
+4,28.22,"Vervaardiging van hijs-, hef- en transportwerktuigen"
+5,28.220,"Vervaardiging van hijs-, hef- en transportwerktuigen"
+4,28.23,Vervaardiging van kantoormachines en -uitrusting (exclusief computers en randapparatuur)
+5,28.230,Vervaardiging van kantoormachines en -uitrusting (exclusief computers en randapparatuur)
+4,28.24,Vervaardiging van elektrisch handgereedschap
+5,28.240,Vervaardiging van elektrisch handgereedschap
+4,28.25,"Vervaardiging van machines en apparaten voor klimaatregeling, voor niet-huishoudelijk gebruik"
+5,28.250,"Vervaardiging van machines en apparaten voor klimaatregeling, voor niet-huishoudelijk gebruik"
+4,28.29,"Vervaardiging van andere machines en apparaten voor algemeen gebruik, n.e.g."
+5,28.291,Vervaardiging van verpakkingsmachines
+5,28.292,Vervaardiging van weegtoestellen
+5,28.293,"Vervaardiging van toestellen voor het spuiten van vloeistoffen of poeder, inclusief brandblusapparaten"
+5,28.294,Vervaardiging van verkoopautomaten
+5,28.295,Vervaardiging van filtreertoestellen
+5,28.296,"Vervaardiging van hogedrukreinigers, zandstraalapparaten en dergelijk reinigingsmateriaal"
+5,28.299,"Vervaardiging van overige machines en apparaten voor algemeen gebruik, n.e.g."
+3,28.3,Vervaardiging van machines en werktuigen voor de landbouw en de bosbouw
+4,28.30,Vervaardiging van machines voor de landbouw en de bosbouw
+5,28.300,Vervaardiging van machines voor de landbouw en de bosbouw
+3,28.4,Vervaardiging van niet-verspanende machines voor de metaalbewerking en van gereedschapswerktuigen
+4,28.41,Vervaardiging van niet-verspanende machines voor de metaalbewerking en van gereedschapswerktuigen voor metaalbewerking
+5,28.410,Vervaardiging van niet-verspanende machines voor de metaalbewerking en van gereedschapswerktuigen voor metaalbewerking
+4,28.42,Vervaardiging van andere gereedschapswerktuigen
+5,28.420,Vervaardiging van andere gereedschapswerktuigen
+3,28.9,"Vervaardiging van andere machines, apparaten en werktuigen voor specifieke doeleinden"
+4,28.91,Vervaardiging van machines voor de metallurgie
+5,28.910,Vervaardiging van machines voor de metallurgie
+4,28.92,Vervaardiging van machines voor de winning van delfstoffen en voor de bouw
+5,28.920,Vervaardiging van machines voor de winning van delfstoffen en voor de bouw
+4,28.93,Vervaardiging van machines voor de productie van voedings- en genotmiddelen
+5,28.930,Vervaardiging van machines voor de productie van voedings- en genotmiddelen
+4,28.94,"Vervaardiging van machines voor de productie van textiel, kleding en leer"
+5,28.940,"Vervaardiging van machines voor de productie van textiel, kleding en leer"
+4,28.95,Vervaardiging van machines voor de productie van papier en karton
+5,28.950,Vervaardiging van machines voor de productie van papier en karton
+4,28.96,Vervaardiging van machines voor de kunststof- en rubberindustrie
+5,28.960,Vervaardiging van machines voor de kunststof- en rubberindustrie
+4,28.97,Vervaardiging van machines voor additieve productie
+5,28.970,Vervaardiging van machines voor additieve productie
+4,28.99,Vervaardiging van andere machines voor specifieke doeleinden n.e.g.
+5,28.990,Vervaardiging van andere machines voor specifieke doeleinden n.e.g.
+2,29,"Vervaardiging van motorvoertuigen, aanhangwagens en opleggers"
+3,29.1,Vervaardiging van motorvoertuigen
+4,29.10,Vervaardiging van motorvoertuigen
+5,29.100,Vervaardiging van motorvoertuigen
+3,29.2,Vervaardiging van carrosserieën voor motorvoertuigen; vervaardiging van aanhangwagens en opleggers
+4,29.20,Vervaardiging van carrosserieën voor motorvoertuigen; vervaardiging van aanhangwagens en opleggers
+5,29.201,Vervaardiging van carrosserieën voor motorvoertuigen
+5,29.202,"Vervaardiging van aanhangwagens, opleggers en caravans"
+3,29.3,Vervaardiging van delen en toebehoren voor motorvoertuigen
+4,29.31,Vervaardiging van elektrische en elektronische benodigdheden voor motorvoertuigen
+5,29.310,Vervaardiging van elektrische en elektronische benodigdheden voor motorvoertuigen
+4,29.32,Vervaardiging van andere delen en toebehoren voor motorvoertuigen
+5,29.320,Vervaardiging van andere delen en toebehoren voor motorvoertuigen
+2,30,Vervaardiging van andere vervoermiddelen
+3,30.1,Scheepsbouw
+4,30.11,Bouw van civiele schepen en drijvend materieel
+5,30.110,Bouw van civiele schepen en drijvend materieel
+4,30.12,Bouw van plezier- en sportvaartuigen
+5,30.120,Bouw van plezier- en sportvaartuigen
+4,30.13,Bouw van militaire schepen en vaartuigen
+5,30.130,Bouw van militaire schepen en vaartuigen
+3,30.2,Vervaardiging van locomotieven en ander rollend materieel voor spoorwegen
+4,30.20,Vervaardiging van locomotieven en ander rollend materieel voor spoorwegen
+5,30.200,Vervaardiging van locomotieven en ander rollend materieel voor spoorwegen
+3,30.3,Vervaardiging van lucht- en ruimtevaartuigen en van toestellen in verband daarmee
+4,30.31,Vervaardiging van civiele lucht- en ruimtevaartuigen en van toestellen in verband daarmee
+5,30.310,Vervaardiging van civiele lucht- en ruimtevaartuigen en van toestellen in verband daarmee
+4,30.32,Vervaardiging van militaire lucht- en ruimtevaartuigen en van toestellen in verband daarmee
+5,30.320,Vervaardiging van militaire lucht- en ruimtevaartuigen en van toestellen in verband daarmee
+3,30.4,Vervaardiging van militaire gevechtsvoertuigen
+4,30.40,Vervaardiging van militaire gevechtsvoertuigen
+5,30.400,Vervaardiging van militaire gevechtsvoertuigen
+3,30.9,"Vervaardiging van transportmiddelen, n.e.g."
+4,30.91,Vervaardiging van motorfietsen
+5,30.910,Vervaardiging van motorfietsen
+4,30.92,Vervaardiging van fietsen en invalidenwagens
+5,30.920,Vervaardiging van fietsen en invalidenwagens
+4,30.99,"Vervaardiging van andere transportmiddelen, n.e.g."
+5,30.990,"Vervaardiging van andere transportmiddelen, n.e.g."
+2,31,Vervaardiging van meubelen
+3,31.0,Vervaardiging van meubelen
+4,31.00,Vervaardiging van meubelen
+5,31.001,Vervaardiging van kantoor- en winkelmeubelen
+5,31.002,Vervaardiging van keukenmeubelen
+5,31.003,Vervaardiging van matrassen
+5,31.004,"Vervaardiging van eetkamer-, zitkamer-, slaapkamer- en badkamermeubelen"
+5,31.009,"Vervaardiging van andere meubelen, n.e.g."
+2,32,Overige industrie
+3,32.1,Bewerken van edelstenen en vervaardiging van sieraden en dergelijke artikelen
+4,32.11,Slaan van munten
+5,32.110,Slaan van munten
+4,32.12,Bewerken van edelstenen en vervaardiging van sieraden en dergelijke artikelen
+5,32.121,Bewerken van diamant
+5,32.122,Bewerken van edelstenen (m.u.v. diamant) en van halfedelstenen
+5,32.123,Vervaardiging van sieraden
+5,32.124,Vervaardiging van edelsmeedwerk
+5,32.129,"Vervaardiging van overige artikelen van edele metalen, n.e.g."
+4,32.13,Vervaardiging van imitatiesieraden en dergelijke artikelen
+5,32.130,Vervaardiging van imitatiesieraden en dergelijke artikelen
+3,32.2,Vervaardiging van muziekinstrumenten
+4,32.20,Vervaardiging van muziekinstrumenten
+5,32.200,Vervaardiging van muziekinstrumenten
+3,32.3,Vervaardiging van sportartikelen
+4,32.30,Vervaardiging van sportartikelen
+5,32.300,Vervaardiging van sportartikelen
+3,32.4,Vervaardiging van spellen en speelgoed
+4,32.40,Vervaardiging van spellen en speelgoed
+5,32.400,Vervaardiging van spellen en speelgoed
+3,32.5,Vervaardiging van medische en tandheelkundige instrumenten en benodigdheden
+4,32.50,Vervaardiging van medische en tandheelkundige instrumenten en benodigdheden
+5,32.500,Vervaardiging van medische en tandheelkundige instrumenten en benodigdheden
+3,32.9,"Industrie, n.e.g."
+4,32.91,Vervaardiging van borstelwaren
+5,32.910,Vervaardiging van borstelwaren
+4,32.99,"Overige industrie, n.e.g."
+5,32.990,"Overige industrie, n.e.g."
+2,33,"Reparatie, onderhoud en installatie van machines en apparaten"
+3,33.1,"Reparatie en onderhoud van producten van metaal, machines en apparaten"
+4,33.11,Reparatie en onderhoud van producten van metaal
+5,33.110,Reparatie en onderhoud van producten van metaal
+4,33.12,Reparatie en onderhoud van machines
+5,33.120,Reparatie en onderhoud van machines
+4,33.13,Reparatie en onderhoud van elektronische en optische apparatuur
+5,33.130,Reparatie en onderhoud van elektronische en optische apparatuur
+4,33.14,Reparatie en onderhoud van elektrische apparatuur
+5,33.140,Reparatie en onderhoud van elektrische apparatuur
+4,33.15,Reparatie en onderhoud van civiele schepen
+5,33.150,Reparatie en onderhoud van civiele schepen
+4,33.16,Reparatie en onderhoud van civiele lucht- en ruimtevaartuigen
+5,33.160,Reparatie en onderhoud van civiele lucht- en ruimtevaartuigen
+4,33.17,Reparatie en onderhoud van andere civiele transportmiddelen
+5,33.170,Reparatie en onderhoud van andere civiele transportmiddelen
+4,33.18,"Reparatie en onderhoud van militaire gevechtsvoertuigen, schepen, lucht- en ruimtevaartuigen"
+5,33.180,"Reparatie en onderhoud van militaire gevechtsvoertuigen, schepen, lucht- en ruimtevaartuigen"
+4,33.19,Reparatie en onderhoud van andere apparatuur
+5,33.190,Reparatie en onderhoud van andere apparatuur
+3,33.2,"Installatie van industriële machines, toestellen en werktuigen"
+4,33.20,"Installatie van industriële machines, toestellen en werktuigen"
+5,33.200,"Installatie van industriële machines, toestellen en werktuigen"
+1,D,"PRODUCTIE EN DISTRIBUTIE VAN ELEKTRICITEIT, GAS, STOOM EN GEKOELDE LUCHT"
+2,35,"Productie en distributie van elektriciteit, gas, stoom en gekoelde lucht"
+3,35.1,"Opwekking, transmissie en distributie van elektriciteit"
+4,35.11,Productie van elektriciteit uit niet-hernieuwbare bronnen
+5,35.110,Productie van elektriciteit uit niet-hernieuwbare bronnen
+4,35.12,Productie van elektriciteit uit hernieuwbare bronnen
+5,35.120,Productie van elektriciteit uit hernieuwbare bronnen
+4,35.13,Transmissie van elektriciteit
+5,35.130,Transmissie van elektriciteit
+4,35.14,Distributie van elektriciteit
+5,35.140,Distributie van elektriciteit
+4,35.15,Handel in elektriciteit
+5,35.150,Handel in elektriciteit
+4,35.16,Opslag van elektriciteit
+5,35.160,Opslag van elektriciteit
+3,35.2,"Productie van gas, en distributie van gasvormige brandstoffen via leidingen"
+4,35.21,Productie van gas
+5,35.210,Productie van gas
+4,35.22,Distributie van gasvormige brandstoffen via leidingen
+5,35.220,Distributie van gasvormige brandstoffen via leidingen
+4,35.23,Handel in gas via leidingen
+5,35.230,Handel in gas via leidingen
+4,35.24,Opslag van gas als onderdeel van netwerkleveringsdiensten
+5,35.240,Opslag van gas als onderdeel van netwerkleveringsdiensten
+3,35.3,Productie en distributie van stoom en gekoelde lucht
+4,35.30,Productie en distributie van stoom en gekoelde lucht
+5,35.300,Productie en distributie van stoom en gekoelde lucht
+3,35.4,Activiteiten van makelaars en agenten voor elektriciteit en aardgas
+4,35.40,Activiteiten van makelaars en agenten voor elektriciteit en aardgas
+5,35.400,Activiteiten van makelaars en agenten voor elektriciteit en aardgas
+1,E,DISTRIBUTIE VAN WATER; AFVAL- EN AFVALWATERBEHEER EN SANERING
+2,36,"Winning, behandeling en distributie van water"
+3,36.0,"Winning, behandeling en distributie van water"
+4,36.00,"Winning, behandeling en distributie van water"
+5,36.000,"Winning, behandeling en distributie van water"
+2,37,Afvalwaterafvoer
+3,37.0,Afvalwaterafvoer
+4,37.00,Afvalwaterafvoer
+5,37.000,Afvalwaterafvoer
+2,38,"Terugwinning uit afval, inzameling en verwijdering van afval"
+3,38.1,Inzameling van afval
+4,38.11,Inzameling van ongevaarlijk afval
+5,38.110,Inzameling van ongevaarlijk afval
+4,38.12,Inzameling van gevaarlijk afval
+5,38.120,Inzameling van gevaarlijk afval
+3,38.2,Terugwinning uit afval
+4,38.21,Terugwinning van materialen uit afval
+5,38.210,Terugwinning van materialen uit afval
+4,38.22,Winning van energie uit afval
+5,38.220,Winning van energie uit afval
+4,38.23,Andere terugwinning uit afval
+5,38.230,Andere terugwinning uit afval
+3,38.3,Verwijdering van afval zonder terugwinning
+4,38.31,Verbranding zonder energieterugwinning
+5,38.310,Verbranding zonder energieterugwinning
+4,38.32,Storten of permanent opslaan
+5,38.320,Storten of permanent opslaan
+4,38.33,Andere afvalverwijdering
+5,38.330,Andere afvalverwijdering
+2,39,Sanering en ander afvalbeheer
+3,39.0,Sanering en ander afvalbeheer
+4,39.00,Sanering en ander afvalbeheer
+5,39.000,Sanering en ander afvalbeheer
+1,F,BOUWNIJVERHEID
+2,41,Burgerlijke en utiliteitsbouw
+3,41.0,Burgerlijke en utiliteitsbouw
+4,41.00,Burgerlijke en utiliteitsbouw
+5,41.001,Algemene bouw van residentiële gebouwen
+5,41.002,Algemene bouw van kantoorgebouwen
+5,41.003,Algemene bouw van andere niet-residentiële gebouwen
+2,42,Weg- en waterbouw
+3,42.1,Bouw van wegen en spoorwegen
+4,42.11,Bouw van autowegen en andere wegen
+5,42.110,Bouw van autowegen en andere wegen
+4,42.12,Bouw van boven- en ondergrondse spoorwegen
+5,42.120,Bouw van boven- en ondergrondse spoorwegen
+4,42.13,Bouw van bruggen en tunnels
+5,42.130,Bouw van bruggen en tunnels
+3,42.2,Bouw van civieltechnische werken ten behoeve van nutsbedrijven
+4,42.21,Bouw van civieltechnische werken voor vloeistoffen
+5,42.211,Bouw van water- en gasdistributienetten
+5,42.212,Bouw van rioleringen
+5,42.219,"Bouw van civieltechnische werken voor vloeistoffen, n.e.g."
+4,42.22,Bouw van civieltechnische werken voor elektriciteit en telecommunicatie
+5,42.220,Bouw van civieltechnische werken voor elektriciteit en telecommunicatie
+3,42.9,Bouw van andere civieltechnische werken
+4,42.91,Waterbouw
+5,42.911,Baggerwerken
+5,42.919,"Waterbouw, m.u.v. baggerwerken"
+4,42.99,"Bouw van andere civieltechnische werken, n.e.g."
+5,42.990,"Bouw van andere civieltechnische werken, n.e.g."
+2,43,Gespecialiseerde bouwwerkzaamheden
+3,43.1,Slopen en bouwrijp maken van terreinen
+4,43.11,Slopen
+5,43.110,Slopen
+4,43.12,Bouwrijp maken van terreinen
+5,43.120,Bouwrijp maken van terreinen
+4,43.13,Proefboren en boren
+5,43.130,Proefboren en boren
+3,43.2,"Elektrische installatie, loodgieterswerk en overige bouwinstallatie"
+4,43.21,Elektrische installatie
+5,43.211,Algemene elektrotechnische installatiewerken
+5,43.212,Elektrotechnische installatiewerken van nijverheidsinrichtingen
+5,43.213,Installatie van duurzame elektrische installaties
+5,43.214,Installatie van elektronische beveiligingssystemen
+4,43.22,"Loodgieterswerk, installatie van verwarming en klimaatregeling"
+5,43.221,Sanitaire werkzaamheden
+5,43.222,"Installatie van verwarming, klimaatregeling, koeling en ventilatie  aangedreven door elektriciteit"
+5,43.223,"Installatie van verwarming, klimaatregeling, koeling en ventilatie aangedreven door andere energiebronnen dan elektriciteit"
+4,43.23,Installatie van isolatie
+5,43.230,Installatie van isolatie
+4,43.24,Overige bouwinstallatie
+5,43.240,Overige bouwinstallatie
+3,43.3,Afwerking van gebouwen
+4,43.31,Stukadoorswerk
+5,43.310,Stukadoorswerk
+4,43.32,Schrijnwerk
+5,43.320,Schrijnwerk
+4,43.33,Vloerafwerking en behangen
+5,43.331,Plaatsen van vloer- en wandtegels
+5,43.332,Plaatsen van vloerbedekking en wandbekleding van hout
+5,43.333,Plaatsen van behang en vloerbedekking en wandbekleding van andere materialen
+4,43.34,Schilderen en glaszetten
+5,43.341,Schilderen van gebouwen
+5,43.342,Schilderen van civieltechnische werken
+5,43.343,Glaszetten
+4,43.35,Overige werkzaamheden in verband met de afwerking van gebouwen
+5,43.350,Overige werkzaamheden in verband met de afwerking van gebouwen
+3,43.4,Gespecialiseerde bouwactiviteiten in de constructie van gebouwen
+4,43.41,Dakwerkzaamheden
+5,43.410,Dakwerkzaamheden
+4,43.42,Overige gespecialiseerde bouwactiviteiten in de constructie van gebouwen
+5,43.421,Waterdichtingswerken van muren
+5,43.422,Chapewerken
+5,43.429,"Overige gespecialiseerde bouwactiviteiten in de constructie van gebouwen, n.e.g."
+3,43.5,Gespecialiseerde bouwactiviteiten op het gebied van weg- en waterbouw
+4,43.50,Gespecialiseerde bouwactiviteiten op het gebied van weg- en waterbouw
+5,43.500,Gespecialiseerde bouwactiviteiten op het gebied van weg- en waterbouw
+3,43.6,Bemiddelingsactiviteiten in verband met gespecialiseerde bouwnijverheid
+4,43.60,Bemiddelingsactiviteiten in verband met gespecialiseerde bouwnijverheid
+5,43.600,Bemiddelingsactiviteiten in verband met gespecialiseerde bouwnijverheid
+3,43.9,Overige gespecialiseerde bouwactiviteiten
+4,43.91,Metselwerk
+5,43.910,Metselwerk
+4,43.99,"Overige gespecialiseerde bouwactiviteiten, n.e.g."
+5,43.990,"Overige gespecialiseerde bouwactiviteiten, n.e.g."
+1,G,GROOT- EN DETAILHANDEL
+2,46,Groothandel
+3,46.1,Handelsbemiddeling in de groothandel
+4,46.11,"Handelsbemiddeling in de groothandel in landbouwgrondstoffen, levende dieren en textielgrondstoffen en halffabricaten"
+5,46.110,"Handelsbemiddeling in de groothandel in landbouwgrondstoffen, levende dieren en textielgrondstoffen en halffabricaten"
+4,46.12,"Handelsbemiddeling in de groothandel in brandstoffen, ertsen, metalen en chemische producten"
+5,46.120,"Handelsbemiddeling in de groothandel in brandstoffen, ertsen, metalen en chemische producten"
+4,46.13,Handelsbemiddeling in de groothandel in hout en bouwmaterialen
+5,46.130,Handelsbemiddeling in de groothandel in hout en bouwmaterialen
+4,46.14,"Handelsbemiddeling in de groothandel in machines, apparaten en werktuigen voor de industrie en in schepen en luchtvaartuigen"
+5,46.140,"Handelsbemiddeling in de groothandel in machines, apparaten en werktuigen voor de industrie en in schepen en luchtvaartuigen"
+4,46.15,"Handelsbemiddeling in de groothandel in meubelen, huishoudelijke artikelen en ijzerwaren"
+5,46.150,"Handelsbemiddeling in de groothandel in meubelen, huishoudelijke artikelen en ijzerwaren"
+4,46.16,"Handelsbemiddeling in de groothandel in textiel, kleding, bont, schoeisel en lederwaren"
+5,46.160,"Handelsbemiddeling in de groothandel in textiel, kleding, bont, schoeisel en lederwaren"
+4,46.17,Handelsbemiddeling in de groothandel in voedings- en genotmiddelen
+5,46.170,Handelsbemiddeling in de groothandel in voedings- en genotmiddelen
+4,46.18,Handelsbemiddeling in de groothandel in andere specifieke goederen
+5,46.180,Handelsbemiddeling in de groothandel in andere specifieke goederen
+4,46.19,Handelsbemiddeling in de niet-gespecialiseerde groothandel
+5,46.190,Handelsbemiddeling in de niet-gespecialiseerde groothandel
+3,46.2,Groothandel in landbouwproducten en levende dieren
+4,46.21,"Groothandel in granen, ruwe tabak, zaden en diervoeders"
+5,46.211,Groothandel in granen en zaden
+5,46.212,Groothandel in veevoeders
+5,46.213,Groothandel in ruwe plantaardige en dierlijke oliën en vetten
+5,46.214,Groothandel in andere akkerbouwproducten
+5,46.215,Groothandel in ruwe tabak
+5,46.216,"Groothandel in akkerbouwproducten en veevoeders, algemeen assortiment"
+4,46.22,Groothandel in bloemen en planten
+5,46.220,Groothandel in bloemen en planten
+4,46.23,Groothandel in levende dieren
+5,46.231,Groothandel in levend vee
+5,46.232,"Groothandel in levende dieren, m.u.v. levend vee"
+4,46.24,"Groothandel in huiden, vellen en leer"
+5,46.240,"Groothandel in huiden, vellen en leer"
+3,46.3,"Groothandel in voedingsmiddelen, dranken en genotmiddelen"
+4,46.31,Groothandel in groenten en fruit
+5,46.311,Groothandel in consumptieaardappelen
+5,46.319,"Groothandel in groenten en fruit, m.u.v. consumptieaardappelen"
+4,46.32,"Groothandel in vlees, vleesproducten, vis en visproducten"
+5,46.321,"Groothandel in vlees en vleesproducten, uitgezonderd vlees van wild en van gevogelte"
+5,46.322,Groothandel in vlees van wild en van gevogelte
+5,46.323,Groothandel in vis en schaal- en weekdieren
+4,46.33,"Groothandel in zuivelproducten, eieren en spijsoliën en -vetten"
+5,46.331,Groothandel in zuivelproducten en eieren
+5,46.332,Groothandel in spijsoliën en -vetten
+4,46.34,Groothandel in dranken
+5,46.341,Groothandel in wijnen en geestrijke dranken
+5,46.349,"Groothandel in dranken, algemeen assortiment"
+4,46.35,Groothandel in tabaksproducten
+5,46.350,Groothandel in tabaksproducten
+4,46.36,"Groothandel in suiker, chocolade en suikerwerk"
+5,46.360,"Groothandel in suiker, chocolade en suikerwerk"
+4,46.37,"Groothandel in koffie, thee, cacao en specerijen"
+5,46.370,"Groothandel in koffie, thee, cacao en specerijen"
+4,46.38,Groothandel in andere voedingsmiddelen
+5,46.381,Groothandel in aardappelproducten
+5,46.382,Groothandel in voedsel voor huisdieren
+5,46.389,"Groothandel in andere voedingsmiddelen, n.e.g."
+4,46.39,Niet-gespecialiseerde groothandel in voedings- en genotmiddelen
+5,46.391,Niet-gespecialiseerde groothandel in diepgevroren voedingsmiddelen
+5,46.392,"Niet-gespecialiseerde groothandel in niet-diepgevroren voedingsmiddelen, dranken en genotmiddelen"
+3,46.4,Groothandel in consumentenartikelen
+4,46.41,Groothandel in textiel
+5,46.411,"Groothandel in weefsels, stoffen en fournituren"
+5,46.412,Groothandel in huishoudtextiel en beddengoed
+5,46.419,Groothandel in overig textiel
+4,46.42,Groothandel in kleding en schoeisel
+5,46.421,Groothandel in werkkleding
+5,46.422,Groothandel in onderkleding
+5,46.423,"Groothandel in kleding, met uitzondering van werk- en onderkleding"
+5,46.424,Groothandel in kledingaccessoires
+5,46.425,Groothandel in schoeisel
+4,46.43,Groothandel in elektrische huishoudelijke apparaten
+5,46.431,Groothandel in elektrische huishoudelijke apparaten en audio- en videoapparatuur
+5,46.432,Groothandel in foto- en filmapparatuur en in andere optische artikelen
+4,46.44,"Groothandel in porselein, glaswerk en reinigingsmiddelen"
+5,46.441,Groothandel in porselein en glaswerk
+5,46.442,Groothandel in reinigingsmiddelen
+4,46.45,Groothandel in parfumerieën en cosmetica
+5,46.450,Groothandel in parfumerieën en cosmetica
+4,46.46,Groothandel in farmaceutische en medische artikelen
+5,46.460,Groothandel in farmaceutische en medische artikelen
+4,46.47,"Groothandel in huishoudelijke, kantoor- en winkelmeubelen, tapijten en verlichtingstoestellen"
+5,46.471,Groothandel in huismeubilair
+5,46.472,Groothandel in kantoor- en winkelmeubelen
+5,46.473,Groothandel in tapijten
+5,46.474,Groothandel in verlichtingsapparatuur
+4,46.48,Groothandel in uurwerken en sieraden
+5,46.480,Groothandel in uurwerken en sieraden
+4,46.49,Groothandel in andere consumentenartikelen
+5,46.491,"Groothandel in kranten, boeken en tijdschriften"
+5,46.492,Groothandel in kantoor- en schoolbenodigdheden
+5,46.493,Groothandel in papier- en kartonwaren
+5,46.494,Groothandel in niet-elektrische huishoudelijke artikelen
+5,46.495,Groothandel in fietsen
+5,46.496,"Groothandel in sport- en kampeerartikelen, met uitzondering van fietsen"
+5,46.497,Groothandel in spellen en speelgoed
+5,46.498,Groothandel in lederwaren en reisartikelen
+5,46.499,"Groothandel in andere consumentenartikelen, n.e.g."
+3,46.5,Groothandel in informatie- en communicatieapparatuur
+4,46.50,Groothandel in informatie- en communicatieapparatuur
+5,46.500,Groothandel in informatie- en communicatieapparatuur
+3,46.6,Groothandel in andere machines en werktuigen en toebehoren
+4,46.61,"Groothandel in machines, werktuigen en toebehoren voor de landbouw"
+5,46.610,"Groothandel in machines, werktuigen en toebehoren voor de landbouw"
+4,46.62,Groothandel in gereedschapswerktuigen
+5,46.620,Groothandel in gereedschapswerktuigen
+4,46.63,"Groothandel in machines voor de mijnbouw, de bouwnijverheid en de weg- en waterbouw"
+5,46.630,"Groothandel in machines voor de mijnbouw, de bouwnijverheid en de weg- en waterbouw"
+4,46.64,Groothandel in andere machines en werktuigen
+5,46.641,Groothandel in machines voor de productie van voedings- en genotmiddelen
+5,46.642,Groothandel in verpakkingsmachines en weegtoestellen
+5,46.643,"Groothandel in elektrisch materiaal, inclusief installatiemateriaal"
+5,46.644,"Groothandel in hijs-, hef- en transportwerktuigen"
+5,46.645,Groothandel in pompen en compressoren
+5,46.646,"Groothandel in meet-, controle- en navigatieinstrumenten"
+5,46.647,"Groothandel in machines en apparaten voor de warmte-, koel- en vriestechniek voor industrieel gebruik"
+5,46.648,Groothandel in machines voor de textielindustrie en in naai- en breimachines
+5,46.649,"Groothandel in andere machines en werktuigen, n.e.g."
+3,46.7,"Groothandel in motorvoertuigen, motorfietsen en delen en toebehoren van motorvoertuigen en motorfietsen"
+4,46.71,Groothandel in motorvoertuigen
+5,46.711,"Groothandel in auto's en lichte bestelwagens (<= 3,5 ton)"
+5,46.712,"Groothandel in andere motorvoertuigen (> 3,5 ton)"
+5,46.713,"Groothandel in aanhangwagens, opleggers en caravans"
+4,46.72,Groothandel in delen en toebehoren van motorvoertuigen
+5,46.720,Groothandel in delen en toebehoren van motorvoertuigen
+4,46.73,"Groothandel in motorfietsen, delen en toebehoren van motorfietsen"
+5,46.730,"Groothandel in motorfietsen, delen en toebehoren van motorfietsen"
+3,46.8,Overige gespecialiseerde groothandel
+4,46.81,"Groothandel in vaste, vloeibare en gasvormige brandstoffen en aanverwante producten"
+5,46.810,"Groothandel in vaste, vloeibare en gasvormige brandstoffen en aanverwante producten"
+4,46.82,Groothandel in metalen en metaalertsen
+5,46.820,Groothandel in metalen en metaalertsen
+4,46.83,"Groothandel in hout, bouwmaterialen en sanitair"
+5,46.831,"Groothandel in bouwmaterialen, algemeen assortiment"
+5,46.832,Groothandel in hout
+5,46.833,"Groothandel in behang, verf en woningtextiel"
+5,46.834,Groothandel in vlakglas
+5,46.835,Groothandel in vloer- en wandtegels
+5,46.836,Groothandel in sanitair
+5,46.839,Groothandel in overige bouwmaterialen
+4,46.84,Groothandel in ijzerwaren en in installatiemateriaal voor loodgieterswerk en verwarming
+5,46.841,Groothandel in ijzerwaren
+5,46.842,Groothandel in installatiemateriaal voor loodgieterswerk en verwarming
+4,46.85,Groothandel in chemische producten
+5,46.851,Groothandel in chemische producten voor industrieel gebruik
+5,46.852,Groothandel in kunstmeststoffen en andere agrochemische producten
+4,46.86,Groothandel in andere intermediaire producten
+5,46.861,Groothandel in diamant en andere edelstenen
+5,46.869,"Groothandel in andere intermediaire producten, n.e.g."
+4,46.87,Groothandel in afval en schroot
+5,46.871,Groothandel in autosloopmateriaal
+5,46.872,Groothandel in ijzer- en staalschroot en in oude non-ferrometalen
+5,46.879,"Groothandel in afval en schroot, n.e.g."
+4,46.89,"Overige gespecialiseerde groothandel, n.e.g."
+5,46.890,"Overige gespecialiseerde groothandel, n.e.g."
+3,46.9,Niet-gespecialiseerde groothandel
+4,46.90,Niet-gespecialiseerde groothandel
+5,46.900,Niet-gespecialiseerde groothandel
+2,47,Detailhandel
+3,47.1,Niet-gespecialiseerde detailhandel
+4,47.11,Niet-gespecialiseerde detailhandel waarbij voedings- en genotmiddelen overheersen
+5,47.110,Niet-gespecialiseerde detailhandel waarbij voedings- en genotmiddelen overheersen
+4,47.12,Overige niet-gespecialiseerde detailhandel
+5,47.120,Overige niet-gespecialiseerde detailhandel
+3,47.2,"Detailhandel in voedingsmiddelen, dranken en genotmiddelen"
+4,47.21,Detailhandel in groenten en fruit
+5,47.210,Detailhandel in groenten en fruit
+4,47.22,Detailhandel in vlees en vleeswaren
+5,47.221,"Detailhandel in vlees en vleesproducten, m.u.v. vlees van wild en van gevogelte"
+5,47.222,Detailhandel in vlees van wild en van gevogelte
+4,47.23,Detailhandel in vis en schaal- en weekdieren
+5,47.230,Detailhandel in vis en schaal- en weekdieren
+4,47.24,"Detailhandel in brood, banket en suikerwerk"
+5,47.241,Detailhandel in brood en banketbakkerswerk (koude bakkers)
+5,47.242,Detailhandel in chocolade en suikerwerk
+4,47.25,Detailhandel in dranken
+5,47.251,Detailhandel in wijnen en geestrijke dranken
+5,47.252,"Detailhandel in dranken, algemeen assortiment"
+4,47.26,Detailhandel in tabaksproducten
+5,47.260,Detailhandel in tabaksproducten
+4,47.27,Detailhandel in andere voedingsmiddelen
+5,47.271,Detailhandel in zuivelproducten en eieren
+5,47.279,"Overige detailhandel in voedingsmiddelen, n.e.g."
+3,47.3,Detailhandel in motorbrandstoffen
+4,47.30,Detailhandel in motorbrandstoffen
+5,47.300,Detailhandel in motorbrandstoffen
+3,47.4,Detailhandel in ICT-apparatuur
+4,47.40,Detailhandel in ICT-apparatuur
+5,47.400,Detailhandel in ICT-apparatuur
+3,47.5,Detailhandel in andere consumentenartikelen
+4,47.51,Detailhandel in textiel
+5,47.511,Detailhandel in kledingstoffen
+5,47.512,Detailhandel in huishoudtextiel en beddengoed
+5,47.513,"Detailhandel in breigarens, handwerken en fournituren"
+5,47.519,Detailhandel in overig textiel
+4,47.52,"Detailhandel in ijzerwaren, bouwmaterialen, verf en glas"
+5,47.521,"Detailhandel in ijzerwaren, bouwmaterialen, verf en glas (algemeen assortiment)"
+5,47.522,Detailhandel in houten bouw- en tuinmaterialen
+5,47.523,Detailhandel in wand- en vloertegels
+5,47.524,"Detailhandel in parket-, laminaat- en kurkvloeren"
+5,47.525,Detailhandel in ijzerwaren en gereedschappen
+5,47.526,Detailhandel in verf en verfwaren
+5,47.527,Detailhandel in sanitaire artikelen en sanitair installatiemateriaal
+5,47.529,"Detailhandel in overige bouwmaterialen, n.e.g."
+4,47.53,Detailhandel in tapijten en andere vloerbedekking en wandbekleding
+5,47.530,Detailhandel in tapijten en andere vloerbedekking en wandbekleding
+4,47.54,Detailhandel in elektrische huishoudapparaten
+5,47.540,Detailhandel in elektrische huishoudapparaten
+4,47.55,"Detailhandel in meubelen, verlichtingstoestellen, tafelgerei en andere huishoudelijke artikelen"
+5,47.551,Detailhandel in huismeubilair
+5,47.552,Detailhandel in verlichtingsartikelen
+5,47.553,"Detailhandel in glas-, porselein- en aardewerk en in niet-elektrische huishoudelijke artikelen"
+5,47.554,Detailhandel in babyartikelen (algemeen assortiment)
+5,47.559,"Detailhandel in andere huishoudelijke artikelen, n.e.g."
+3,47.6,Detailhandel in cultuur- en recreatieartikelen
+4,47.61,Detailhandel in boeken
+5,47.610,Detailhandel in boeken
+4,47.62,Detailhandel in kranten en andere tijdschriften en kantoorbehoeften
+5,47.621,Detailhandel in kranten en andere tijdschriften
+5,47.622,Detailhandel in kantoorbehoeften
+4,47.63,Detailhandel in sportartikelen
+5,47.631,Detailhandel in wapens en munitie
+5,47.632,Detailhandel in fietsen
+5,47.639,Detailhandel in overige sportartikelen
+4,47.64,Detailhandel in spellen en speelgoed
+5,47.640,Detailhandel in spellen en speelgoed
+4,47.69,"Detailhandel in cultuur- en recreatieartikelen, n.e.g."
+5,47.690,"Detailhandel in cultuur- en recreatieartikelen, n.e.g."
+3,47.7,"Detailhandel in andere goederen, met uitzondering van motorvoertuigen en motorfietsen"
+4,47.71,Detailhandel in kleding
+5,47.711,Detailhandel in damesbovenkleding
+5,47.712,Detailhandel in herenbovenkleding
+5,47.713,Detailhandel in baby- en kinderbovenkleding
+5,47.714,"Detailhandel in onderkleding, lingerie en strand- en badkleding"
+5,47.715,Detailhandel in kledingaccessoires
+5,47.716,"Detailhandel in dames-, heren-, baby- en kinderboven- en onderkleding en kledingaccessoires (algemeen assortiment)"
+4,47.72,Detailhandel in schoeisel en lederwaren
+5,47.721,Detailhandel in schoeisel
+5,47.722,Detailhandel in lederwaren en reisartikelen
+4,47.73,Detailhandel in farmaceutische producten
+5,47.730,Detailhandel in farmaceutische producten
+4,47.74,Detailhandel in medische en orthopedische artikelen
+5,47.741,"Detailhandel in medische en orthopedische artikelen, m.u.v. corrigerende brillen, lenzen en zonnebrillen"
+5,47.742,"Detailhandel in corrigerende brillen, lenzen en zonnebrillen"
+4,47.75,Detailhandel in cosmetica en toiletartikelen
+5,47.750,Detailhandel in cosmetica en toiletartikelen
+4,47.76,"Detailhandel in bloemen, planten, kunstmeststoffen, huisdieren en voer voor huisdieren"
+5,47.761,"Detailhandel in bloemen, planten, zaden en kunstmeststoffen"
+5,47.762,"Detailhandel in huisdieren, voer voor huisdieren en benodigdheden daarvoor"
+4,47.77,Detailhandel in uurwerken en sieraden
+5,47.770,Detailhandel in uurwerken en sieraden
+4,47.78,Detailhandel in andere nieuwe goederen
+5,47.781,"Detailhandel in vaste, vloeibare en gasvormige brandstoffen, m.u.v. motorbrandstoffen"
+5,47.782,"Detailhandel in fotografische en optische artikelen en in precisieinstrumenten, m.u.v. corrigerende brillen, lenzen en zonnebrillen"
+5,47.783,Detailhandel in drogisterijartikelen en onderhoudsproducten
+5,47.784,Detailhandel in souvenirs en religieuze artikelen
+5,47.789,Overige detailhandel in nieuwe artikelen n.e.g.
+4,47.79,Detailhandel in tweedehandsgoederen
+5,47.791,Detailhandel in antiquiteiten
+5,47.792,Detailhandel in tweedehandskleding
+5,47.793,"Detailhandel in andere tweedehandsgoederen, m.u.v. tweedehandskleding"
+3,47.8,"Detailhandel in motorvoertuigen, motorfietsen en delen en toebehoren van motorfietsen"
+4,47.81,Detailhandel in motorvoertuigen
+5,47.811,"Detailhandel in auto's en lichte bestelwagens (<= 3,5 ton)"
+5,47.812,"Detailhandel in andere motorvoertuigen (> 3,5 ton)"
+5,47.813,"Detailhandel in aanhangwagens, opleggers en caravans"
+4,47.82,Detailhandel in onderdelen en accessoires van motorvoertuigen
+5,47.820,Detailhandel in onderdelen en accessoires van motorvoertuigen
+4,47.83,"Detailhandel in motorrijwielen, delen en toebehoren van motorrijwielen"
+5,47.830,"Detailhandel in motorrijwielen, delen en toebehoren van motorrijwielen"
+3,47.9,Bemiddelingsactiviteiten in verband met de detailhandel
+4,47.91,Bemiddelingsactiviteiten in verband met de niet-gespecialiseerde detailhandel
+5,47.910,Bemiddelingsactiviteiten in verband met de niet-gespecialiseerde detailhandel
+4,47.92,Bemiddelingsactiviteiten voor de gespecialiseerde detailhandel
+5,47.920,Bemiddelingsactiviteiten voor de gespecialiseerde detailhandel
+1,H,VERVOER EN OPSLAG
+2,49,Vervoer te land en vervoer via pijpleidingen
+3,49.1,Personenvervoer per spoor
+4,49.11,Personenvervoer per trein
+5,49.110,Personenvervoer per trein
+4,49.12,Personenvervoer per spoor anders dan per trein
+5,49.120,Personenvervoer per spoor anders dan per trein
+3,49.2,Goederenvervoer per spoor
+4,49.20,Goederenvervoer per spoor
+5,49.200,Goederenvervoer per spoor
+3,49.3,Overig personenvervoer te land
+4,49.31,Personenvervoer over de weg volgens dienstregeling
+5,49.310,Personenvervoer over de weg volgens dienstregeling
+4,49.32,Personenvervoer over de weg zonder dienstregeling
+5,49.320,Personenvervoer over de weg zonder dienstregeling
+4,49.33,Diensten voor personenvervoer op aanvraag per voertuig met chauffeur
+5,49.330,Diensten voor personenvervoer op aanvraag per voertuig met chauffeur
+4,49.34,Personenvervoer met kabelbanen en skiliften
+5,49.340,Personenvervoer met kabelbanen en skiliften
+4,49.39,"Overig personenvervoer te land, n.e.g."
+5,49.390,"Overig personenvervoer te land, n.e.g."
+3,49.4,Goederenvervoer over de weg en verhuisbedrijven
+4,49.41,Goederenvervoer over de weg
+5,49.410,Goederenvervoer over de weg
+4,49.42,Verhuisactiviteiten
+5,49.420,Verhuisactiviteiten
+3,49.5,Vervoer via pijpleidingen
+4,49.50,Vervoer via pijpleidingen
+5,49.500,Vervoer via pijpleidingen
+2,50,Vervoer over water
+3,50.1,Personenvervoer over zee- en kustwateren
+4,50.10,Personenvervoer over zee- en kustwateren
+5,50.100,Personenvervoer over zee- en kustwateren
+3,50.2,Goederenvervoer over zee- en kustwateren
+4,50.20,Goederenvervoer over zee- en kustwateren
+5,50.200,Goederenvervoer over zee- en kustwateren
+3,50.3,Personenvervoer over binnenwateren
+4,50.30,Personenvervoer over binnenwateren
+5,50.300,Personenvervoer over binnenwateren
+3,50.4,Goederenvervoer over binnenwateren
+4,50.40,Goederenvervoer over binnenwateren
+5,50.400,Goederenvervoer over binnenwateren
+2,51,Luchtvaart
+3,51.1,Personenvervoer door de lucht
+4,51.10,Personenvervoer door de lucht
+5,51.100,Personenvervoer door de lucht
+3,51.2,Goederenvervoer door de lucht; ruimtevaart
+4,51.21,Goederenvervoer door de lucht
+5,51.210,Goederenvervoer door de lucht
+4,51.22,Ruimtevaart
+5,51.220,Ruimtevaart
+2,52,Opslag en vervoerondersteunende activiteiten
+3,52.1,Opslag
+4,52.10,Opslag
+5,52.100,Opslag
+3,52.2,Vervoerondersteunende activiteiten
+4,52.21,Diensten in verband met vervoer te land
+5,52.210,Diensten in verband met vervoer te land
+4,52.22,Diensten in verband met vervoer over water
+5,52.220,Diensten in verband met vervoer over water
+4,52.23,Diensten in verband met de luchtvaart
+5,52.230,Diensten in verband met de luchtvaart
+4,52.24,Vrachtbehandeling
+5,52.241,Vrachtbehandeling in zeehavens
+5,52.249,"Overige vrachtbehandeling, exclusief in zeehavens"
+4,52.25,Logistieke diensten
+5,52.250,Logistieke diensten
+4,52.26,Andere vervoerondersteunende activiteiten
+5,52.260,Andere vervoerondersteunende activiteiten
+3,52.3,Bemiddelingsactiviteiten in verband met vervoer
+4,52.31,Bemiddelingsactiviteiten in verband met goederenvervoer
+5,52.310,Bemiddelingsactiviteiten in verband met goederenvervoer
+4,52.32,Bemiddelingsactiviteiten in verband met personenvervoer
+5,52.320,Bemiddelingsactiviteiten in verband met personenvervoer
+2,53,Post- en koeriersdiensten
+3,53.1,Postdiensten in het kader van de universele dienstverplichting
+4,53.10,Postdiensten in het kader van de universele dienstverplichting
+5,53.100,Postdiensten in het kader van de universele dienstverplichting
+3,53.2,Overige posterijen en koeriers
+4,53.20,Overige posterijen en koeriers
+5,53.200,Overige posterijen en koeriers
+3,53.3,Bemiddelingsactiviteiten in verband met post- en koeriersdiensten
+4,53.30,Bemiddelingsactiviteiten in verband met post- en koeriersdiensten
+5,53.300,Bemiddelingsactiviteiten in verband met post- en koeriersdiensten
+1,I,VERSCHAFFEN VAN ACCOMMODATIE EN MAALTIJDEN
+2,55,Verschaffen van accommodatie
+3,55.1,Hotels en dergelijke accommodatie
+4,55.10,Hotels en dergelijke accommodatie
+5,55.100,Hotels en dergelijke accommodatie
+3,55.2,Vakantieverblijven en andere accommodatie voor kort verblijf
+4,55.20,Vakantieverblijven en andere accommodatie voor kort verblijf
+5,55.201,Jeugdherbergen en jeugdverblijfcentra
+5,55.202,Vakantieparken
+5,55.203,"Gites, vakantiewoningen en -appartementen"
+5,55.204,Gastenkamers
+5,55.209,"Vakantieverblijven en andere accommodatie voor kort verblijf, n.e.g."
+3,55.3,Kampeer- en caravanterreinen
+4,55.30,Kampeer- en caravanterreinen
+5,55.300,Kampeer- en caravanterreinen
+3,55.4,Bemiddelingsactiviteiten in verband met accommodatie
+4,55.40,Bemiddelingsactiviteiten in verband met accommodatie
+5,55.400,Bemiddelingsactiviteiten in verband met accommodatie
+3,55.9,Overige accommodatie
+4,55.90,Overige accommodatie
+5,55.900,Overige accommodatie
+2,56,Activiteiten van eet- en drinkgelegenheden
+3,56.1,Activiteiten van restaurants en mobiele eetgelegenheden
+4,56.11,Activiteiten van restaurants
+5,56.111,Activiteiten van eetgelegenheden met volledige bediening
+5,56.112,"Activiteiten van eetgelegenheden met beperkte bediening, m.u.v. mobiele eetgelegenheden"
+4,56.12,Activiteiten van mobiele eetgelegenheden
+5,56.120,Activiteiten van mobiele eetgelegenheden
+3,56.2,"Catering van evenementen, cateringdiensten op contractbasis en overige diensten in verband met maaltijden"
+4,56.21,Catering van evenementen
+5,56.210,Catering van evenementen
+4,56.22,Cateringdiensten op contractbasis en overige diensten in verband met maaltijden
+5,56.220,Cateringdiensten op contractbasis en overige diensten in verband met maaltijden
+3,56.3,Activiteiten van drinkgelegenheden
+4,56.30,Activiteiten van drinkgelegenheden
+5,56.301,Cafés en bars
+5,56.302,"Discotheken, dancings en dergelijke"
+5,56.309,Andere drinkgelegenheden
+3,56.4,Bemiddelingsactiviteiten in verband met eet- en drinkgelegenheden
+4,56.40,Bemiddelingsactiviteiten in verband met eet- en drinkgelegenheden
+5,56.400,Bemiddelingsactiviteiten in verband met eet- en drinkgelegenheden
+1,J,"ACTIVITEITEN VAN UITGEVERIJEN, OMROEPACTIVITEITEN EN PRODUCTIE EN DISTRIBUTIE VAN INHOUD"
+2,58,Activiteiten van uitgeverijen
+3,58.1,"Activiteiten van uitgeverijen van boeken en kranten en overige activiteiten van uitgeverijen, met uitzondering van het uitgeven van software"
+4,58.11,Uitgeven van boeken
+5,58.110,Uitgeven van boeken
+4,58.12,Uitgeven van kranten
+5,58.120,Uitgeven van kranten
+4,58.13,Uitgeven van tijdschriften
+5,58.130,Uitgeven van tijdschriften
+4,58.19,"Overige activiteiten van uitgeverijen, met uitzondering van het uitgeven van software"
+5,58.190,"Overige activiteiten van uitgeverijen, met uitzondering van het uitgeven van software"
+3,58.2,Uitgeven van software
+4,58.21,Uitgeven van computerspellen
+5,58.210,Uitgeven van computerspellen
+4,58.29,Uitgeven van overige software
+5,58.290,Uitgeven van overige software
+2,59,"Productie van films en video- en televisieprogramma’s, maken van geluidsopnamen en uitgeverijen van muziekopnamen"
+3,59.1,Activiteiten in verband met films en video- en televisieprogramma’s
+4,59.11,Productie van films en video- en televisieprogramma’s
+5,59.111,Productie van bioscoopfilms
+5,59.112,Productie van televisiefilms
+5,59.113,"Productie van video en film, m.u.v. bioscoop- en televisiefilms"
+5,59.114,Productie van televisieprogramma's
+4,59.12,Activiteiten in verband met films en video- en televisieprogramma’s na de productie
+5,59.120,Activiteiten in verband met films en video- en televisieprogramma’s na de productie
+4,59.13,Activiteiten op het gebied van de distributie van films en video’s
+5,59.130,Activiteiten op het gebied van de distributie van films en video’s
+4,59.14,Vertoning van films
+5,59.140,Vertoning van films
+3,59.2,Maken van geluidsopnamen en uitgeverijen van muziekopnamen
+4,59.20,Maken van geluidsopnamen en uitgeverijen van muziekopnamen
+5,59.201,Maken van geluidsopnamen
+5,59.202,Geluidsopnamestudio's
+5,59.203,Uitgeverijen van muziekopnamen
+5,59.209,Overige diensten in verband met het maken van geluidsopnamen
+2,60,"Programmering, uitzending, persagentschappen en andere activiteiten op het gebied van de verspreiding van inhoud"
+3,60.1,Uitzenden van radioprogramma’s en distributie van audio
+4,60.10,Uitzenden van radioprogramma’s en distributie van audio
+5,60.100,Uitzenden van radioprogramma’s en distributie van audio
+3,60.2,Samenstellen en uitzenden van televisieprogramma’s en distributie van video’s
+4,60.20,Samenstellen en uitzenden van televisieprogramma’s en distributie van video’s
+5,60.200,Samenstellen en uitzenden van televisieprogramma’s en distributie van video’s
+3,60.3,Activiteiten van persagentschappen en andere activiteiten op het gebied van de verspreiding van inhoud
+4,60.31,Activiteiten van persagentschappen
+5,60.310,Activiteiten van persagentschappen
+4,60.39,Andere activiteiten op het gebied van de verspreiding van inhoud
+5,60.390,Andere activiteiten op het gebied van de verspreiding van inhoud
+1,K,"TELECOMMUNICATIE, COMPUTERPROGRAMMERING, CONSULTANCY, INFORMATICA-INFRASTRUCTUUR EN ANDERE ACTIVITEITEN OP HET GEBIED VAN INFORMATIEDIENSTEN"
+2,61,Telecommunicatie
+3,61.1,Draadgebonden en draadloze telecommunicatie en telecommunicatie via satelliet
+4,61.10,Draadgebonden en draadloze telecommunicatie en telecommunicatie via satelliet
+5,61.100,Draadgebonden en draadloze telecommunicatie en telecommunicatie via satelliet
+3,61.2,Wederverkoop van telecommunicatie en bemiddelingsactiviteiten in verband met telecommunicatie
+4,61.20,Wederverkoop van telecommunicatie en bemiddelingsactiviteiten in verband met telecommunicatie
+5,61.200,Wederverkoop van telecommunicatie en bemiddelingsactiviteiten in verband met telecommunicatie
+3,61.9,Overige activiteiten op het gebied van telecommunicatie
+4,61.90,Overige activiteiten op het gebied van telecommunicatie
+5,61.900,Overige activiteiten op het gebied van telecommunicatie
+2,62,"Computerprogrammering, consultancy en aanverwante activiteiten"
+3,62.1,Ontwerpen van computerprogramma’s
+4,62.10,Ontwerpen van computerprogramma’s
+5,62.100,Ontwerpen van computerprogramma’s
+3,62.2,Activiteiten op het gebied van computerconsultancy en beheer van computerfaciliteiten
+4,62.20,Activiteiten op het gebied van computerconsultancy en beheer van computerfaciliteiten
+5,62.200,Activiteiten op het gebied van computerconsultancy en beheer van computerfaciliteiten
+3,62.9,Overige diensten op het gebied van informatietechnologie en computer
+4,62.90,Overige diensten op het gebied van informatietechnologie en computer
+5,62.900,Overige diensten op het gebied van informatietechnologie en computer
+2,63,"Computerinfrastructuur, gegevensverwerking, hosting en andere informatiediensten"
+3,63.1,"Computerinfrastructuur, gegevensverwerking, hosting en aanverwante activiteiten"
+4,63.10,"Computerinfrastructuur, gegevensverwerking, hosting en aanverwante activiteiten"
+5,63.100,"Computerinfrastructuur, gegevensverwerking, hosting en aanverwante activiteiten"
+3,63.9,Activiteiten van webportalen en andere activiteiten op het gebied van informatiediensten
+4,63.91,Activiteiten van webportalen
+5,63.910,Activiteiten van webportalen
+4,63.92,Overige dienstverlenende activiteiten op het gebied van informatie
+5,63.920,Overige dienstverlenende activiteiten op het gebied van informatie
+1,L,FINANCIËLE ACTIVITEITEN EN VERZEKERINGEN
+2,64,"Financiële dienstverlening, exclusief verzekeringen en pensioenfondsen"
+3,64.1,Activiteiten van geldscheppende financiële instellingen
+4,64.11,Activiteiten van centrale banken
+5,64.110,Activiteiten van centrale banken
+4,64.19,Overige activiteiten van geldscheppende financiële instellingen
+5,64.190,Overige activiteiten van geldscheppende financiële instellingen
+3,64.2,Activiteiten van holdings en financieringskanalen
+4,64.21,Activiteiten van holdings
+5,64.210,Activiteiten van holdings
+4,64.22,Activiteiten van financieringskanalen
+5,64.220,Activiteiten van financieringskanalen
+3,64.3,Activiteiten van beleggingstrusts en -fondsen en andere financiële instrumenten
+4,64.31,Activiteiten van geldmarkt- en niet-geldmarktbeleggingsfondsen
+5,64.310,Activiteiten van geldmarkt- en niet-geldmarktbeleggingsfondsen
+4,64.32,"Activiteiten van trust-, vastgoed- en agentuurrekeningen"
+5,64.320,"Activiteiten van trust-, vastgoed- en agentuurrekeningen"
+3,64.9,"Overige financiële dienstverlening, exclusief verzekeringen en pensioenfondsen"
+4,64.91,Financiële lease
+5,64.910,Financiële lease
+4,64.92,Overige kredietverstrekking
+5,64.921,Verstrekken van verbruikskrediet
+5,64.922,Verstrekken van hypothecair krediet
+5,64.923,Factoring
+5,64.924,Titrisatie van leningen
+5,64.929,"Overige kredietvertsrekking, n.e.g."
+4,64.99,"Overige financiële dienstverlening, exclusief verzekeringen en pensioenfondsen, n.e.g."
+5,64.991,Activiteiten van beursvennootschappen
+5,64.999,"Overige financiële dienstverlening, n.e.g."
+2,65,"Activiteiten op het gebied van verzekeringen en pensioenfondsen, exclusief verplichte sociale verzekeringen"
+3,65.1,Verzekeringen
+4,65.11,Levensverzekeringen
+5,65.111,Rechtstreekse verzekeringsverrichtingen leven
+5,65.112,"Activiteiten van gemengde verzekeringsondernemingen, overwegend leven"
+4,65.12,Niet-levensverzekeringen
+5,65.121,Rechtstreekse verzekeringsverrichtingen niet-leven
+5,65.122,"Activiteiten van gemengde verzekeringsondernemingen, overwegend niet-leven"
+3,65.2,Herverzekering
+4,65.20,Herverzekering
+5,65.200,Herverzekering
+3,65.3,Activiteiten van pensioenfondsen
+4,65.30,Activiteiten van pensioenfondsen
+5,65.300,Activiteiten van pensioenfondsen
+2,66,Ondersteunende activiteiten voor verzekeringen en pensioenfondsen
+3,66.1,"Ondersteunende activiteiten in verband met financiële diensten, exclusief verzekeringen en pensioenfondsen"
+4,66.11,Beheer van financiële markten
+5,66.110,Beheer van financiële markten
+4,66.12,Bemiddeling in effecten- en goederencontracten
+5,66.121,Crowdfunding
+5,66.129,"Overige bemiddeling in effecten- en goederencontracten, m.u.v. crowdfunding"
+4,66.19,"Overige ondersteunende activiteiten in verband met financiële diensten, exclusief verzekeringen en pensioenfondsen"
+5,66.191,Agenten en makelaars in bankdiensten
+5,66.199,"Overige ondersteunende activiteiten in verband met financiële diensten, n.e.g., exclusief verzekeringen en pensioenfondsen"
+3,66.2,Ondersteunende activiteiten in verband met verzekeringen en pensioenfondsen
+4,66.21,Activiteiten van risicoanalisten en schadetaxateurs
+5,66.210,Activiteiten van risicoanalisten en schadetaxateurs
+4,66.22,Activiteiten van verzekeringsagenten en -makelaars
+5,66.220,Activiteiten van verzekeringsagenten en -makelaars
+4,66.29,"Ondersteunende activiteiten in verband met verzekeringen en pensioenfondsen, n.e.g."
+5,66.290,"Ondersteunende activiteiten in verband met verzekeringen en pensioenfondsen, n.e.g."
+3,66.3,Vermogensbeheer
+4,66.30,Vermogensbeheer
+5,66.300,Vermogensbeheer
+1,M,EXPLOITATIE VAN EN HANDEL IN ONROEREND GOED
+2,68,Exploitatie van en handel in onroerend goed
+3,68.1,Exploitatie van en handel in onroerend goed met eigen onroerend goed en ontwikkeling van bouwprojecten
+4,68.11,Handel in eigen onroerend goed
+5,68.110,Handel in eigen onroerend goed
+4,68.12,Ontwikkeling van bouwprojecten
+5,68.121,Ontwikkeling van residentiële bouwprojecten
+5,68.122,Ontwikkeling van niet-residentiële bouwprojecten
+3,68.2,Verhuur en exploitatie van eigen of geleased onroerend goed
+4,68.20,Verhuur en exploitatie van eigen of geleased onroerend goed
+5,68.201,"Verhuur en exploitatie van eigen of geleased residentieel onroerend goed, exclusief sociale woningen"
+5,68.202,Verhuur en exploitatie van sociale woningen
+5,68.203,"Verhuur en exploitatie van eigen of geleased niet-residentieel onroerend goed, exclusief terreinen"
+5,68.204,Verhuur en exploitatie van terreinen
+3,68.3,Bemiddeling in en beheer van onroerend goed voor een vast bedrag of op contractbasis
+4,68.31,Bemiddeling in verband met exploitatie van en handel in onroerend goed
+5,68.310,Bemiddeling in verband met exploitatie van en handel in onroerend goed
+4,68.32,Overige bemiddeling in en beheer van onroerend goed voor een vast bedrag of op contractbasis
+5,68.321,Activiteiten van syndici van onroerend goed
+5,68.322,Schatten en evalueren van onroerend goed voor een vast bedrag of op contractbasis
+5,68.329,"Overige bemiddeling in en beheer van onroerend goed voor een vast bedrag of op contractbasis, n.e.g."
+1,N,WETENSCHAPPELIJKE EN TECHNISCHE ACTIVITEITEN EN OVERIGE SPECIALISTISCHE ZAKELIJKE DIENSTVERLENING
+2,69,Rechtskundige en boekhoudkundige dienstverlening
+3,69.1,Rechtskundige dienstverlening
+4,69.10,Rechtskundige dienstverlening
+5,69.101,Activiteiten van advocaten
+5,69.102,Activiteiten van notarissen
+5,69.103,Activiteiten van deurwaarders
+5,69.109,Overige rechtskundige dienstverlening
+3,69.2,"Activiteiten van accountants, boekhouders, auditoren en belastingconsulenten"
+4,69.20,"Activiteiten van accountants, boekhouders, auditoren en belastingconsulenten"
+5,69.201,Activiteiten van (gecertificeerde) (fiscaal) accountants
+5,69.202,Activiteiten van gecertificeerde belastingadviseurs
+5,69.203,Activiteiten van bedrijfsrevisoren
+5,69.209,Overige fiscale dienstverlening
+2,70,Activiteiten van hoofdkantoren en managementadvies
+3,70.1,Activiteiten van hoofdkantoren
+4,70.10,Activiteiten van hoofdkantoren
+5,70.100,Activiteiten van hoofdkantoren
+3,70.2,Activiteiten van adviesbureaus op het gebied van bedrijfsvoering en overig managementadvies
+4,70.20,Activiteiten van adviesbureaus op het gebied van bedrijfsvoering en overig managementadvies
+5,70.200,Activiteiten van adviesbureaus op het gebied van bedrijfsvoering en overig managementadvies
+2,71,Activiteiten van architecten en ingenieurs; technische testen en toetsen
+3,71.1,"Activiteiten van architecten, ingenieurs en aanverwante technische adviseurs"
+4,71.11,Activiteiten van architecten
+5,71.111,Activiteiten van bouwarchitecten
+5,71.112,Activiteiten van interieurarchitecten
+5,71.113,Activiteiten van stedebouwkundige en tuin- en landschapsarchitecten
+5,71.119,"Overige activiteiten op het gebied van architectuur, n.e.g."
+4,71.12,Activiteiten van ingenieurs en aanverwante technische adviseurs
+5,71.121,"Activiteiten van ingenieurs en aanverwante technische adviseurs, exclusief landmeters-experts"
+5,71.122,Activiteiten van landmeters-experts
+3,71.2,Technische testen en toetsen
+4,71.20,Technische testen en toetsen
+5,71.201,Technische controle van motorvoertuigen
+5,71.209,Overige technische testen en toetsen
+2,72,Speur- en ontwikkelingswerk op wetenschappelijk gebied
+3,72.1,Speur- en ontwikkelingswerk op natuurwetenschappelijk gebied
+4,72.10,Speur- en ontwikkelingswerk op natuurwetenschappelijk gebied
+5,72.101,Speur- en ontwikkelingswerk op biotechnologisch gebied
+5,72.109,Overig speur- en ontwikkelingswerk op natuurwetenschappelijk gebied
+3,72.2,Speur- en ontwikkelingswerk op het gebied van de maatschappij- en geesteswetenschappen
+4,72.20,Speur- en ontwikkelingswerk op het gebied van de maatschappij- en geesteswetenschappen
+5,72.200,Speur- en ontwikkelingswerk op het gebied van de maatschappij- en geesteswetenschappen
+2,73,"Reclameactiviteiten, marktonderzoek en public relations"
+3,73.1,Reclamewezen
+4,73.11,Activiteiten van reclamebureaus
+5,73.110,Activiteiten van reclamebureaus
+4,73.12,Mediarepresentatie
+5,73.120,Mediarepresentatie
+3,73.2,Markt- en opinieonderzoek
+4,73.20,Markt- en opinieonderzoek
+5,73.200,Markt- en opinieonderzoek
+3,73.3,Activiteiten van adviesbureaus op het gebied van public relations en communicatie
+4,73.30,Activiteiten van adviesbureaus op het gebied van public relations en communicatie
+5,73.300,Activiteiten van adviesbureaus op het gebied van public relations en communicatie
+2,74,Overige wetenschappelijke en technische activiteiten en overige specialistische zakelijke dienstverlening
+3,74.1,Activiteiten van gespecialiseerde ontwerpers
+4,74.11,Ontwerpen van industriële producten en mode
+5,74.111,"Ontwerpen van textielpatronen, kleding, juwelen, meubels en decoratieartikelen"
+5,74.112,Activiteiten van industriële designers
+4,74.12,Grafisch ontwerp en visuele communicatie
+5,74.120,Grafisch ontwerp en visuele communicatie
+4,74.13,Interieurontwerp
+5,74.130,Interieurontwerp
+4,74.14,Overige gespecialiseerde ontwerpactiviteiten
+5,74.140,Overige gespecialiseerde ontwerpactiviteiten
+3,74.2,Activiteiten op het gebied van fotografie
+4,74.20,Activiteiten op het gebied van fotografie
+5,74.201,"Activiteiten van fotografen, met uitzondering van persfotografen"
+5,74.202,Activiteiten van persfotografen
+5,74.209,Overige fotografische activiteiten
+3,74.3,Activiteiten van vertalers en tolken
+4,74.30,Activiteiten van vertalers en tolken
+5,74.301,Activiteiten van vertalers
+5,74.302,Activiteiten van tolken
+3,74.9,"Overigewetenschappelijke en technische activiteiten  en overige specialistische zakelijke dienstverlening, n.e.g."
+4,74.91,Bemiddeling in en het in de handel brengen van octrooien
+5,74.910,Bemiddeling in en het in de handel brengen van octrooien
+4,74.99,"Alle overige wetenschappelijke en technische activiteiten  en overige specialistische zakelijke dienstverlening, n.e.g."
+5,74.991,"Activiteiten van managers van artiesten, sportlui en overige bekende personaliteiten"
+5,74.999,"Overige activiteiten van vrije beroepen en andere wetenschappelijke en technische activiteiten, n.e.g."
+2,75,Veterinaire diensten
+3,75.0,Veterinaire diensten
+4,75.00,Veterinaire diensten
+5,75.000,Veterinaire diensten
+1,O,ADMINISTRATIEVE EN ONDERSTEUNENDE DIENSTEN
+2,77,Verhuur en lease
+3,77.1,Verhuur en lease van motorvoertuigen
+4,77.11,Verhuur en lease van personenauto’s en andere lichte motorvoertuigen
+5,77.110,Verhuur en lease van personenauto’s en andere lichte motorvoertuigen
+4,77.12,Verhuur en lease van vrachtwagens
+5,77.120,Verhuur en lease van vrachtwagens
+3,77.2,Verhuur en lease van consumentenartikelen
+4,77.21,Verhuur en lease van sport- en recreatieartikelen
+5,77.210,Verhuur en lease van sport- en recreatieartikelen
+4,77.22,Verhuur en lease van andere huishoudelijke of persoonlijke artikelen
+5,77.221,"Verhuur en lease van machines, apparatuur en handgereedschap voor doe-het-zelvers"
+5,77.222,Verhuur en lease van televisietoestellen en andere audio- en videoapparatuur
+5,77.223,"Verhuur en lease van vaat- en glaswerk, keuken- en tafelgerei, elektrische huishoudapparaten en andere huishoudelijke benodigdheden"
+5,77.224,"Verhuur en lease van textiel, kleding, sieraden en schoeisel"
+5,77.225,Verhuur en lease van medisch en paramedisch materieel
+5,77.226,Verhuur en lease van bloemen en planten
+5,77.229,"Verhuur en lease van andere huishoudelijke of persoonlijke artikelen, n.e.g."
+3,77.3,Verhuur en lease van andere machines en werktuigen en andere materiële goederen
+4,77.31,Verhuur en lease van landbouwmachines en -werktuigen
+5,77.310,Verhuur en lease van landbouwmachines en -werktuigen
+4,77.32,Verhuur en lease van machines en installaties voor de bouwnijverheid en de weg- en waterbouw
+5,77.320,Verhuur en lease van machines en installaties voor de bouwnijverheid en de weg- en waterbouw
+4,77.33,"Verhuur en lease van kantoormachines, inclusief computers"
+5,77.330,"Verhuur en lease van kantoormachines, inclusief computers"
+4,77.34,Verhuur en lease van transportmiddelen voor vervoer over water
+5,77.340,Verhuur en lease van transportmiddelen voor vervoer over water
+4,77.35,Verhuur en lease van luchtvaartuigen
+5,77.350,Verhuur en lease van luchtvaartuigen
+4,77.39,"Verhuur en lease van andere machines en werktuigen en andere materiële goederen, n.e.g."
+5,77.391,"Verhuur en lease van speel-, amusement-, en verkoopautomaten"
+5,77.392,Verhuur en lease van tenten
+5,77.393,Verhuur en lease van caravans
+5,77.394,Verhuur en lease van woon- en bureelcontainers en dergelijke accommodatie
+5,77.399,Verhuur en lease van andere machines en werktuigen en andere materiële goederen
+3,77.4,"Lease van intellectuele eigendom en vergelijkbare producten, met uitzondering van werken onder auteursrecht"
+4,77.40,"Lease van intellectuele eigendom en vergelijkbare producten, met uitzondering van werken onder auteursrecht"
+5,77.400,"Lease van intellectuele eigendom en vergelijkbare producten, met uitzondering van werken onder auteursrecht"
+3,77.5,Bemiddeling in verband met verhuur en leasing van materiële goederen en niet-financiële immateriële activa
+4,77.51,"Bemiddeling in verband met verhuur en leasing van auto’s, campers en aanhangwagens"
+5,77.510,"Bemiddeling in verband met verhuur en leasing van auto’s, campers en aanhangwagens"
+4,77.52,Bemiddeling in verband met verhuur en leasing van andere materiële goederen en niet-financiële immateriële activa
+5,77.520,Bemiddeling in verband met verhuur en leasing van andere materiële goederen en niet-financiële immateriële activa
+2,78,Arbeidsbemiddeling en personeelswerk
+3,78.1,Arbeidsbemiddeling
+4,78.10,Arbeidsbemiddeling
+5,78.100,Arbeidsbemiddeling
+3,78.2,Activiteiten van uitzendbureaus en andere diensten in verband met personeelsvoorziening
+4,78.20,Activiteiten van uitzendbureaus en andere diensten in verband met personeelsvoorziening
+5,78.200,Activiteiten van uitzendbureaus en andere diensten in verband met personeelsvoorziening
+2,79,"Activiteiten van reisbureaus, reisorganisatoren, reserveringsbureaus en aanverwante activiteiten"
+3,79.1,Activiteiten van reisbureaus en reisorganisatoren
+4,79.11,Activiteiten van reisbureaus
+5,79.110,Activiteiten van reisbureaus
+4,79.12,Activiteiten van reisorganisatoren
+5,79.120,Activiteiten van reisorganisatoren
+3,79.9,Activiteiten van reserveringsbureaus en aanverwante activiteiten
+4,79.90,Activiteiten van reserveringsbureaus en aanverwante activiteiten
+5,79.901,Activiteiten van toeristische informatiediensten
+5,79.909,Overige reserveringsactiviteiten
+2,80,Opsporings- en beveiligingsdiensten
+3,80.0,Opsporings- en beveiligingsdiensten
+4,80.01,Opsporings- en particuliere beveiligingsdiensten
+5,80.010,Opsporings- en particuliere beveiligingsdiensten
+4,80.09,"Beveiligingsactiviteiten, n.e.g."
+5,80.090,"Beveiligingsactiviteiten, n.e.g."
+2,81,Diensten in verband met gebouwen; landschapsverzorging
+3,81.1,Diverse ondersteunende activiteiten ten behoeve van voorzieningen
+4,81.10,Diverse ondersteunende activiteiten ten behoeve van voorzieningen
+5,81.100,Diverse ondersteunende activiteiten ten behoeve van voorzieningen
+3,81.2,Reiniging
+4,81.21,Algemene reiniging van gebouwen
+5,81.210,Algemene reiniging van gebouwen
+4,81.22,Overige reiniging van gebouwen; industriële reiniging
+5,81.220,Overige reiniging van gebouwen; industriële reiniging
+4,81.23,Andere reinigingsactiviteiten
+5,81.230,Andere reinigingsactiviteiten
+3,81.3,Landschapsverzorging
+4,81.30,Landschapsverzorging
+5,81.300,Landschapsverzorging
+2,82,Administratieve en ondersteunende activiteiten ten behoeve van kantoren en overige zakelijke dienstverlening
+3,82.1,Administratieve en ondersteunende activiteiten ten behoeve van kantoren
+4,82.10,Administratieve en ondersteunende activiteiten ten behoeve van kantoren
+5,82.100,Administratieve en ondersteunende activiteiten ten behoeve van kantoren
+3,82.2,Activiteiten van callcenters
+4,82.20,Activiteiten van callcenters
+5,82.200,Activiteiten van callcenters
+3,82.3,Organisatie van congressen en beurzen
+4,82.30,Organisatie van congressen en beurzen
+5,82.300,Organisatie van congressen en beurzen
+3,82.4,"Bemiddelingsactiviteiten in verband met zakelijke dienstverlening, n.e.g."
+4,82.40,"Bemiddelingsactiviteiten in verband met zakelijke dienstverlening, n.e.g."
+5,82.400,"Bemiddelingsactiviteiten in verband met zakelijke dienstverlening, n.e.g."
+3,82.9,"Zakelijke dienstverlening, n.e.g."
+4,82.91,Activiteiten van incasso- en kredietbureaus
+5,82.910,Activiteiten van incasso- en kredietbureaus
+4,82.92,Activiteiten van verpakkingsbedrijven
+5,82.920,Activiteiten van verpakkingsbedrijven
+4,82.99,"Overige zakelijke dienstverlening, n.e.g."
+5,82.990,"Overige zakelijke dienstverlening, n.e.g."
+1,P,OPENBAAR BESTUUR EN DEFENSIE; VERPLICHTE SOCIALE VERZEKERINGEN
+2,84,Openbaar bestuur en defensie; verplichte sociale verzekeringen
+3,84.1,"Openbaar bestuur en het economische, sociale en milieubeleid van de gemeenschap"
+4,84.11,Algemeen overheidsbestuur
+5,84.111,Federale overheid
+5,84.112,Overheden van gemeenschappen en gewesten
+5,84.113,Provinciale overheid
+5,84.114,"Gemeentelijke overheid, met uitzondering van het O.C.M.W"
+5,84.115,Openbare Centra voor Maatschappelijk Welzijn (O.C.M.W.)
+5,84.119,Overig algemeen overheidsbestuur
+4,84.12,"Openbaar bestuur op het gebied gezondheidszorg, onderwijs, culturele diensten en andere sociale diensten"
+5,84.120,"Openbaar bestuur op het gebied gezondheidszorg, onderwijs, culturele diensten en andere sociale diensten"
+4,84.13,Openbaar bestuur op het gebied van het bedrijfsleven; stimuleren van het bedrijfsleven
+5,84.130,Openbaar bestuur op het gebied van het bedrijfsleven; stimuleren van het bedrijfsleven
+3,84.2,Algemene overheidsdiensten
+4,84.21,Buitenlandse zaken
+5,84.210,Buitenlandse zaken
+4,84.22,Defensie
+5,84.220,Defensie
+4,84.23,Justitie
+5,84.231,Rechtbanken
+5,84.232,Strafinrichtingen
+5,84.239,Overige activiteiten met betrekking tot justitie
+4,84.24,Openbare orde en veiligheid
+5,84.241,Federale Politie
+5,84.242,Lokale Politie
+5,84.249,Overige openbare orde en civiele veiligheid
+4,84.25,Brandweer
+5,84.250,Brandweer
+3,84.3,Verplichte sociale verzekeringen
+4,84.30,Verplichte sociale verzekeringen
+5,84.301,"Verplichte sociale verzekeringen, met uitzondering van ziekenfondsen"
+5,84.302,Ziekenfondsen en zorgkassen
+5,84.309,Overige instellingen van de sociale zekerheid
+1,Q,ONDERWIJS
+2,85,Onderwijs
+3,85.1,Kleuteronderwijs
+4,85.10,Kleuteronderwijs
+5,85.101,Gewoon kleuteronderwijs ingericht door de Gemeenschappen
+5,85.102,Provinciaal gesubsidieerd gewoon kleuteronderwijs
+5,85.103,Gemeentelijk gesubsidieerd gewoon kleuteronderwijs
+5,85.104,Vrij gesubsidieerd gewoon kleuteronderwijs
+5,85.105,Buitengewoon officieel kleuteronderwijs
+5,85.106,Vrij gesubsidieerd buitengewoon kleuteronderwijs
+5,85.109,"Gewoon kleuteronderwijs, n.e.g."
+3,85.2,Lager onderwijs
+4,85.20,Lager onderwijs
+5,85.201,Gewoon lager onderwijs ingericht door de Gemeenschappen
+5,85.202,Provinciaal gesubsidieerd gewoon lager onderwijs
+5,85.203,Gemeentelijk gesubsidieerd gewoon lager onderwijs
+5,85.204,Vrij gesubsidieerd gewoon lager onderwijs
+5,85.205,Buitengewoon officieel lager onderwijs
+5,85.206,Vrij gesubsidieerd buitengewoon lager onderwijs
+5,85.207,Alfabetiseringsprogramma's ten behoeve van volwassenen
+5,85.209,"Gewoon lager onderwijs, n.e.g"
+3,85.3,Secundair en postsecundair niet-hoger onderwijs
+4,85.31,Algemeen secundair onderwijs
+5,85.311,Gewoon algemeen secundair onderwijs ingericht door de Gemeenschappen
+5,85.312,Provinciaal gesubsidieerd gewoon algemeen secundair onderwijs
+5,85.313,Gemeentelijk gesubsidieerd gewoon algemeen secundair onderwijs
+5,85.314,Vrij gesubsidieerd gewoon algemeen secundair onderwijs
+5,85.319,"Gewoon algemeen secundair onderwijs, n.e.g."
+4,85.32,"Technisch, beroeps- en buitengewoon secundair onderwijs"
+5,85.321,Gewoon technisch en beroepssecundair onderwijs ingericht door de Gemeenschappen
+5,85.322,Provinciaal gesubsidieerd gewoon technisch en beroepssecundair onderwijs
+5,85.323,Gemeentelijk gesubsidieerd gewoon technisch en beroepssecundair onderwijs
+5,85.324,Vrij gesubsidieerd gewoon technisch en beroepssecundair onderwijs
+5,85.325,Buitengewoon officieel secundair onderwijs
+5,85.326,Vrij gesubsidieerd buitengewoon secundair onderwijs
+5,85.329,"Technisch, beroeps- en buitengewoon secundair onderwijs, n.e.g."
+4,85.33,Postsecundair niet-hoger onderwijs
+5,85.330,Postsecundair niet-hoger onderwijs
+3,85.4,Hoger onderwijs
+4,85.40,Hoger onderwijs
+5,85.401,Officieel hoger onderwijs
+5,85.402,Vrij gesubsidieerd hoger onderwijs
+5,85.409,"Hoger onderwijs, n.e.g."
+3,85.5,Overig onderwijs
+4,85.51,Sport- en recreatieonderwijs
+5,85.510,Sport- en recreatieonderwijs
+4,85.52,Cultureel onderwijs
+5,85.520,Cultureel onderwijs
+4,85.53,"Activiteiten van auto- en motorrijscholen, vlieg- en vaaronderricht"
+5,85.531,Activiteiten van auto- en motorrijscholen
+5,85.532,Vlieg- en vaaronderricht
+4,85.59,"Overig onderwijs, n.e.g."
+5,85.591,Onderwijs voor sociale promotie
+5,85.592,Beroepsopleiding
+5,85.593,Sociaal-cultureel vormingswerk
+5,85.599,Overige vormen van onderwijs
+3,85.6,Onderwijsondersteunende activiteiten
+4,85.61,Bemiddeling op het gebied van academische ondersteuning en studiebegeleiding
+5,85.610,Bemiddeling op het gebied van academische ondersteuning en studiebegeleiding
+4,85.69,"Onderwijsondersteunende activiteiten, n.e.g."
+5,85.691,Activiteiten van Centra voor Leerlingbegeleiding (C.L.B.)
+5,85.699,Overige onderwijsondersteunende dienstverlening
+1,R,MENSELIJKE GEZONDHEIDSZORG EN MAATSCHAPPELIJKE DIENSTVERLENING
+2,86,Menselijke gezondheidszorg
+3,86.1,Activiteiten van ziekenhuizen
+4,86.10,Activiteiten van ziekenhuizen
+5,86.101,"Activiteiten van algemene ziekenhuizen, m.u.v. geriatrische en gespecialiseerde ziekenhuizen"
+5,86.102,Activiteiten van geriatrische ziekenhuizen
+5,86.103,Activiteiten van gespecialiseerde ziekenhuizen
+5,86.104,Activiteiten van psychiatrische ziekenhuizen
+5,86.109,Overige hospitalisatiediensten
+3,86.2,Activiteiten van artsen en tandartsen
+4,86.21,Activiteiten van huisartspraktijken
+5,86.210,Activiteiten van huisartspraktijken
+4,86.22,Activiteiten van medisch specialisten
+5,86.220,Activiteiten van medisch specialisten
+4,86.23,Activiteiten van tandartspraktijken
+5,86.230,Activiteiten van tandartspraktijken
+3,86.9,Overige menselijke gezondheidszorg
+4,86.91,Activiteiten van medische beeldvorming en medische laboratoria
+5,86.910,Activiteiten van medische beeldvorming en medische laboratoria
+4,86.92,Patiëntenvervoer per ambulance
+5,86.920,Patiëntenvervoer per ambulance
+4,86.93,"Activiteiten van psychologen en psychotherapeuten, met uitzondering van artsen"
+5,86.931,Activiteiten op het gebied van psychologie
+5,86.932,Activiteiten op het gebied van psychotherapie
+5,86.933,Activiteiten van centra voor geestelijke gezondheidszorg
+5,86.939,Andere activiteiten op het gebied van de geestelijke gezondheidszorg
+4,86.94,Activiteiten van verpleegkundigen en verloskundigen
+5,86.940,Activiteiten van verpleegkundigen en verloskundigen
+4,86.95,Activiteiten op het gebied van fysiotherapie
+5,86.951,Activiteiten op het gebied van kinesitherapie
+5,86.952,Activiteiten op het gebied van ergotherapie
+5,86.959,Andere ambulante revalidatieactiviteiten
+4,86.96,"Traditionele, aanvullende en alternatieve geneeskunde"
+5,86.961,Niet-conventionele therapeutische diensten
+5,86.962,Activiteiten op het gebied van chiropraxie
+5,86.963,Activiteiten op het gebied van osteopathie
+5,86.964,Activiteiten op het gebied van homeopathie
+5,86.965,Activiteiten op het gebied van acupunctuur
+4,86.97,"Bemiddelingsactiviteiten in verband met geneeskundige, tandheelkundige en andere diensten in verband met de menselijke gezondheid"
+5,86.970,"Bemiddelingsactiviteiten in verband met geneeskundige, tandheelkundige en andere diensten in verband met de menselijke gezondheid"
+4,86.99,"Overige menselijke gezondheidszorg, n.e.g."
+5,86.991,"Activiteiten op het gebied van mondzorg, m.u.v. activiteiten van tandartspraktijken"
+5,86.992,"Activiteiten van bloedtransfusiecentra, bloedbanken, spermabanken, organenbanken en dergelijke"
+5,86.993,Activiteiten op het gebied van oogzorg
+5,86.994,Activiteiten op het gebied van voetzorg en -problematiek
+5,86.995,Activiteiten op het gebied van voeding
+5,86.996,Activiteiten op het gebied van logopedie
+5,86.997,"Activiteiten van shiatsu, thai massage , watsu, tuina qigong"
+5,86.999,"Overige activiteiten op het gebied van menselijke gezondheidszorg, n.e.g."
+2,87,"Verpleging, verzorging en begeleiding met overnachting"
+3,87.1,Activiteiten van verpleegtehuizen
+4,87.10,Activiteiten van verpleegtehuizen
+5,87.101,Rust- en verzorgingstehuizen (R.V.T.)
+5,87.109,Overige verpleeginstellingen met huisvesting
+3,87.2,Residentiële zorg voor personen met een al dan niet gediagnosticeerde psychische aandoening of voor drugs- of alcoholverslaafden
+4,87.20,Residentiële zorg voor personen met een al dan niet gediagnosticeerde psychische aandoening of voor drugs- of alcoholverslaafden
+5,87.201,Instellingen met huisvesting voor minderjarigen met een mentale handicap
+5,87.202,Instellingen met huisvesting voor volwassenen met een mentale handicap
+5,87.203,Instellingen met huisvesting voor personen met psychiatrische problemen
+5,87.204,Instellingen met huisvesting voor drugs- en alcoholverslaafden
+5,87.205,Activiteiten van beschut wonen voor personen met psychiatrische problemen
+5,87.209,Andere instellingen met huisvesting voor personen met een mentale handicap of psychiatrische problemen en voor drugs- en alcoholverslaafden
+3,87.3,Residentiële zorg voor ouderen of personen met een lichamelijke handicap
+4,87.30,Residentiële zorg voor ouderen of personen met een lichamelijke handicap
+5,87.301,Rusthuizen voor ouderen (R.O.B.)
+5,87.302,Serviceflats voor ouderen
+5,87.303,Instellingen met huisvesting voor minderjarigen met een lichamelijke handicap
+5,87.304,Instellingen met huisvesting voor volwassenen met een lichamelijke handicap
+5,87.309,"Instellingen met huisvesting voor ouderen en voor personen met een lichamelijke handicap, n.e.g."
+3,87.9,"Overige activiteiten op het gebied van verpleging, verzorging en begeleiding met overnachting"
+4,87.91,Bemiddelingsactiviteiten in verband met residentiële zorg
+5,87.910,Bemiddelingsactiviteiten in verband met residentiële zorg
+4,87.99,"Overige activiteiten op het gebied van verpleging, verzorging en begeleiding met overnachting, n.e.g."
+5,87.991,Integrale jeugdhulp met huisvesting
+5,87.992,Algemeen welzijnswerk met huisvesting
+5,87.999,"Overige maatschappelijke dienstverlening met huisvesting, n.e.g."
+2,88,Maatschappelijke dienstverlening waarbij geen onderdak wordt verschaft
+3,88.1,Maatschappelijke dienstverlening zonder huisvesting voor ouderen of personen met een handicap
+4,88.10,Maatschappelijke dienstverlening zonder huisvesting voor ouderen of personen met een handicap
+5,88.101,"Activiteiten van bejaardenzorg aan huis, m.u.v. (thuis)verpleging"
+5,88.102,Activiteiten van dag- en dienstencentra voor ouderen
+5,88.103,"Activiteiten van dagcentra voor minderjarigen met een lichamelijke handicap, met inbegrip van ambulante hulpverlening"
+5,88.104,"Activiteiten van dagcentra voor volwassenen met een lichamelijke handicap, met inbegrip van ambulante hulpverlening"
+5,88.105,"Activiteiten van dagcentra voor minderjarigen met een mentale handicap, met inbegrip van ambulante hulpverlening"
+5,88.106,"Activiteiten van dagcentra voor volwassenen met een mentale handicap, met inbegrip van ambulante hulpverlening"
+5,88.109,Overige maatschappelijke dienstverlening zonder huisvesting voor ouderen of personen met een handicap
+3,88.9,Overige maatschappelijke dienstverlening waarbij geen onderdak wordt verschaft
+4,88.91,Activiteiten met betrekking tot kinderopvang
+5,88.911,Kinderdagverblijven en crèches
+5,88.912,Kinderopvang door onthaalouders
+5,88.919,Overige activiteiten met betrekking tot kinderopvang
+4,88.99,"Overige maatschappelijke dienstverlening zonder huisvesting, n.e.g."
+5,88.991,Ambulante hulpverlening aan drugs- en alcoholverslaafden
+5,88.992,Integrale jeugdhulp zonder huisvesting
+5,88.993,Beschutte en sociale werkplaatsen
+5,88.994,Algemeen welzijnswerk zonder huisvesting
+5,88.999,"Andere vormen van maatschappelijke dienstverlening zonder huisvesting, n.e.g."
+1,S,"KUNST, SPORT EN RECREATIE"
+2,90,Activiteiten op het gebied van scheppende en uitvoerende kunst
+3,90.1,Creatie van kunst
+4,90.11,Literaire creatie en compositie van muziek
+5,90.111,Literaire creatie
+5,90.112,Compositie van muziek
+4,90.12,Creatie van beeldende kunsten
+5,90.120,Creatie van beeldende kunsten
+4,90.13,Andere vormen van creatie van kunst
+5,90.130,Andere vormen van creatie van kunst
+3,90.2,Verrichten van uitvoerende kunst
+4,90.20,Verrichten van uitvoerende kunst
+5,90.201,Beoefening van uitvoerende kunsten door zelfstandig werkende artiesten
+5,90.202,Beoefening van uitvoerende kunsten door artistieke ensembles
+3,90.3,Ondersteunende activiteiten voor scheppende en uitvoerende kunst
+4,90.31,Exploitatie van kunstfaciliteiten en -locaties
+5,90.311,"Exploitatie van schouwburgen, concertzalen en dergelijke"
+5,90.312,Exploitatie van culturele centra en multifunctionele zalen ten behoeve van culturele activiteiten
+4,90.39,Andere ondersteunende activiteiten voor scheppende en uitvoerende kunst
+5,90.391,Promotie en organisatie van scheppende en uitvoerende kunstevenementen
+5,90.392,Ontwerp en bouw van podia en decors
+5,90.393,"Gespecialiseerde beeld-, verlichtings- en geluidstechnieken"
+5,90.399,"Andere ondersteunende activiteiten voor scheppende en uitvoerende kunst, n.e.g."
+2,91,"Activiteiten van bibliotheken, archieven, musea en overige culturele activiteiten"
+3,91.1,Activiteiten van bibliotheken en archieven
+4,91.11,Activiteiten van bibliotheken
+5,91.110,Activiteiten van bibliotheken
+4,91.12,Activiteiten van archieven
+5,91.120,Activiteiten van archieven
+3,91.2,"Activiteiten van musea, collecties, historische locaties en monumenten"
+4,91.21,Activiteiten van musea en collecties
+5,91.210,Activiteiten van musea en collecties
+4,91.22,Activiteiten van historische locaties en monumenten
+5,91.220,Activiteiten van historische locaties en monumenten
+3,91.3,"Instandhouding, restauratie en andere ondersteunende activiteiten voor cultureel erfgoed"
+4,91.30,"Instandhouding, restauratie en andere ondersteunende activiteiten voor cultureel erfgoed"
+5,91.300,"Instandhouding, restauratie en andere ondersteunende activiteiten voor cultureel erfgoed"
+3,91.4,"Activiteiten van botanische tuinen, dierentuinen en natuurreservaten"
+4,91.41,Activiteiten van botanische tuinen en dierentuinen
+5,91.410,Activiteiten van botanische tuinen en dierentuinen
+4,91.42,Beheer en instandhouding van natuurreservaten
+5,91.420,Beheer en instandhouding van natuurreservaten
+2,92,Activiteiten van loterijen en kansspelen
+3,92.0,Activiteiten van loterijen en kansspelen
+4,92.00,Activiteiten van loterijen en kansspelen
+5,92.000,Activiteiten van loterijen en kansspelen
+2,93,"Sport, ontspanning en recreatie"
+3,93.1,Sport
+4,93.11,Exploitatie van sportaccommodaties
+5,93.110,Exploitatie van sportaccommodaties
+4,93.12,Activiteiten van sportclubs
+5,93.121,Activiteiten van voetbalclubs
+5,93.122,Activiteiten van tennisclubs
+5,93.123,Activiteiten van overige balsportclubs
+5,93.124,Activiteiten van wielerclubs
+5,93.125,Activiteiten van vechtsportclubs
+5,93.126,Activiteiten van watersportclubs
+5,93.127,Activiteiten van paardensportclubs
+5,93.128,Activiteiten van atletiekclubs
+5,93.129,Activiteiten van overige sportclubs
+4,93.13,Activiteiten van fitnesscentra
+5,93.130,Activiteiten van fitnesscentra
+4,93.19,"Sportactiviteiten, n.e.g."
+5,93.191,Activiteiten van sportbonden en -federaties
+5,93.192,Activiteiten van zelfstandig werkende sportbeoefenaars
+5,93.199,"Overige sportactiviteiten, n.e.g."
+3,93.2,Activiteiten op het gebied van ontspanning en recreatie
+4,93.21,Activiteiten van pret- en themaparken
+5,93.210,Activiteiten van pret- en themaparken
+4,93.29,"Ontspanning en recreatie, n.e.g."
+5,93.291,Exploitatie van kermisattracties
+5,93.292,Exploitatie van snooker- en biljartzalen
+5,93.293,Exploitatie van recreatiedomeinen
+5,93.299,"Overige recreatie- en ontspanningsactiviteiten, n.e.g."
+1,T,OVERIGE DIENSTEN
+2,94,Activiteiten van verenigingen
+3,94.1,"Activiteiten van bedrijfs-, werkgevers- en beroepsorganisaties"
+4,94.11,Activiteiten van bedrijfs- en werkgeversorganisaties
+5,94.110,Activiteiten van bedrijfs- en werkgeversorganisaties
+4,94.12,Activiteiten van beroepsorganisaties
+5,94.120,Activiteiten van beroepsorganisaties
+3,94.2,Activiteiten van vakbonden
+4,94.20,Activiteiten van vakbonden
+5,94.200,Activiteiten van vakbonden
+3,94.9,Activiteiten van overige verenigingen
+4,94.91,Activiteiten van religieuze organisaties
+5,94.910,Activiteiten van religieuze organisaties
+4,94.92,Activiteiten van politieke organisaties
+5,94.920,Activiteiten van politieke organisaties
+4,94.99,"Activiteiten van overige verenigingen, n.e.g."
+5,94.991,Verenigingen op het vlak van jeugdwerk
+5,94.992,Verenigingen en bewegingen voor volwassenen
+5,94.993,Verenigingen op het vlak van ziektepreventie en gezondheidsbevordering
+5,94.994,Verenigingen op het vlak van milieu en mobiliteit
+5,94.995,Verenigingen op het vlak van ontwikkelingssamenwerking
+5,94.999,"Overige verenigingen, n.e.g."
+2,95,"Reparatie en onderhoud van computers, consumentenartikelen, auto’s en motorfietsen"
+3,95.1,Reparatie en onderhoud van computers en communicatieapparatuur
+4,95.10,Reparatie en onderhoud van computers en communicatieapparatuur
+5,95.100,Reparatie en onderhoud van computers en communicatieapparatuur
+3,95.2,Reparatie en onderhoud van consumentenartikelen
+4,95.21,Reparatie en onderhoud van consumentenelektronica
+5,95.210,Reparatie en onderhoud van consumentenelektronica
+4,95.22,Reparatie en onderhoud van huishoudapparaten en van werktuigen voor gebruik in huis en tuin
+5,95.220,Reparatie en onderhoud van huishoudapparaten en van werktuigen voor gebruik in huis en tuin
+4,95.23,Reparatie en onderhoud van schoeisel en lederwaren
+5,95.230,Reparatie en onderhoud van schoeisel en lederwaren
+4,95.24,Reparatie en onderhoud van meubelen en stoffering
+5,95.240,Reparatie en onderhoud van meubelen en stoffering
+4,95.25,Reparatie en onderhoud van uurwerken en sieraden
+5,95.250,Reparatie en onderhoud van uurwerken en sieraden
+4,95.29,"Reparatie en onderhoud van consumentenartikelen, n.e.g."
+5,95.290,"Reparatie en onderhoud van consumentenartikelen, n.e.g."
+3,95.3,Reparatie en onderhoud van motorvoertuigen en motorfietsen
+4,95.31,Reparatie en onderhoud van motorvoertuigen
+5,95.311,"Algemeen onderhoud en reparatie van auto's en lichte bestelwagens (<= 3,5 ton)"
+5,95.312,"Algemeen onderhoud en reparatie van overige motorvoertuigen (> 3,5 ton)"
+5,95.313,Reparatie en montage van specifieke auto-onderdelen
+5,95.314,Carrosserieherstelling (inclusief spuiten en verven)
+5,95.315,Bandenservicebedrijven
+5,95.316,Wassen en poetsen van motorvoertuigen
+5,95.319,"Onderhoud en reparatie van motorvoertuigen, n.e.g."
+4,95.32,Reparatie en onderhoud van motorfietsen
+5,95.320,Reparatie en onderhoud van motorfietsen
+3,95.4,"Bemiddelingsactiviteiten in verband met reparatie en onderhoud van computers, consumentenartikelen, motorvoertuigen en motorfietsen"
+4,95.40,"Bemiddelingsactiviteiten in verband met reparatie en onderhoud van computers, consumentenartikelen, motorvoertuigen en motorfietsen"
+5,95.400,"Bemiddelingsactiviteiten in verband met reparatie en onderhoud van computers, consumentenartikelen, motorvoertuigen en motorfietsen"
+2,96,Persoonlijke dienstverlening
+3,96.1,Wassen en chemisch reinigen van textiel en bontproducten
+4,96.10,Wassen en chemisch reinigen van textiel en bontproducten
+5,96.101,Activiteiten van industriële wasserijen
+5,96.102,Activiteiten van wasserettes en wassalons ten behoeve van particulieren
+3,96.2,"Haarverzorging, schoonheidsverzorging, activiteiten van kuuroorden en dergelijke activiteiten"
+4,96.21,Kappers- en barbiersactiviteiten
+5,96.210,Kappers- en barbiersactiviteiten
+4,96.22,Schoonheidsverzorging en andere schoonheidsbehandelingen
+5,96.220,Schoonheidsverzorging en andere schoonheidsbehandelingen
+4,96.23,"Activiteiten van kuuroorden, sauna’s en stoombaden"
+5,96.230,"Activiteiten van kuuroorden, sauna’s en stoombaden"
+3,96.3,Begrafeniswezen en aanverwante activiteiten
+4,96.30,Begrafeniswezen en aanverwante activiteiten
+5,96.301,Uitvaartverzorging
+5,96.302,Beheer van kerkhoven en activiteiten van crematoria
+3,96.4,Bemiddelingsactiviteiten op het gebied van persoonlijke dienstverlening
+4,96.40,Bemiddelingsactiviteiten op het gebied van persoonlijke dienstverlening
+5,96.400,Bemiddelingsactiviteiten op het gebied van persoonlijke dienstverlening
+3,96.9,Overige persoonlijke dienstverlening
+4,96.91,Huishoudelijke persoonlijke dienstverlening
+5,96.910,Huishoudelijke persoonlijke dienstverlening
+4,96.99,"Overige persoonlijke dienstverlening, n.e.g."
+5,96.991,Contactbemiddelingsbureaus en dergelijke
+5,96.992,Plaatsen van tatoeages en piercings
+5,96.993,"Diensten in verband met de verzorging van huisdieren, m.u.v. veterinaire diensten"
+5,96.994,Africhten van huisdieren
+5,96.995,Pensions voor huisdieren
+5,96.999,Overige persoonlijke diensten
+1,U,ACTIVITEITEN VAN HUISHOUDENS ALS WERKGEVER EN NIET-GEDIFFERENTIEERDE PRODUCTIE VAN GOEDEREN EN DIENSTEN DOOR HUISHOUDENS VOOR EIGEN GEBRUIK
+2,97,Activiteiten van huishoudens als werkgever van huishoudelijk personeel
+3,97.0,Activiteiten van huishoudens als werkgever van huishoudelijk personeel
+4,97.00,Activiteiten van huishoudens als werkgever van huishoudelijk personeel
+5,97.000,Activiteiten van huishoudens als werkgever van huishoudelijk personeel
+2,98,Niet-gedifferentieerde productie van goederen en diensten door particuliere huishoudens voor eigen gebruik
+3,98.1,Niet-gedifferentieerde productie van goederen door particuliere huishoudens voor eigen gebruik
+4,98.10,Niet-gedifferentieerde productie van goederen door particuliere huishoudens voor eigen gebruik
+5,98.100,Niet-gedifferentieerde productie van goederen door particuliere huishoudens voor eigen gebruik
+3,98.2,Niet-gedifferentieerde productie van diensten door particuliere huishoudens voor eigen gebruik
+4,98.20,Niet-gedifferentieerde productie van diensten door particuliere huishoudens voor eigen gebruik
+5,98.200,Niet-gedifferentieerde productie van diensten door particuliere huishoudens voor eigen gebruik
+1,V,ACTIVITEITEN VAN EXTRATERRITORIALE ORGANISATIES EN INSTANTIES
+2,99,Activiteiten van extraterritoriale organisaties en instanties
+3,99.0,Activiteiten van extraterritoriale organisaties en instanties
+4,99.00,Activiteiten van extraterritoriale organisaties en instanties
+5,99.000,Activiteiten van extraterritoriale organisaties en instanties

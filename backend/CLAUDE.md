@@ -10,6 +10,9 @@ app/vkbo.py        VKBO property → row mapping, cleaning rules, upsert SQL
 app/scoring.py     rule-based assessment (status + zekerheid + reasons) — NO AI
 app/links.py       external evidence URLs for a record
 app/activity.py    NACE 2-digit → sector (Dutch label); keyword map for officer-observed activity text
+app/nacebel.py     official NACEBEL 2025 list (app/data/nacebel_2025.csv): title(code), describe(code), search(q)
+app/kbo_public.py  KBO Public Search page scraper (NACEBEL 2025 activities, phone/e-mail/website, status) → indicator_cache kind kbo_public
+app/streetview.py  Wegenregister snap: point on the record's own street + heading → indicator_cache kind streetview
 app/contact.py     contacts_for(row, parent, evidence, nbb) → Contact[] with owner/source/date; contact_status()
 app/nbb.py         NBB Balanscentrale public API client (+ cache)
 app/indicator_cache.py  generic cache (table indicator_cache)
@@ -44,7 +47,8 @@ Activity    { sector: string,                                    // 'detailhande
                                                                   //  'zakelijke_diensten'|'onderwijs'|'verenigingen'|'overheid_welzijn'|'industrie'|'groothandel'|
                                                                   //  'transport'|'ict'|'financieel'|'overige'|'onbekend'
               label: string,                                     // Dutch, e.g. 'Gezondheidszorg', 'Onbekend'
-              source: 'KBO (RSZ)'|'KBO (BTW)'|'waarneming'|null, // priority: nace_rsz → nace_vat → latest evidence.observed_activity (keywords) → onbekend
+              source: 'KBO (RSZ)'|'KBO (BTW)'|'KBO (publiek)'|'waarneming'|null, // priority: nace_rsz → nace_vat → cached KBO Public Search main activity → latest evidence.observed_activity (keywords) → onbekend
+              activities: [{ code, title, kind: 'hoofd'|'neven', since }], // every NACEBEL 2025 activity from KBO Public Search (cached), may be []
               nace: string|null,                                 // full NACE code from KBO ('86230'), or the 2-digit prefix for a waarneming ('96')
               description: string|null }                         // KBO NACE description, or the observed activity text for a waarneming
 RecordSummary { nr, record_type, parent_nr, display_name, name, trade_name, legal_form, legal_status,
@@ -54,7 +58,7 @@ RecordSummary { nr, record_type, parent_nr, display_name, name, trade_name, lega
                 contact_status: 'register'|'zetel'|'waargenomen'|'onbekend' }   // register contact on the record itself → register;
                                                                                // parent's → zetel; officer-observed → waargenomen; else onbekend (NBB not counted)
 Contact     { kind: 'phone'|'email'|'website', value, belongs_to: 'vestiging'|'zetel', source: str, observed_at: 'YYYY-MM-DD'|null, url: str|null }
-              sources: "KBO (via VKBO)" (own row; date = snapshot, url = KBO page) · "KBO (via VKBO) — moederonderneming" (establishment without
+              sources: "KBO (via VKBO)" (own row; date = snapshot, url = KBO page) · "KBO Public Search" (scraped own page, counts as register) · "Peppol Directory" (business-card contacts, zetel) · "KBO (via VKBO) — moederonderneming" (establishment without
               contact → parent's, belongs_to zetel) · "Waargenomen via {Google Maps|Street View|Website|Terreinbezoek|KBO|NBB|Check Inhoudingsplicht|Andere}"
               (evidence.phone/email/website, date = observed_at, url = evidence.url) · "NBB Balanscentrale" (cached company.email/website, zetel).
               Deduped on (kind, normalized value); vestiging before zetel, then observed_at desc.
@@ -85,8 +89,11 @@ GET  /records/geo?street=&status=&municipality=&type=&activity= → { total, ite
 GET  /records/{nr}                                     → { record: RecordSummary + every column of `records` except `raw`, parent: RecordSummary|null,
                                                            parent_in_dataset: bool, seat_elsewhere: bool,
                                                            establishments: RecordSummary[], evidence: Evidence[], proposals: Proposal[],
-                                                           links: Links, contacts: Contact[], contact_status: ContactStatus }
+                                                           links: Links, contacts: Contact[], contact_status: ContactStatus,
+                                                           kbo_public: { available, url, status, snapshot_date, phone, email, website, activities, note } | null }
                                                          side effect: (re)generate open proposals from the assessment, idempotently
+POST /records/{nr}/kbo-public                          → kbo_public payload (live scrape of the KBO Public Search page, cached; TICKET-035)
+GET  /nacebel?q=&limit=20  · GET /nacebel/{code}       → [{ code, level, title }] · { code, title, division, division_title, section, section_title }|null
 POST /records/{nr}/fetch-parent                        → RecordSummary  (VKBO API by Ondernemingsnr; 404 if not found)
 GET  /records/{nr}/indicators                          → { kbo, google_maps, einvoice }   live Peppol lookup (cached); KBO and Google Maps lights recomputed
 POST /streets/{street}/indicators/refresh              → { street, records, kbo: {groen,geel,rood,onbekend}, google_maps: {...}, einvoice: {...}, seconds }
@@ -133,8 +140,10 @@ Auto-proposals from the assessment (idempotent — skip if an open or decided pr
 ```
 google_maps_embed   https://maps.google.com/maps?q={name} {address}&output=embed            (iframe OK, no key)
 google_maps         https://www.google.com/maps/search/?api=1&query={name} {address}
-street_view_embed   https://www.google.com/maps/embed?pb=!4v0!6m8!1m7!1s!2m2!1d{lat}!2d{lng}!3f0!4f0!5f0.75   (may not render; frontend falls back)
-street_view         https://www.google.com/maps/@?api=1&map_action=pano&viewpoint={lat},{lng}
+street_view_embed   https://maps.google.com/maps?q=&layer=c&cbll={lat},{lng}&cbp=11,{heading},0,0,0&output=svembed   (no key)
+street_view         https://www.google.com/maps/@?api=1&map_action=pano&viewpoint={lat},{lng}&heading={heading}
+                    lat/lng/heading come from the cached `streetview` payload (point on the record's own street, facing the address — TICKET-036);
+                    fallback = raw record coordinates, heading 0. Pre-fill both caches: `uv run python scripts/prefetch_kbo_public.py [--street X] [--only kbo|streetview]`
 kbo_public / kbo_public_embed  https://kbopub.economie.fgov.be/kbopub/toonondernemingps.html?ondernemingsnummer={enterprise_nr}&lang=nl  (iframe OK)
 kbo_establishments  https://kbopub.economie.fgov.be/kbopub/vestiginglijst.html?ondernemingsnummer={enterprise_nr}&lang=nl
 nbb_consult         https://consult.cbso.nbb.be/consult-enterprise/{enterprise_nr}   (NOT iframeable)

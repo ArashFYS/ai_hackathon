@@ -94,6 +94,34 @@ class DashboardTests(unittest.TestCase):
         self.assertEqual(data['statuses'][geo['status']], 1)
         self.assertEqual(data['contacts']['onbekend'], 1)
 
+    def test_kbo_public_enrichment_keeps_scoped_dashboard_and_detail_in_sync(self):
+        self.record('local')
+        self.record('outside', kbo_municipality='Antwerpen', kbo_niscode='11002')
+        payload = {'available': True, 'phone': '123', 'snapshot_date': '2026-09-16',
+                   'activities': [{'code': '56111', 'title': 'Restaurant', 'kind': 'hoofd', 'since': None}]}
+        for nr in ('local', 'outside'):
+            self.db.execute('INSERT INTO indicator_cache VALUES (?,?,?,?)',
+                            ('kbo_public', nr, '2026-09-16', json.dumps(payload)))
+        self.db.commit()
+        self.db.execute('PRAGMA query_only = ON')
+        with patch('httpx.get', side_effect=AssertionError('No network')), \
+             patch('app.kbo_public.fetch_live', side_effect=AssertionError('No enrichment fetch')):
+            data = self.get('dashboard?municipality=Schoten&activity=horeca')
+            options = self.get('activities?municipality=Schoten&type=enterprise')
+            result = self.get('records?municipality=Schoten&activity=horeca&contact=register')
+        self.assertEqual(data['total'], 1)
+        self.assertEqual(data['contacts']['register'], 1)
+        self.assertEqual(data['certainty']['middel'], 1)
+        self.assertEqual([(s['sector'], s['count']) for s in options], [('horeca', 1)])
+        self.assertEqual(result['total'], 1)
+        self.assertEqual(result['items'][0]['activity']['source'], 'KBO (publiek)')
+        self.db.execute('PRAGMA query_only = OFF')
+        detail = self.get('records/local')['record']
+        self.assertEqual(result['items'][0]['assessment'], detail['assessment'])
+        self.assertEqual(result['items'][0]['activity'], detail['activity'])
+        self.assertEqual(self.client.get('/api/nacebel?q=restaurant').status_code, 200)
+        self.assertEqual(self.client.post('/api/records/absent/kbo-public').status_code, 404)
+
     def test_empty_and_filters(self):
         data = self.get('dashboard')
         self.assertEqual(data['total'], 0)

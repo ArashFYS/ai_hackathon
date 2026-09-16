@@ -64,7 +64,7 @@ export const nlDashboard = {
   'dashboard.evidenceNote': 'Minstens één vastgelegde waarneming; geen garantie op activiteit of recentheid.',
   'dashboard.noEvidence': 'Zonder waarneming',
   'dashboard.contact': 'Contactgegevens',
-  'dashboard.contactNote': 'Uit register en waarnemingen. Contacten uit jaarrekeningen tellen hier niet mee.',
+  'dashboard.contactNote': 'Uit register en waarnemingen. Contacten uit jaarrekeningen en Peppol tellen hier niet mee.',
   'dashboard.certainty': 'Zekerheid van beoordeling',
   'dashboard.parents': 'Moeder niet in dataset',
   'dashboard.parentsNote': '{pct} van {n} geselecteerde vestigingen. Moederonderneming niet teruggevonden in de volledige dataset.',

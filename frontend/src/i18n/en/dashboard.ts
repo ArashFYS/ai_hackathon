@@ -65,7 +65,7 @@ export const enDashboard: Record<keyof typeof nlDashboard, string> = {
   'dashboard.evidenceNote': 'At least one recorded observation; no guarantee of activity or recency.',
   'dashboard.noEvidence': 'Without observation',
   'dashboard.contact': 'Contact details',
-  'dashboard.contactNote': 'From the register and observations. Annual-account contacts are excluded here.',
+  'dashboard.contactNote': 'From the register and observations. Annual-account and Peppol contacts are excluded here.',
   'dashboard.certainty': 'Assessment certainty',
   'dashboard.parents': 'Parent not in dataset',
   'dashboard.parentsNote': '{pct} of {n} selected establishments. Parent enterprise not found in the full dataset.',

@@ -45,12 +45,35 @@ export interface Assessment {
 }
 
 /** Sector of a record: from KBO NACE (RSZ → BTW) or the latest officer-observed activity; else onbekend. */
+/** One NACEBEL 2025 activity as listed on the KBO Public Search page (TICKET-035). */
+export interface NaceActivity {
+  code: string
+  title: string | null
+  kind: 'hoofd' | 'neven'
+  since: string | null
+}
+
 export interface Activity {
   sector: string
   label: string
-  source: 'KBO (RSZ)' | 'KBO (BTW)' | 'waarneming' | null
+  source: 'KBO (RSZ)' | 'KBO (BTW)' | 'KBO (publiek)' | 'waarneming' | null
   nace: string | null
   description: string | null
+  activities: NaceActivity[]
+}
+
+/** Cached scrape of the record's own KBO Public Search page (null when never fetched). */
+export interface KboPublic {
+  available: boolean
+  url: string
+  status: string | null
+  snapshot_date: string | null
+  phone: string | null
+  email: string | null
+  website: string | null
+  activities: NaceActivity[]
+  note: string | null
+  fetched_at?: string
 }
 
 export interface ActivityCount {
@@ -199,6 +222,7 @@ export interface RecordDetail {
   links: Links
   contacts: Contact[]
   contact_status: ContactStatus
+  kbo_public: KboPublic | null
 }
 
 export interface NbbFigures {
@@ -393,6 +417,11 @@ export async function getGeo(query: GeoQuery): Promise<GeoItem[]> {
 
 export function getRecord(nr: string): Promise<RecordDetail> {
   return api<RecordDetail>(`/records/${encodeURIComponent(nr)}`)
+}
+
+/** Live fetch of the KBO Public Search page (activities, contact, status); cached server-side. */
+export function refreshKboPublic(nr: string): Promise<KboPublic> {
+  return api<KboPublic>(`/records/${encodeURIComponent(nr)}/kbo-public`, { method: 'POST' })
 }
 
 export function fetchParent(nr: string): Promise<RecordSummary> {

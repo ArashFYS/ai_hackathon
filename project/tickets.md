@@ -1,9 +1,6 @@
 # Tickets -- ai_hackathon (Prefix: TICKET)
 
-> Next ID: TICKET-035
-> Next ID: TICKET-035 (028 and 029 are already reserved on remote branches)
-> Next ID: TICKET-035
-> Next ID: TICKET-033
+> Next ID: TICKET-037
 >
 > **Deadline: 16:30 Europe/Brussels, 16 Sep 2026.** Build freeze ~15:00 → record 15:00–15:45 → upload + check + form by 16:15.
 > Anything not demoable by 15:00 is a slide in the video, not a feature.
@@ -12,6 +9,17 @@
 
 ## In Progress
 
+### TICKET-035: KBO Public Search enrichment (NACEBEL 2025 activities + contact) and NACEBEL 2025 code list
+- **Type:** feat(data) | **Priority:** MVP (fills activity for ~all rows; official contact source)
+- **Created:** 2026-09-16
+- **Description:** Only 86/1006 rows carry a NACE code and 54 a phone in the VKBO sample. The KBO Public Search pages (`toonvestigingps.html?vestigingsnummer=` / `toonondernemingps.html?ondernemingsnummer=`) list every NACEBEL 2025 activity (Hoofd-/Nevenactiviteit, since date), phone / e-mail / website and the entity status, with the register snapshot date in the footer. `app/kbo_public.py` fetches + parses one page, cached in `indicator_cache` (kind `kbo_public`, key = own nr). `app/nacebel.py` loads the official NACEBEL 2025 list (`app/data/nacebel_2025.csv`, from NACEBEL_2025.xlsx) for canonical Dutch titles at any level. `activity_of()` falls through to the KBO-public main activity (source `KBO (publiek)`), `contacts_for()` adds KBO-public phone/e-mail/website (source `KBO (publieke opzoeking)`). `scripts/prefetch_kbo_public.py` pre-fills the cache for the whole DB; `POST /api/records/{nr}/kbo-public` refreshes one record. `GET /api/nacebel?q=` searches the list.
+- **Branch:** `feat/TICKET-035-kbo-public-enrichment`
+
+### TICKET-036: Street View opens on the wrong street / faces north
+- **Type:** fix(evidence)
+- **Created:** 2026-09-16
+- **Description:** Record coordinates are the Adressenregister position "afgeleid van object" (parcel/building), so Google picks the nearest pano — for deep or corner parcels that is another street (Gelmelenstraat 204 opened on "1 Merelstraat") — and `cbp=11,0,...` always looks north. Fix: Wegenregister (geo.api.vlaanderen.be, OGC Features `Wegsegment`) segments in a small bbox whose left/right street name matches the record's street → nearest point on the street as `cbll`, heading = bearing street point → address point. Cached (`indicator_cache` kind `streetview`) by the prefetch script; falls back to the old URL when nothing is cached.
+- **Branch:** `feat/TICKET-035-kbo-public-enrichment` (same PR)
 ### TICKET-032: Gemeentedashboard als startpagina — status, sectoren en datadekking
 - **Type:** feat(dashboard) | **Priority:** Gepland; geen uitbreiding van de pitch-kritieke scope
 - **Created / Rescoped:** 2026-09-16 | **Status:** In Progress — geïmplementeerd op `feat/TICKET-032-dashboard`; gereed voor PR-review.
@@ -31,7 +39,7 @@
 | Kop en filters | Gemeenteoverzicht — Schoten; type Alle records / Ondernemingen / Vestigingen en bestaande sectorcodes, inclusief onbekend | Eén selectie voor alle recordmetrics; geen nieuwe gemeente-import of provinciebreed totaal |
 | Selectie en prioriteiten | Selectietotaal en typesamenstelling één keer; drie kaarten: Ter controle, Actief beoordeeld en Met waarneming | Geen nulkaart voor uitgesloten recordtypes. Waarnemingen en beoordelingen hebben een eigen betekenis; geen bewezen telling van werkelijke activiteit. |
 | Statuswiel | Omschakelbare donut Activiteiten / Status met Actief / Ter controle / Waarschijnlijk niet actief / Geen onderneming; totaal in het midden, aantal en percentage in vaste legenda | Bestaande kleuren en codes; alle vier categorieën zichtbaar, ook bij nul; legenda en kerncijfers klikken naar de exacte recordselectie |
-| Sectoren | Activiteitendonut met aanklikbare legenda volgens `activity_of()` (KBO RSZ → BTW → laatste ingevulde waargenomen activiteit met herkend trefwoord → onbekend), met expliciet aandeel onbekend | Alle sectoren behoren tot hetzelfde gefilterde totaal; geen tweede classificatie. Bij gekozen sector toont het blok alleen die selectie; filter wissen herstelt het overzicht |
+| Sectoren | Activiteitendonut met aanklikbare legenda volgens `activity_of()` (KBO RSZ → BTW → KBO Public Search-cache → laatste ingevulde waargenomen activiteit met herkend trefwoord → onbekend), met expliciet aandeel onbekend | Alle sectoren behoren tot hetzelfde gefilterde totaal; geen tweede classificatie. Bij gekozen sector toont het blok alleen die selectie; filter wissen herstelt het overzicht |
 | Datadekking | Compacte aantallen/aandelen voor zekerheid Hoog/Middel/Laag, ontbrekende moeder bij vestigingen en contactstatus register/zetel/waargenomen/onbekend | Zekerheid is geen numerieke score. Contactstatus volgt bestaande bronprioriteit; NBB-contacten tellen niet mee. Toon dit als contactdekking uit register/waarnemingen, niet als alle beschikbare contactmogelijkheden |
 | Opgeslagen voorstellen | Aantal voorstelrijen open/bevestigd/afgewezen die via `record_nr` aan de geselecteerde records gekoppeld zijn | Meerdere voorstellen per record mogelijk; tel afzonderlijke werkitems. Noem het geen volledige controlevoorraad en toon expliciet dat meldingen zonder registerkoppeling buiten deze gefilterde telling vallen |
 | Bron en dekking | Bron, ophaaldatum of datumbereik en vermelding Deelbestand — niet alle records van de gemeente | Starterbestand opgehaald 07-09-2026; exacte federale KBO-peildatum onbekend. Geen importtijd of berekentijd presenteren als laatste controle |
@@ -67,6 +75,7 @@
 - **Integriteitscontrole:** Alle 1.000 geïmporteerde registernummers komen overeen met het bronbestand; totalen en status/contact/zekerheid/sectordoorkliks gecontroleerd voor alle records, ondernemingen en vestigingen. Dit is een deelbestand met 0 waarnemingen en 919 onbekende sectoren. Geen uitspraak dat er 0 werkelijk actieve ondernemingen zijn. Zie `docs/dashboard-data-review.md`.
 - **Leesbaarheid:** Geen interne scrollbar in de legenda; vier statusrijen altijd zichtbaar, overige activiteiten uitklapbaar. Grotere kerncijfers en consistente, gescheiden aantallen/percentages in wiel, status, datadekking en voorstellen.
 - **Visuele feedback:** Status is standaard in het wiel; onbekende activiteit krijgt een zichtbare kleur, eerste legendapositie en expliciet aantal/aandeel. Kleine sectoren behouden hun segment.
+- **Integratie met main:** KBO Public Search-verrijking en NACEBEL-routes behouden; gemeentelijk gescopeerde aggregaties gebruiken dezelfde verrijkte samenvattingen als detail en zoeken. Regressietest controleert sector/contact/zekerheid uit de cache zonder netwerkcalls.
 - **Oplevering:** Dashboard, gedeelde kaart, doorklikfilters en paginering geïmplementeerd. Vier backendtests geslaagd (inclusief 2.105 records, dubbele waarnemingen/voorstellen, ontbrekende moeder, NBB-cachepariteit en alleen-lezen). Productiebuild en bestaande kaarttest geslaagd. Browsercontrole: gemeente/type/sector, echte totalen en kaart zichtbaar.
 
 

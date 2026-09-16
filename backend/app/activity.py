@@ -1,4 +1,10 @@
-"""Activity (sector) of a record: NACE 2-digit → Dutch sector, or officer-observed activity by keyword."""
+"""Activity (sector) of a record: NACE 2-digit → Dutch sector, or officer-observed activity by keyword.
+
+Sources, in order: VKBO nace_rsz → nace_vat → KBO Public Search main activity (cached, TICKET-035)
+→ latest officer observation (keyword) → onbekend. Descriptions come from the NACEBEL 2025 list when known.
+"""
+from . import nacebel
+from .kbo_public import main_activity
 
 # NACE 2-digit prefix → (sector_key, Dutch label). Codes in the DB are 5-digit strings ("86230").
 _SECTOR_DEFS: list[tuple[list[str], str, str]] = [
@@ -62,18 +68,26 @@ def nace_for_text(text: str | None) -> str | None:
     return None
 
 
-def activity_of(row: dict, evidence: list[dict]) -> dict:
-    """Activity of a record: KBO (RSZ) → KBO (BTW) → latest observed activity (keyword) → onbekend.
+def activity_of(row: dict, evidence: list[dict], kbo_public: dict | None = None) -> dict:
+    """Activity of a record: KBO (RSZ) → KBO (BTW) → KBO Public Search → latest observed activity → onbekend.
 
-    `evidence` is expected sorted latest-first (observed_at DESC, id DESC).
-    Returns {"sector", "label", "source", "nace", "description"}.
+    `evidence` is expected sorted latest-first (observed_at DESC, id DESC); `kbo_public` is the cached
+    KBO Public Search payload for this record (or None).
+    Returns {"sector", "label", "source", "nace", "description", "activities"}; `activities` lists every
+    NACEBEL 2025 activity known from KBO Public Search (may be empty).
     """
+    acts = (kbo_public or {}).get("activities") or []
     for col, source in (("nace_rsz", "KBO (RSZ)"), ("nace_vat", "KBO (BTW)")):
         code = (row.get(col) or "").strip()
         if code:
             key, label = sector_for_nace(code)
-            return {"sector": key, "label": label, "source": source,
-                    "nace": code, "description": row.get(f"{col}_desc")}
+            return {"sector": key, "label": label, "source": source, "nace": code,
+                    "description": row.get(f"{col}_desc") or nacebel.title(code), "activities": acts}
+    main = main_activity(kbo_public)
+    if main:
+        key, label = sector_for_nace(main["code"])
+        return {"sector": key, "label": label, "source": "KBO (publiek)", "nace": main["code"],
+                "description": main.get("title") or nacebel.title(main["code"]), "activities": acts}
     for ev in evidence:
         text = (ev.get("observed_activity") or "").strip()
         if not text:
@@ -81,6 +95,8 @@ def activity_of(row: dict, evidence: list[dict]) -> dict:
         prefix = nace_for_text(text)
         if prefix:
             key, label = SECTORS[prefix]
-            return {"sector": key, "label": label, "source": "waarneming", "nace": prefix, "description": text}
+            return {"sector": key, "label": label, "source": "waarneming", "nace": prefix, "description": text,
+                    "activities": acts}
         break  # only the latest observation with an activity counts
-    return {"sector": ONBEKEND[0], "label": ONBEKEND[1], "source": None, "nace": None, "description": None}
+    return {"sector": ONBEKEND[0], "label": ONBEKEND[1], "source": None, "nace": None, "description": None,
+            "activities": acts}
