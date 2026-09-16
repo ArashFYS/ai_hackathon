@@ -1,7 +1,7 @@
 import { Fragment, useCallback, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import type { Proposal, Status, StreetCount, StreetOverview, StreetRecord } from '../api'
-import { STATUS_CODES, dash, getStreet, getStreets, registerLabel, statusLabel, valueLabel } from '../api'
+import { STATUS_CODES, dash, getStreet, getStreets, proposalTextLabel, registerLabel, statusLabel, valueLabel } from '../api'
 import type { TKey } from '../i18n'
 import { useLang, useT } from '../i18n'
 import StatusBadge from '../components/StatusBadge'
@@ -210,7 +210,7 @@ export default function Straat() {
                       <td className="px-3 py-2 whitespace-nowrap">{r.last_evidence?.observed_at ?? r.assessment.last_observed ?? '—'}</td>
                       <td className="px-3 py-2"><ZekerheidBadge certainty={r.assessment.certainty} label={r.assessment.certainty_label} /></td>
                       <td className="max-w-56 px-3 py-2 text-gray-800">
-                        {r.assessment.proposal_text}
+                        {proposalTextLabel(lang, r.assessment.proposal_text)}
                         {r.open_proposal && (
                           <div className="text-xs text-gray-500">
                             {t('street.openProposal')} {r.open_proposal.reason}

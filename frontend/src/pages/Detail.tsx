@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import type { RecordDetail, RecordFull } from '../api'
-import { activitySectorLabel, activitySourceLabel, conclusionLabel, dash, getRecord, onbekend, recordTypeLabel, registerLabel, sourceLabel } from '../api'
+import { activitySectorLabel, activitySourceLabel, conclusionLabel, dash, getRecord, onbekend, proposalTextLabel, recordTypeLabel, registerLabel, sourceLabel } from '../api'
 import type { Lang, TKey } from '../i18n'
 import { useLang, useT } from '../i18n'
 import StatusBadge from '../components/StatusBadge'
@@ -152,7 +152,7 @@ export default function Detail() {
             {a.last_observed && <span className="text-xs text-gray-500">{t('detail.lastObserved')} {a.last_observed}</span>}
             {lang === 'en' && <span className="text-xs italic text-gray-400">{t('detail.sourceTextNote')}</span>}
           </div>
-          <p className="mb-3 text-sm"><span className="text-gray-500">{t('detail.proposal')}</span> <span className="font-medium">{a.proposal_text}</span></p>
+          <p className="mb-3 text-sm"><span className="text-gray-500">{t('detail.proposal')}</span> <span className="font-medium">{proposalTextLabel(lang, a.proposal_text)}</span></p>
           <h3 className="mb-1 text-sm font-medium text-gray-800">{t('detail.why')}</h3>
           <ReasonsList reasons={a.reasons} />
         </Section>

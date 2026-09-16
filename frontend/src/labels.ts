@@ -62,3 +62,20 @@ export function valueLabel(lang: Lang, v: string | null | undefined): string {
   if (v === null || v === undefined || v === '') return '—'
   return lookup(lang, 'status', v, v)
 }
+
+/** Backend proposal texts are a fixed Dutch set (backend/app/scoring.py); map them in EN, pass anything else through. */
+const PROPOSAL_TEXT_EN: Record<string, string> = {
+  'Markeer als niet actief': 'Mark as not active',
+  'Uitsluiten uit overzicht (geen onderneming)': 'Exclude from overview (not a business)',
+  'Ter controle: geen bewijs van activiteit': 'To check: no evidence of activity',
+  'Ter controle: register en waarneming spreken elkaar tegen': 'To check: register and observation contradict each other',
+  'Ter controle: waarneming onduidelijk, opnieuw nakijken': 'To check: observation unclear, re-check',
+  'Geen actie': 'No action',
+}
+export function proposalTextLabel(lang: Lang, text: string | null | undefined): string {
+  if (!text) return '—'
+  if (lang !== 'en') return text
+  const [head, ...rest] = text.split('; ')
+  const tail = rest.map((p) => (p === 'adres nazien' ? 'check address' : p))
+  return [PROPOSAL_TEXT_EN[head] ?? head, ...tail].join('; ')
+}
