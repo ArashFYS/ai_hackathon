@@ -14,9 +14,12 @@ src/components/       StatusBadge · ZekerheidBadge · ReasonsList · EvidencePa
 
 Routes: `/` Zoeken · `/record/:nr` Detail · `/straat` and `/straat/:street` Straatoverzicht · `/goedgekeurd` Goedgekeurde wijzigingen.
 
-## Language and vocabulary — officer-facing text is Dutch
-Use the challenge's own words: **Adres · Onderneming / vestiging · Register · Bewijs van activiteit · Laatste waarneming · Zekerheid (Hoog / Middel / Laag) · Voorstel · bevestigen / afwijzen · contactgegevens onbekend · zetel elders · moederonderneming niet in dataset**.
-Never show an invented value: missing → "onbekend" or "—".
+## Reviewed UI — TICKET-029
+Application text is English per the user's review: Address, Enterprise / establishment, Activity evidence, Confidence score, Proposal, Approve / Reject. Preserve official names, source data, addresses, observations and serialized API codes. External source sites keep their own language.
+
+Province of Antwerp logo and red/burgundy theme; all activity status labels are 176 x 40 px without left stripes. `ConfidenceScore` displays "Not available" until a numeric score is supplied; do not convert qualitative categories into invented numbers. Future score thresholds and manual-review precedence remain undefined.
+
+`EvidencePanel` uses a native source selector retaining all six sources, including Inhoudingsplicht. `mapLocation.ts` pins valid register coordinates; absent coordinates fall back to an explicitly labelled address search. The pin is not proof of current business occupancy. Historical workflow descriptions below refer to the original Dutch implementation.
 
 ## Status colours (Tailwind)
 `actief` green · `ter_controle` amber · `waarschijnlijk_niet_actief` red · `geen_onderneming` gray. Zekerheid: hoog solid, middel outline, laag dashed/light.

@@ -5,37 +5,39 @@ import Straat from './pages/Straat'
 import Goedgekeurd from './pages/Goedgekeurd'
 
 const navCls = ({ isActive }: { isActive: boolean }) =>
-  isActive ? 'font-medium text-gray-900' : 'text-gray-600 hover:text-gray-900'
+  isActive ? 'site-nav-link is-active' : 'site-nav-link'
 
 export default function App() {
   return (
-    <div className="flex min-h-screen flex-col bg-gray-50 text-gray-900">
-      <header className="border-b bg-white">
-        <div className="mx-auto flex max-w-7xl items-center gap-6 px-4 py-3">
-          <NavLink to="/" className="text-lg font-semibold">
-            Vind de echte ondernemingen
+    <div className="antwerp-app">
+      <header className="site-header">
+        <div className="site-header-inner">
+          <NavLink to="/" className="site-brand">
+            <img src="/provincie-antwerpen-logo.svg" width="170" height="52" alt="Provincie Antwerpen" />
+            <span>Find the real<br />businesses</span>
           </NavLink>
-          <nav className="flex gap-4 text-sm">
-            <NavLink to="/" end className={navCls}>Zoeken</NavLink>
-            <NavLink to="/straat" className={navCls}>Straatoverzicht</NavLink>
-            <NavLink to="/goedgekeurd" className={navCls}>Goedgekeurde wijzigingen</NavLink>
+          <nav className="site-nav" aria-label="Main navigation">
+            <NavLink to="/" end className={navCls}>Search</NavLink>
+            <NavLink to="/straat" className={navCls}>Street overview</NavLink>
+            <NavLink to="/goedgekeurd" className={navCls}>Approved changes</NavLink>
           </nav>
         </div>
       </header>
-      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6">
+      <main className="site-main">
         <Routes>
           <Route path="/" element={<Zoeken />} />
           <Route path="/record/:nr" element={<Detail />} />
           <Route path="/straat" element={<Straat />} />
           <Route path="/straat/:street" element={<Straat />} />
           <Route path="/goedgekeurd" element={<Goedgekeurd />} />
-          <Route path="*" element={<p className="text-gray-600">Pagina niet gevonden.</p>} />
+          <Route path="*" element={<p className="text-gray-600">Page not found.</p>} />
         </Routes>
       </main>
-      <footer className="border-t bg-white">
-        <p className="mx-auto max-w-7xl px-4 py-3 text-xs text-gray-500">
-          Bron: publieke KBO gegevens, verrijkt met adressen uit het Vlaamse Adressenregister (VKBO, Digitaal Vlaanderen).
+      <footer className="site-footer">
+        <p>
+          Source: public KBO data, enriched with the Flemish Address Register (VKBO, Digitaal Vlaanderen).
         </p>
+        <span>Local UI concept · hackathon</span>
       </footer>
     </div>
   )

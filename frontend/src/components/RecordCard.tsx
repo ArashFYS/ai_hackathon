@@ -6,7 +6,7 @@ import StatusBadge from './StatusBadge'
 /** Compact card for a related record (parent enterprise or establishment). */
 export default function RecordCard({ record, tag }: { record: RecordSummary; tag?: string }) {
   return (
-    <div className="flex items-start justify-between gap-3 rounded border bg-gray-50 px-3 py-2 text-sm">
+    <div className="linked-record flex flex-wrap items-start justify-between gap-3 text-sm">
       <div className="min-w-0">
         <Link to={`/record/${record.nr}`} className="font-medium text-blue-700 hover:underline">
           {record.display_name || dash(record.name)}

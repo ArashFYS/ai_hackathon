@@ -18,11 +18,11 @@ export default function LinkageCard({ detail, onChanged }: Props) {
     setMsg(null)
     try {
       await fetchParent(record.nr)
-      setMsg('Moederonderneming opgehaald via VKBO.')
+      setMsg("Parent enterprise retrieved via VKBO.")
       onChanged()
     } catch (e) {
-      if (e instanceof ApiError && e.status === 404) setMsg('Niet gevonden in VKBO.')
-      else setMsg('Kon moederonderneming niet ophalen.')
+      if (e instanceof ApiError && e.status === 404) setMsg("Not found in VKBO.")
+      else setMsg("Could not retrieve the parent enterprise.")
     } finally {
       setBusy(false)
     }
@@ -32,15 +32,15 @@ export default function LinkageCard({ detail, onChanged }: Props) {
     return (
       <div className="space-y-2 text-sm">
         <p className="text-gray-600">
-          Deze vestiging hoort bij onderneming{' '}
-          <span className="font-mono">{record.parent_nr ?? 'onbekend'}</span>
-          {seat_elsewhere && <span className="ml-2 rounded bg-amber-100 px-1.5 py-0.5 text-xs text-amber-800">zetel elders</span>}
+          This establishment belongs to enterprise{' '}
+          <span className="font-mono">{record.parent_nr ?? "unknown"}</span>
+          {seat_elsewhere && <span className="ml-2 rounded bg-amber-100 px-1.5 py-0.5 text-xs text-amber-800">registered office elsewhere</span>}
         </p>
         {parent ? (
-          <RecordCard record={parent} tag={seat_elsewhere ? 'zetel elders' : undefined} />
+          <RecordCard record={parent} tag={seat_elsewhere ? "registered office elsewhere" : undefined} />
         ) : (
-          <div className="rounded border border-dashed bg-gray-50 px-3 py-2">
-            <p className="text-gray-700">Moederonderneming niet in dataset</p>
+          <div className="linked-missing">
+            <p className="text-gray-700">Parent enterprise not in dataset</p>
             {record.parent_nr && (
               <button
                 type="button"
@@ -48,12 +48,12 @@ export default function LinkageCard({ detail, onChanged }: Props) {
                 disabled={busy}
                 className="mt-2 rounded border bg-white px-3 py-1 text-xs font-medium hover:bg-gray-100 disabled:opacity-50"
               >
-                {busy ? 'Ophalen…' : 'Haal op via VKBO'}
+                {busy ? "Retrieving…" : "Retrieve via VKBO"}
               </button>
             )}
           </div>
         )}
-        {!parent_in_dataset && parent && <p className="text-xs text-gray-500">Moederonderneming opgehaald via VKBO (niet in de oorspronkelijke dataset).</p>}
+        {!parent_in_dataset && parent && <p className="text-xs text-gray-500">Parent enterprise retrieved via VKBO (not in the original dataset).</p>}
         {msg && <p className="text-xs text-gray-600">{msg}</p>}
       </div>
     )
@@ -62,10 +62,10 @@ export default function LinkageCard({ detail, onChanged }: Props) {
   return (
     <div className="space-y-2 text-sm">
       {establishments.length === 0 ? (
-        <p className="text-gray-600">Geen vestigingen van deze onderneming in de dataset.</p>
+        <p className="text-gray-600">No establishments for this enterprise in the dataset.</p>
       ) : (
         <>
-          <p className="text-gray-600">{establishments.length} vestiging(en) in de dataset:</p>
+          <p className="text-gray-600">{establishments.length} establishment(s) in the dataset:</p>
           <div className="space-y-1.5">
             {establishments.map((e) => (
               <RecordCard key={e.nr} record={e} />

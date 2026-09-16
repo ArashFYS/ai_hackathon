@@ -12,7 +12,7 @@
 - **Backend (`backend/`):** FastAPI app in `app/`, one router per resource in `app/routers/`, plain `sqlite3` with `sqlite3.Row`, schema in `app/schema.sql`. Deps via `uv add`. Scripts in `scripts/`.
 - **Frontend (`frontend/`):** pages in `src/pages/`, shared components in `src/components/`, API client in `src/api.ts`. Tailwind utility classes, no CSS files beyond `index.css`. `pnpm tsc -b --noEmit` must pass.
 - **Data rules:** registry numbers are TEXT; a single space `' '` in source data means NULL; `1900-01-01` / `9999-12-31` mean NULL.
-- **Language:** all officer-facing UI text in Dutch; code, comments and commit messages in English. Use the brief's vocabulary: Adres · Register · Bewijs van activiteit · Laatste waarneming · Zekerheid (Hoog/Middel/Laag) · Voorstel · bevestigen/afwijzen · contactgegevens onbekend.
+- **Language:** application UI in English per the user-reviewed TICKET-029 design. Keep official names, source data, addresses and observations in their original language; keep serialized API codes unchanged. Code, comments and commit messages in English.
 - **No AI in the product:** status logic is deterministic and every reason is displayed.
 
 ## Git

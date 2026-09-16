@@ -2,14 +2,14 @@ import { useEffect, useState } from 'react'
 import type { NbbPanelData } from '../api'
 import { getNbb, dash } from '../api'
 
-const eur = new Intl.NumberFormat('nl-BE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })
+const eur = new Intl.NumberFormat("en-GB", { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })
 
 function money(v: number | null | undefined): string {
   return v === null || v === undefined ? '—' : eur.format(v)
 }
 
 function num(v: number | null | undefined): string {
-  return v === null || v === undefined ? '—' : new Intl.NumberFormat('nl-BE', { maximumFractionDigits: 1 }).format(v)
+  return v === null || v === undefined ? '—' : new Intl.NumberFormat("en-GB", { maximumFractionDigits: 1 }).format(v)
 }
 
 export default function NbbPanel({ nr, nbbConsultUrl }: { nr: string; nbbConsultUrl: string }) {
@@ -26,7 +26,7 @@ export default function NbbPanel({ nr, nbbConsultUrl }: { nr: string; nbbConsult
         if (!cancelled) setData(d)
       })
       .catch(() => {
-        if (!cancelled) setError('Kon gegevens niet laden')
+        if (!cancelled) setError("Could not load data")
       })
       .finally(() => {
         if (!cancelled) setLoading(false)
@@ -42,14 +42,14 @@ export default function NbbPanel({ nr, nbbConsultUrl }: { nr: string; nbbConsult
     </a>
   )
 
-  if (loading) return <div className="p-3 text-sm text-gray-500">Laden…</div>
+  if (loading) return <div className="p-3 text-sm text-gray-500">Loading…</div>
   if (error) return <div className="space-y-2 p-3 text-sm"><p className="text-red-700">{error}</p>{openLink}</div>
-  if (!data) return <div className="p-3 text-sm text-gray-500">Geen resultaten</div>
+  if (!data) return <div className="p-3 text-sm text-gray-500">No results</div>
 
   if (!data.available) {
     return (
       <div className="space-y-2 p-3 text-sm">
-        <p className="text-gray-700">{data.note ?? 'Geen jaarrekeningen beschikbaar.'}</p>
+        <p className="text-gray-700">{data.note ?? "No annual accounts available."}</p>
         {openLink}
       </div>
     )
@@ -57,7 +57,7 @@ export default function NbbPanel({ nr, nbbConsultUrl }: { nr: string; nbbConsult
 
   const c = data.company
   return (
-    <div className="space-y-3 overflow-auto p-3 text-sm">
+    <div className="nbb-panel space-y-3 overflow-auto p-5 text-sm">
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="font-medium">{c?.name ?? dash(data.enterprise_nr)}</p>
@@ -70,26 +70,26 @@ export default function NbbPanel({ nr, nbbConsultUrl }: { nr: string; nbbConsult
         {openLink}
       </div>
       <p className="text-gray-700">
-        Laatste neerlegging: <span className="font-medium">{dash(data.last_deposit_date)}</span>
+        Latest filing: <span className="font-medium">{dash(data.last_deposit_date)}</span>
         {data.months_since_last_deposit !== null && data.months_since_last_deposit !== undefined && (
-          <span className="text-gray-500"> ({data.months_since_last_deposit} maanden geleden)</span>
+          <span className="text-gray-500"> ({data.months_since_last_deposit} months ago)</span>
         )}
       </p>
       {data.note && <p className="text-xs text-gray-500">{data.note}</p>}
       {data.deposits.length === 0 ? (
-        <p className="text-gray-500">Geen neerleggingen gevonden.</p>
+        <p className="text-gray-500">No filings found.</p>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full min-w-[620px] text-xs">
             <thead className="bg-gray-50 text-left text-gray-500">
               <tr>
-                <th className="px-2 py-1">Boekjaar</th>
+                <th className="px-2 py-1">Financial year</th>
                 <th className="px-2 py-1">Model</th>
-                <th className="px-2 py-1 text-right">Omzet</th>
-                <th className="px-2 py-1 text-right">Brutomarge</th>
-                <th className="px-2 py-1 text-right">Winst/verlies</th>
-                <th className="px-2 py-1 text-right">Eigen vermogen</th>
-                <th className="px-2 py-1 text-right">VTE</th>
+                <th className="px-2 py-1 text-right">Revenue</th>
+                <th className="px-2 py-1 text-right">Gross margin</th>
+                <th className="px-2 py-1 text-right">Profit / loss</th>
+                <th className="px-2 py-1 text-right">Equity</th>
+                <th className="px-2 py-1 text-right">FTE</th>
                 <th className="px-2 py-1">PDF</th>
               </tr>
             </thead>
@@ -114,7 +114,7 @@ export default function NbbPanel({ nr, nbbConsultUrl }: { nr: string; nbbConsult
           </table>
         </div>
       )}
-      {data.fetched_at && <p className="text-xs text-gray-400">Opgehaald: {data.fetched_at.slice(0, 16).replace('T', ' ')}</p>}
+      {data.fetched_at && <p className="text-xs text-gray-400">Retrieved: {data.fetched_at.slice(0, 16).replace('T', ' ')}</p>}
     </div>
   )
 }

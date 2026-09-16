@@ -4,7 +4,7 @@ Hackathon entry for **Challenge 01: Find the Real Businesses** (ns2agi, Province
 
 **Full brief:** [docs/challenge.md](docs/challenge.md) — read this first.
 **Deadline:** 16:30 Europe/Brussels, 16 Sep 2026 — 3-min YouTube pitch video via Google Form. Demo is an optional bonus.
-**Officer-facing UI text must be in Dutch.**
+**UI text is English per the reviewed TICKET-029 design. Official names, source data, addresses and observations retain their original language.** The original event language requirement remains documented in docs/challenge.md.
 
 **Stack:** Python 3.13 + FastAPI + SQLite (backend, port 8010) · React 19 + TypeScript + Vite + Tailwind v4 (frontend, port 5173). See [ADR-002](docs/adr/002-stack.md).
 

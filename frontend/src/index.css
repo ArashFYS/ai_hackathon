@@ -1,9 +1,178 @@
 @import "tailwindcss";
 
+@theme {
+  --color-gray-50: #faf9f8;
+  --color-gray-100: #f1eeeb;
+  --color-gray-200: #e3ded9;
+  --color-gray-300: #cac4be;
+  --color-gray-400: #807973;
+  --color-gray-500: #6e6761;
+  --color-gray-600: #605a54;
+  --color-gray-700: #46413d;
+  --color-gray-800: #302c29;
+  --color-gray-900: #24211f;
+  --color-blue-700: #a60033;
+}
+
 @layer base {
   *,
   ::before,
   ::after {
     border-color: var(--color-gray-200);
   }
+}
+
+/* Province of Antwerp review variant; colours drawn from its official logo. */
+html { background: #fff; }
+.antwerp-app {
+  --brand: #ba0d2e;
+  --brand-dark: #871f40;
+  --ink: #292523;
+  --muted: #726961;
+  --line: #e2ddd7;
+  display: flex; min-height: 100vh; flex-direction: column;
+  background: #fff; color: var(--ink); font-family: "Segoe UI", Arial, sans-serif;
+  font-size: 14px; line-height: 1.6; -webkit-font-smoothing: antialiased;
+}
+.antwerp-app * { min-width: 0; }
+.antwerp-app :is(a, button, input, select, textarea) { outline-offset: 4px; }
+.antwerp-app :focus-visible { outline: 2px solid var(--brand); }
+.antwerp-app a { text-underline-offset: 4px; }
+.antwerp-app button:not(:disabled), .antwerp-app select { cursor: pointer; }
+.antwerp-app button, .antwerp-app a { transition: background-color .15s, color .15s; }
+.site-header-inner, .site-main, .site-footer { width: 100%; max-width: 1500px; margin-inline: auto; padding-inline: clamp(20px, 3vw, 48px); }
+.site-header-inner { display: flex; justify-content: space-between; align-items: center; gap: 28px; min-height: 104px; }
+.site-brand { display: flex; align-items: center; gap: 28px; font-size: 16px; font-weight: 600; line-height: 1.3; letter-spacing: -.3px; color: #572933; }
+.site-brand img { display: block; width: 170px; height: 52px; flex-shrink: 0; object-fit: contain; }
+.site-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 28px; }
+.site-nav-link { font-size: 14px; color: #6e6761; padding-block: 12px; border-bottom: 2px solid transparent; }
+.site-nav-link:hover { color: var(--brand); }
+.site-nav-link.is-active { color: var(--brand); border-bottom-color: var(--brand); font-weight: 600; }
+.site-main { flex: 1; padding-block: 30px 60px; }
+.site-footer { display: flex; justify-content: space-between; gap: 20px; padding-block: 22px; color: #726961; font-size: 11px; }
+.site-footer span { flex-shrink: 0; }
+.antwerp-app h1 { font-size: clamp(25px, 2.5vw, 32px); font-weight: 600; letter-spacing: -.8px; line-height: 1.22; margin-bottom: 10px; }
+.antwerp-app h2 { font-size: 17px; font-weight: 600; letter-spacing: -.25px; text-transform: none; color: var(--ink); }
+.antwerp-app input:not([type="radio"]), .antwerp-app select, .antwerp-app textarea {
+  min-height: 41px; border: 1px solid #c9c1b9; background: #fff; border-radius: 4px;
+  padding: 8px 11px; color: var(--ink); max-width: 100%; font-size: 14px;
+}
+.antwerp-app input::placeholder, .antwerp-app textarea::placeholder { color: #867d74; opacity: 1; }
+.antwerp-app input[type="radio"] { accent-color: var(--brand); }
+.antwerp-app textarea { resize: vertical; }
+.antwerp-app button { min-height: 34px; border-radius: 4px; }
+.antwerp-app button[type="submit"] { background: var(--brand); color: #fff; padding: 10px 17px; min-height: 41px; }
+.antwerp-app button[type="submit"]:hover { background: var(--brand-dark); }
+.antwerp-app button:disabled { cursor: not-allowed; }
+.page-filters { padding-block: 14px 24px; gap: 16px; }
+.page-filters label > span { font-size: 12px; margin-bottom: 7px; }
+.page-filters select { min-width: 150px; }
+.results-table { border-top: 1px solid #bbb2a8; }
+.results-table > p { padding: 32px 0; }
+.results-table table { line-height: 1.55; font-size: 13px; }
+.results-table thead { background: transparent; text-transform: none; letter-spacing: 0; color: #74695f; font-size: 12px; }
+.results-table thead th { font-weight: 500; border-bottom: 1px solid var(--line); padding: 13px 12px; }
+.results-table tbody td { padding: 16px 12px; vertical-align: top; }
+.results-table tbody tr:hover { background: #f7f3ef; }
+.results-table tbody a { color: #342c26; font-weight: 600; }
+.results-table tbody a:hover { color: var(--brand); }
+.results-table tbody td:first-child, .results-table thead th:first-child { padding-left: 0; }
+.results-table tbody td:last-child, .results-table thead th:last-child { padding-right: 0; }
+.results-table .address-group td { background: transparent; padding: 18px 0 7px; font-weight: 600; color: #564d44; border-top: 1px solid #d3cbc2; }
+.results-table .address-group + tr { border-top: 0; }
+.antwerp-app .activity-status {
+  display: inline-flex; align-items: center; height: 40px; min-height: 40px;
+  width: 176px; min-width: 176px; max-width: 176px; padding: 6px 12px;
+  border: 0; border-radius: 4px;
+  background: #efeeeb; color: #514d47; font-size: 12px;
+  font-weight: 600; white-space: normal; line-height: 1.4;
+}
+.antwerp-app .activity-status[data-status="actief"] { background: #e8f3ec; color: #205b3c; }
+.antwerp-app .activity-status[data-status="ter_controle"] { background: #fff2d9; color: #7b500d; }
+.antwerp-app .activity-status[data-status="waarschijnlijk_niet_actief"] { background: #fbe9ec; color: #96102b; }
+.antwerp-app .activity-status[data-status="geen_onderneming"] { background: #efeeeb; color: #514d47; }
+.confidence-score { color: #726961; font-size: 12px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.results-table table { min-width: 1040px; }
+.antwerp-app .certainty-label { border: 0; padding: 0; background: transparent; color: #6e6761; font-size: 12px; }
+.antwerp-app .certainty-label[data-certainty="hoog"] { font-weight: 700; color: #38312c; }
+.antwerp-app .certainty-label[data-certainty="laag"] { text-decoration: underline dotted #b2a89e; text-underline-offset: 4px; }
+.record-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: clamp(28px, 4vw, 58px); align-items: start; }
+.record-heading { margin-bottom: 30px; }
+.record-heading > div:first-child { align-items: baseline; gap: 6px 12px; }
+.record-heading h1 { overflow-wrap: anywhere; }
+.record-heading > p { margin-bottom: 9px; font-size: 13px; }
+.detail-section { margin-block: 0 32px; }
+.detail-section > h2 { margin-bottom: 16px; }
+.detail-section p, .detail-section dd, .detail-section a, .assessment-reasons span { overflow-wrap: anywhere; }
+.register-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 17px 24px; }
+.register-fields dt { margin-bottom: 3px; }
+.register-fields dd { line-height: 1.55; }
+.address-comparison { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; padding-block: 15px 8px; }
+.address-comparison > div { padding-left: 12px; border-left: 2px solid #ded5ca; }
+.address-comparison .address-differs { border-left-color: #b47d27; }
+.linked-missing { padding-block: 10px; }
+.linked-record { padding-block: 12px; }
+.linked-record + .linked-record { border-top: 1px solid var(--line); }
+.assessment-reasons > li { margin-block: 0 14px; line-height: 1.6; }
+.assessment-reasons code { background: transparent; padding: 0; color: #756b61; font-size: 11px; }
+.assessment-reasons a { display: inline-block; }
+.assessment-reasons > li > span:first-child { background: transparent; border-radius: 0; }
+.assessment-reasons > li > span:last-child { font-size: 11px; padding-top: 3px; }
+.evidence-form label > span { display: block; margin-bottom: 6px; }
+.evidence-form textarea { min-height: 100px; }
+.record-sources { position: sticky; top: 22px; }
+.source-browser { min-width: 0; }
+.source-toolbar { display: flex; align-items: end; justify-content: space-between; flex-wrap: wrap; gap: 12px 20px; padding-bottom: 19px; }
+.source-picker { display: flex; flex-direction: column; gap: 10px; flex: 1 1 210px; }
+.source-picker > span { font-size: 17px; font-weight: 600; letter-spacing: -.2px; }
+.antwerp-app .source-picker select { font-size: 15px; font-weight: 500; padding: 11px 36px 11px 13px; border-color: #b8a99b; max-width: 300px; min-height: 47px; }
+.source-external { color: var(--brand-dark); padding-block: 13px; font-size: 12px; font-weight: 500; white-space: nowrap; }
+.source-external:hover { text-decoration: underline; }
+.source-external span { margin-left: 6px; }
+.source-context { padding-block: 17px 18px; border-top: 1px solid var(--line); }
+.source-name { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+.map-location-note { font-size: 12px; color: #786c61; line-height: 1.7; }
+.map-location-note > p:first-child { color: #46413d; font-weight: 500; }
+.map-location-note a { display: inline-block; color: var(--brand-dark); margin-top: 6px; }
+.map-location-note a:hover { text-decoration: underline; }
+.source-guidance { font-size: 12px; line-height: 1.6; color: #786c61; }
+.source-viewport { height: 61vh; min-height: 400px; max-height: 740px; overflow: auto; border: 1px solid #e0d8d0; background: #fff; border-radius: 4px; }
+.source-viewport iframe { display: block; }
+.source-footer { padding-top: 10px; font-size: 11px; color: #786c61; }
+.source-footer a { text-decoration: none; }
+.source-footer a:hover { text-decoration: underline; }
+.nbb-panel { font-variant-numeric: tabular-nums; }
+.nbb-panel table td { padding: 12px 9px; }
+.nbb-panel table th { padding: 10px 9px; font-weight: 500; }
+.antwerp-app .approval-filters { gap: 24px; margin-block: 22px; }
+.antwerp-app .approval-filters button { border: 0; border-bottom: 2px solid transparent; padding: 8px 0; background: transparent; border-radius: 0; color: #756b61; }
+.antwerp-app .approval-filters button[aria-pressed="true"] { color: var(--brand); border-bottom-color: var(--brand); font-weight: 600; }
+@media (max-width: 1050px) {
+  .site-header-inner { flex-wrap: wrap; padding-top: 20px; gap: 10px 20px; padding-bottom: 10px; }
+  .site-nav { gap: 22px; }
+  .record-layout { grid-template-columns: minmax(0, 1fr); }
+  .record-sources { position: static; }
+}
+@media (max-width: 600px) {
+  .site-main { padding-top: 24px; }
+  .site-nav { gap: 16px; width: 100%; }
+  .site-nav-link { font-size: 12px; padding-block: 10px; }
+  .site-brand { font-size: 14px; gap: 18px; }
+  .site-brand img { width: 140px; height: auto; }
+  .site-footer { flex-direction: column; gap: 8px; }
+  .page-filters label { flex: 1 1 140px; }
+  .page-filters label:first-child { flex-basis: 100%; min-width: 0; }
+  .page-filters select { min-width: 0; width: 100%; }
+  .register-fields, .address-comparison { grid-template-columns: 1fr; gap: 14px; }
+  .source-toolbar { gap: 6px; }
+  .source-picker { flex-basis: 100%; }
+  .antwerp-app .source-picker select { max-width: none; width: 100%; }
+  .source-external { padding-block: 8px; }
+  .source-context { min-height: 90px; }
+  .source-viewport { min-height: 400px; }
+  .antwerp-app input:not([type="radio"]), .antwerp-app textarea, .antwerp-app select { font-size: 16px; }
+  .results-table table { min-width: 900px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .antwerp-app *, .antwerp-app *::before, .antwerp-app *::after { transition: none !important; }
 }

@@ -23,7 +23,7 @@ export default function Goedgekeurd() {
         if (!cancelled) setItems(rows)
       })
       .catch(() => {
-        if (!cancelled) setError('Kon gegevens niet laden')
+        if (!cancelled) setError("Could not load data")
       })
       .finally(() => {
         if (!cancelled) setLoading(false)
@@ -37,24 +37,25 @@ export default function Goedgekeurd() {
     <div className="space-y-4">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="text-xl font-semibold">Goedgekeurde wijzigingen</h1>
-          <p className="text-sm text-gray-600">Alleen bevestigde wijzigingen verlaten de tool.</p>
+          <h1 className="text-xl font-semibold">Approved changes</h1>
+          <p className="text-sm text-gray-600">Only approved changes leave the tool.</p>
         </div>
         <div className="flex gap-2">
           <button type="button" onClick={() => window.open(exportUrl('csv'))} className="rounded border bg-white px-3 py-1.5 text-sm font-medium hover:bg-gray-100">
-            Exporteer CSV
+            Export CSV
           </button>
           <button type="button" onClick={() => window.open(exportUrl('json'))} className="rounded border bg-white px-3 py-1.5 text-sm font-medium hover:bg-gray-100">
-            Exporteer JSON
+            Export JSON
           </button>
         </div>
       </div>
 
-      <div className="flex gap-2 text-sm">
+      <div className="approval-filters flex gap-2 text-sm">
         {FILTERS.map((f) => (
           <button
             key={f}
             type="button"
+            aria-pressed={f === filter}
             onClick={() => setFilter(f)}
             className={`rounded-full border px-3 py-1 ${f === filter ? 'border-gray-900 bg-gray-900 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}`}
           >
@@ -63,19 +64,19 @@ export default function Goedgekeurd() {
         ))}
       </div>
 
-      <div className="overflow-x-auto rounded-lg border bg-white">
-        {loading && <p className="p-4 text-sm text-gray-500">Laden…</p>}
+      <div className="results-table overflow-x-auto">
+        {loading && <p className="p-4 text-sm text-gray-500">Loading…</p>}
         {!loading && error && <p className="p-4 text-sm text-red-700">{error}</p>}
-        {!loading && !error && items && items.length === 0 && <p className="p-4 text-sm text-gray-500">Geen resultaten</p>}
+        {!loading && !error && items && items.length === 0 && <p className="p-4 text-sm text-gray-500">No results</p>}
         {!loading && !error && items && items.length > 0 && (
           <table className="w-full text-sm">
             <thead className="bg-gray-50 text-left text-xs uppercase tracking-wide text-gray-500">
               <tr>
-                <th className="px-3 py-2">Datum</th>
-                <th className="px-3 py-2">Onderneming</th>
-                <th className="px-3 py-2">Adres</th>
-                <th className="px-3 py-2">Voorstel</th>
-                <th className="px-3 py-2">Reden</th>
+                <th className="px-3 py-2">Date</th>
+                <th className="px-3 py-2">Enterprise</th>
+                <th className="px-3 py-2">Address</th>
+                <th className="px-3 py-2">Proposal</th>
+                <th className="px-3 py-2">Reason</th>
                 <th className="px-3 py-2">Status</th>
                 {filter === 'open' && <th className="px-3 py-2"></th>}
               </tr>

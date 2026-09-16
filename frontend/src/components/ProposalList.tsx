@@ -20,7 +20,7 @@ export function DecideButtons({ proposal, onDecided, size = 'sm' }: { proposal: 
   const [busy, setBusy] = useState<'bevestigd' | 'afgewezen' | null>(null)
   const [error, setError] = useState(false)
   const disabled = !proposal || proposal.status !== 'open' || busy !== null
-  const title = !proposal || proposal.status !== 'open' ? 'Geen open voorstel' : undefined
+  const title = !proposal || proposal.status !== 'open' ? "No open proposal" : undefined
   const pad = size === 'xs' ? 'px-2 py-0.5 text-xs' : 'px-3 py-1 text-sm'
 
   async function decide(status: 'bevestigd' | 'afgewezen') {
@@ -41,19 +41,19 @@ export function DecideButtons({ proposal, onDecided, size = 'sm' }: { proposal: 
     <span className="inline-flex items-center gap-1">
       <button type="button" title={title} disabled={disabled} onClick={() => decide('bevestigd')}
         className={`rounded border border-green-700 bg-green-700 font-medium text-white hover:bg-green-800 disabled:cursor-not-allowed disabled:border-gray-300 disabled:bg-gray-100 disabled:text-gray-400 ${pad}`}>
-        {busy === 'bevestigd' ? '…' : 'Bevestigen'}
+        {busy === 'bevestigd' ? '…' : "Approve"}
       </button>
       <button type="button" title={title} disabled={disabled} onClick={() => decide('afgewezen')}
         className={`rounded border bg-white font-medium text-gray-800 hover:bg-gray-100 disabled:cursor-not-allowed disabled:text-gray-400 ${pad}`}>
-        {busy === 'afgewezen' ? '…' : 'Afwijzen'}
+        {busy === 'afgewezen' ? '…' : "Reject"}
       </button>
-      {error && <span className="text-xs text-red-700">Mislukt</span>}
+      {error && <span className="text-xs text-red-700">Failed</span>}
     </span>
   )
 }
 
 export default function ProposalList({ proposals, onChanged }: { proposals: Proposal[]; onChanged: () => void }) {
-  if (proposals.length === 0) return <p className="text-sm text-gray-500">Geen voorstellen.</p>
+  if (proposals.length === 0) return <p className="text-sm text-gray-500">No proposals.</p>
   return (
     <ul className="divide-y text-sm">
       {proposals.map((p) => (
@@ -70,7 +70,7 @@ export default function ProposalList({ proposals, onChanged }: { proposals: Prop
               </p>
             )}
             <p className="text-xs text-gray-400">
-              Aangemaakt {p.created_at?.slice(0, 10)}{p.decided_at ? ` · beslist ${p.decided_at.slice(0, 10)}` : ''}
+              Created {p.created_at?.slice(0, 10)}{p.decided_at ? ` · decided ${p.decided_at.slice(0, 10)}` : ''}
             </p>
           </div>
           {p.status === 'open' && <DecideButtons proposal={p} onDecided={onChanged} />}

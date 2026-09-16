@@ -312,5 +312,5 @@ export function exportUrl(format: 'csv' | 'json'): string {
   return `/api/proposals/export?format=${format}`
 }
 
-// Shared Dutch labels + display helpers live in labels.ts; re-exported for convenience.
+// Shared English UI labels + display helpers; API enum values remain unchanged.
 export * from './labels'

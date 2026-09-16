@@ -1,6 +1,6 @@
 # Tickets -- ai_hackathon (Prefix: TICKET)
 
-> Next ID: TICKET-028
+> Next ID: TICKET-030
 >
 > **Deadline: 16:30 Europe/Brussels, 16 Sep 2026.** Build freeze ~15:00 → record 15:00–15:45 → upload + check + form by 16:15.
 > Anything not demoable by 15:00 is a slide in the video, not a feature.
@@ -8,6 +8,15 @@
 > Priority: **MVP** = on the critical path for the 3-min screen recording. **Stretch** = only if MVP is recordable.
 
 ## In Progress
+
+### TICKET-029: Reviewed provincial frontend, English UI and coordinate map pins
+- **Type:** feat(ui)
+- **Created:** 2026-09-16
+- **Description:** Integrate user-reviewed UI version 5: Province of Antwerp logo and red/burgundy theme, calmer layout on existing screens, one source selector retaining all six sources, equal 176 x 40 px status labels without side stripes, and English application text. Official names, source data, addresses and observations retain their original language. Map pins use register coordinates, with explicit address-only fallback and source uncertainty.
+- **Confidence:** Present a numeric confidence-score field as "Not available" until the backend supplies a number. Future score thresholds and score/manual-review status precedence are not implemented in this UI ticket.
+- **Scope:** Frontend presentation and map-location helper only; existing API payloads, backend scoring, approval and export workflows remain unchanged. Earlier local UI variants are preserved outside the repository.
+- **Status:** Prepared for branch review; not merged.
+- **Validation:** TypeScript, production build, coordinate fallback checks and browser checks of search, details, source selection and consistent status-label dimensions.
 
 ### TICKET-021: Provenance on every reason (source, field, date, verify link) + NBB signal in the assessment
 - **Type:** feat(score)

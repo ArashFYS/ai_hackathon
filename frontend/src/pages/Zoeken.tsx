@@ -3,7 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import type { RecordSummary, RecordType, Status } from '../api'
 import { getRecords, RECORD_TYPE_LABELS, STATUS_LABELS, dash } from '../api'
 import StatusBadge from '../components/StatusBadge'
-import ZekerheidBadge from '../components/ZekerheidBadge'
+import ConfidenceScore from '../components/ConfidenceScore'
 
 export default function Zoeken() {
   const [params, setParams] = useSearchParams()
@@ -28,7 +28,7 @@ export default function Zoeken() {
         if (!cancelled) setItems(rows)
       })
       .catch(() => {
-        if (!cancelled) setError('Kon gegevens niet laden')
+        if (!cancelled) setError("Could not load data")
       })
       .finally(() => {
         if (!cancelled) setLoading(false)
@@ -50,26 +50,26 @@ export default function Zoeken() {
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-xl font-semibold">Zoeken</h1>
+        <h1 className="text-xl font-semibold">Search</h1>
         <p className="text-sm text-gray-600">
-          Zoek een onderneming of vestiging om de registergegevens en het bewijs van activiteit te bekijken.
-          {' '}Of bekijk een hele straat in het{' '}
-          <Link to="/straat" className="text-blue-700 underline">Straatoverzicht</Link>.
+          Find an enterprise or establishment to inspect its register data and activity evidence.
+          {' '}Or explore an entire street in the{' '}
+          <Link to="/straat" className="text-blue-700 underline">Street overview</Link>.
         </p>
       </div>
 
       <form
-        className="flex flex-wrap items-end gap-3 rounded-lg border bg-white p-4"
+        className="page-filters flex flex-wrap items-end gap-3"
         onSubmit={(e) => {
           e.preventDefault()
           update({ q: input.trim() })
         }}
       >
         <label className="flex min-w-64 flex-1 flex-col text-sm">
-          <span className="mb-1 text-gray-600">Zoekterm</span>
+          <span className="mb-1 text-gray-600">Search term</span>
           <input
             className="rounded border px-3 py-1.5"
-            placeholder="Naam, ondernemingsnummer of straat"
+            placeholder="Name, registry number or street"
             value={input}
             onChange={(e) => setInput(e.target.value)}
           />
@@ -77,39 +77,39 @@ export default function Zoeken() {
         <label className="flex flex-col text-sm">
           <span className="mb-1 text-gray-600">Type</span>
           <select className="rounded border px-2 py-1.5" value={type} onChange={(e) => update({ type: e.target.value })}>
-            <option value="">Alle</option>
-            <option value="enterprise">Onderneming</option>
-            <option value="establishment">Vestiging</option>
+            <option value="">All</option>
+            <option value="enterprise">Enterprise</option>
+            <option value="establishment">Establishment</option>
           </select>
         </label>
         <label className="flex flex-col text-sm">
           <span className="mb-1 text-gray-600">Status</span>
           <select className="rounded border px-2 py-1.5" value={status} onChange={(e) => update({ status: e.target.value })}>
-            <option value="">Alle</option>
+            <option value="">All</option>
             {(Object.keys(STATUS_LABELS) as Status[]).map((s) => (
               <option key={s} value={s}>{STATUS_LABELS[s]}</option>
             ))}
           </select>
         </label>
         <button type="submit" className="rounded bg-gray-900 px-4 py-1.5 text-sm font-medium text-white hover:bg-gray-700">
-          Zoeken
+          Search
         </button>
       </form>
 
-      <div className="overflow-x-auto rounded-lg border bg-white">
-        {loading && <p className="p-4 text-sm text-gray-500">Laden…</p>}
+      <div className="results-table overflow-x-auto">
+        {loading && <p className="p-4 text-sm text-gray-500">Loading…</p>}
         {!loading && error && <p className="p-4 text-sm text-red-700">{error}</p>}
-        {!loading && !error && items && items.length === 0 && <p className="p-4 text-sm text-gray-500">Geen resultaten</p>}
+        {!loading && !error && items && items.length === 0 && <p className="p-4 text-sm text-gray-500">No results</p>}
         {!loading && !error && items && items.length > 0 && (
           <table className="w-full text-sm">
             <thead className="bg-gray-50 text-left text-xs uppercase tracking-wide text-gray-500">
               <tr>
-                <th className="px-3 py-2">Naam</th>
+                <th className="px-3 py-2">Name</th>
                 <th className="px-3 py-2">Type</th>
-                <th className="px-3 py-2">Adres</th>
+                <th className="px-3 py-2">Address</th>
                 <th className="px-3 py-2">Register</th>
                 <th className="px-3 py-2">Status</th>
-                <th className="px-3 py-2">Zekerheid</th>
+                <th className="px-3 py-2">Confidence score</th>
               </tr>
             </thead>
             <tbody className="divide-y">
@@ -125,7 +125,7 @@ export default function Zoeken() {
                   <td className="px-3 py-2 text-gray-700">{dash(r.address)}</td>
                   <td className="px-3 py-2 text-gray-700">{dash(r.assessment?.register_label)}</td>
                   <td className="px-3 py-2"><StatusBadge status={r.assessment.status} label={r.assessment.status_label} /></td>
-                  <td className="px-3 py-2"><ZekerheidBadge certainty={r.assessment.certainty} label={r.assessment.certainty_label} /></td>
+                  <td className="px-3 py-2"><ConfidenceScore /></td>
                 </tr>
               ))}
             </tbody>
@@ -133,7 +133,7 @@ export default function Zoeken() {
         )}
       </div>
       {items && items.length >= 100 && (
-        <p className="text-xs text-gray-500">Enkel de eerste 100 resultaten worden getoond. Verfijn de zoekterm.</p>
+        <p className="text-xs text-gray-500">Only the first 100 results are shown. Refine your search.</p>
       )}
     </div>
   )

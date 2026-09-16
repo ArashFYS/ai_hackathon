@@ -4,9 +4,9 @@ import { SOURCE_LABELS, postEvidence } from '../api'
 
 const SOURCES = ['google_maps', 'street_view', 'website', 'terreinbezoek', 'kbo', 'nbb', 'andere'] as const
 const CONCLUSIONS: { value: Conclusion; label: string }[] = [
-  { value: 'actief', label: 'actief' },
-  { value: 'niet_actief', label: 'niet actief' },
-  { value: 'onduidelijk', label: 'onduidelijk' },
+  { value: 'actief', label: "active" },
+  { value: 'niet_actief', label: 'inactive' },
+  { value: 'onduidelijk', label: "unclear" },
 ]
 
 function today(): string {
@@ -26,7 +26,7 @@ export default function EvidenceForm({ nr, onSaved }: { nr: string; onSaved: () 
   async function submit(e: React.FormEvent) {
     e.preventDefault()
     if (!observation.trim()) {
-      setError('Waarneming is verplicht.')
+      setError("An observation is required.")
       return
     }
     setBusy(true)
@@ -45,7 +45,7 @@ export default function EvidenceForm({ nr, onSaved }: { nr: string; onSaved: () 
       setActivity('')
       onSaved()
     } catch {
-      setError('Kon waarneming niet opslaan.')
+      setError("Could not save the observation.")
     } finally {
       setBusy(false)
     }
@@ -53,9 +53,9 @@ export default function EvidenceForm({ nr, onSaved }: { nr: string; onSaved: () 
 
   const inp = 'w-full rounded border px-2 py-1 text-sm'
   return (
-    <form onSubmit={submit} className="grid grid-cols-1 gap-2 text-sm sm:grid-cols-2">
+    <form onSubmit={submit} className="evidence-form grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
       <label className="flex flex-col">
-        <span className="text-xs text-gray-600">Bron</span>
+        <span className="text-xs text-gray-600">Source</span>
         <select className={inp} value={source} onChange={(e) => setSource(e.target.value)}>
           {SOURCES.map((s) => (
             <option key={s} value={s}>{SOURCE_LABELS[s]}</option>
@@ -63,23 +63,23 @@ export default function EvidenceForm({ nr, onSaved }: { nr: string; onSaved: () 
         </select>
       </label>
       <label className="flex flex-col">
-        <span className="text-xs text-gray-600">URL (optioneel)</span>
+        <span className="text-xs text-gray-600">URL (optional)</span>
         <input className={inp} value={url} onChange={(e) => setUrl(e.target.value)} placeholder="https://…" />
       </label>
       <label className="flex flex-col sm:col-span-2">
-        <span className="text-xs text-gray-600">Waarneming</span>
-        <textarea className={inp} rows={2} value={observation} onChange={(e) => setObservation(e.target.value)} placeholder="Wat heb je gezien?" />
+        <span className="text-xs text-gray-600">Observation</span>
+        <textarea className={inp} rows={2} value={observation} onChange={(e) => setObservation(e.target.value)} placeholder="What did you observe?" />
       </label>
       <label className="flex flex-col">
-        <span className="text-xs text-gray-600">Waargenomen activiteit (optioneel)</span>
-        <input className={inp} value={activity} onChange={(e) => setActivity(e.target.value)} placeholder="bv. bakkerij, kapsalon" />
+        <span className="text-xs text-gray-600">Observed activity (optional)</span>
+        <input className={inp} value={activity} onChange={(e) => setActivity(e.target.value)} placeholder="e.g. bakery, hair salon" />
       </label>
       <label className="flex flex-col">
-        <span className="text-xs text-gray-600">Datum waarneming</span>
+        <span className="text-xs text-gray-600">Observation date</span>
         <input type="date" className={inp} value={observedAt} onChange={(e) => setObservedAt(e.target.value)} />
       </label>
       <fieldset className="sm:col-span-2">
-        <legend className="text-xs text-gray-600">Conclusie</legend>
+        <legend className="text-xs text-gray-600">Conclusion</legend>
         <div className="mt-1 flex gap-4">
           {CONCLUSIONS.map((c) => (
             <label key={c.value} className="flex items-center gap-1">
@@ -91,7 +91,7 @@ export default function EvidenceForm({ nr, onSaved }: { nr: string; onSaved: () 
       </fieldset>
       <div className="flex items-center gap-3 sm:col-span-2">
         <button type="submit" disabled={busy} className="rounded bg-gray-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-gray-700 disabled:opacity-50">
-          {busy ? 'Opslaan…' : 'Waarneming opslaan'}
+          {busy ? "Saving…" : "Save observation"}
         </button>
         {error && <span className="text-xs text-red-700">{error}</span>}
       </div>
