@@ -1,7 +1,7 @@
 # Tickets -- ai_hackathon (Prefix: TICKET)
 
-> Next ID: TICKET-031
-> Next ID: TICKET-031 (028 and 029 are already reserved on remote branches)
+> Next ID: TICKET-035
+> Next ID: TICKET-035 (028 and 029 are already reserved on remote branches)
 > Next ID: TICKET-035
 >
 > **Deadline: 16:30 Europe/Brussels, 16 Sep 2026.** Build freeze ~15:00 → record 15:00–15:45 → upload + check + form by 16:15.
