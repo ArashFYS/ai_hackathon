@@ -4,6 +4,7 @@ import { STATUS_CODES, activitySectorLabel, statusLabel } from '../api'
 import type { DashboardData, DashboardScope } from '../dashboard'
 import { number, percentage, scopeLink } from '../dashboard'
 import { useLang, useT } from '../i18n'
+import DashboardValue from './DashboardValue'
 import { MARKER_COLOURS } from './BusinessMap'
 
 const PALETTE = ['#bd1539', '#e97438', '#73374c', '#dd5680', '#9f8fb4', '#c89d67']
@@ -13,7 +14,7 @@ export default function DashboardChart({ data, scope }: { data: DashboardData; s
   const { lang } = useLang()
   const [mode, setMode] = useState<'activities' | 'status'>('status')
   const segments = mode === 'status' ? STATUS_CODES.map((status) => ({
-    key: status, label: statusLabel(lang, status), count: data.statuses[status], color: MARKER_COLOURS[status],
+    key: status, label: status === 'actief' ? t('dashboard.activeAssessment') : statusLabel(lang, status), count: data.statuses[status], color: MARKER_COLOURS[status],
     to: scopeLink('/zoeken', scope, { status }),
   })) : data.sectors.map((sector, i) => ({
     key: sector.sector, label: activitySectorLabel(lang, sector.sector, sector.label), count: sector.count,
@@ -21,6 +22,8 @@ export default function DashboardChart({ data, scope }: { data: DashboardData; s
     to: scopeLink('/zoeken', scope, { activity: sector.sector }),
   }))
   const legend = [...segments].sort((a, b) => Number(b.key === 'onbekend') - Number(a.key === 'onbekend'))
+  const visibleLegend = legend.slice(0, 4)
+  const remainingLegend = legend.slice(4)
   const unknown = data.sectors.find((s) => s.sector === 'onbekend')?.count || 0
   const circumference = 2 * Math.PI * 72
   return (
@@ -47,13 +50,20 @@ export default function DashboardChart({ data, scope }: { data: DashboardData; s
           <div className="dash-donut-center"><strong>{number(data.total)}</strong><span>{t('dashboard.recordsUnit')}</span></div>
         </div>
         <ul className="dash-chart-legend">
-          {legend.map((segment) => <li key={segment.key}><Link to={segment.to}>
+          {visibleLegend.map((segment) => <li key={segment.key}><Link to={segment.to}>
             <span className="dash-dot" style={{ background: segment.color }} />
             <span>{segment.label}</span>
-            <strong>{number(segment.count)}<small>{percentage(segment.count, data.total)}</small></strong>
+            <DashboardValue value={segment.count} total={data.total} stacked />
           </Link></li>)}
         </ul>
       </div>
+      {remainingLegend.length > 0 && <details className="dash-more-activities" key={`${mode}:${scope.municipality}:${scope.type}:${scope.activity}`}>
+        <summary>{t('dashboard.moreActivities', { n: number(remainingLegend.length) })}</summary>
+        <ul className="dash-chart-legend">{remainingLegend.map((segment) => <li key={segment.key}><Link to={segment.to}>
+          <span className="dash-dot" style={{ background: segment.color }} /><span>{segment.label}</span>
+          <DashboardValue value={segment.count} total={data.total} />
+        </Link></li>)}</ul>
+      </details>}
       <p className="dash-note">{mode === 'activities' && unknown > 0 ? t('dashboard.unknownActivity', { n: number(unknown), pct: percentage(unknown, data.total) }) : t(mode === 'activities' ? 'dashboard.sectorNote' : 'dashboard.statusNote')}</p>
     </section>
   )

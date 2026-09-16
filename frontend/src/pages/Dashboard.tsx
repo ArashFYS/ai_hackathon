@@ -8,6 +8,7 @@ import { useLang, useT } from '../i18n'
 import BusinessMap, { MARKER_COLOURS } from '../components/BusinessMap'
 import DashboardChart from '../components/DashboardChart'
 import DashboardCoverage from '../components/DashboardCoverage'
+import DashboardValue from '../components/DashboardValue'
 
 export default function Dashboard() {
   const t = useT()
@@ -52,20 +53,24 @@ export default function Dashboard() {
   const name = data?.scope.name || municipalities.find((m) => municipality === m.code || municipality === m.name)?.name || municipality
   const municipalityValue = municipalities.find((m) => municipality === m.name)?.code || municipality
   const cards: { label: string; value: number; color: string; filter: RecordsQuery; caption: string }[] = data ? [
-    { label: t('dashboard.records'), value: data.total, color: '#bd1539', filter: {}, caption: t('dashboard.uniqueRecords') },
-    { label: t('dashboard.enterprises'), value: data.types.enterprise, color: '#73374c', filter: { type: 'enterprise' }, caption: t('dashboard.ofSelection', { pct: percentage(data.types.enterprise, data.total) }) },
-    { label: t('dashboard.establishments'), value: data.types.establishment, color: '#e97438', filter: { type: 'establishment' }, caption: t('dashboard.ofSelection', { pct: percentage(data.types.establishment, data.total) }) },
-    { label: t('dashboard.review'), value: data.statuses.ter_controle, color: '#d58a13', filter: { status: 'ter_controle' }, caption: t('dashboard.ofSelection', { pct: percentage(data.statuses.ter_controle, data.total) }) },
+    { label: t('dashboard.review'), value: data.statuses.ter_controle, color: MARKER_COLOURS.ter_controle, filter: { status: 'ter_controle' }, caption: t('dashboard.reviewMeaning') },
+    { label: t('dashboard.activeAssessment'), value: data.statuses.actief, color: MARKER_COLOURS.actief, filter: { status: 'actief' }, caption: t('dashboard.activeMeaning') },
+    { label: t('dashboard.evidence'), value: data.with_evidence, color: '#73374c', filter: { has_evidence: true }, caption: t('dashboard.observationMeaning') },
   ] : []
+  const gaps = data ? [
+    { label: t('dashboard.noEvidence'), value: data.total - data.with_evidence, filter: { has_evidence: false }, color: '#73374c' },
+    { label: t('dashboard.activityUnknown'), value: data.sectors.find((s) => s.sector === 'onbekend')?.count || 0, filter: { activity: 'onbekend' }, color: '#8a7895' },
+    { label: t('dashboard.contactUnknown'), value: data.contacts.onbekend, filter: { contact: 'onbekend' as const }, color: '#d58a13' },
+  ].filter((gap) => !gap.filter.activity || !activity || activity === gap.filter.activity) : []
 
   return <div className="dashboard-page">
     <section className="dash-hero">
-      <div><p className="dash-eyebrow">{t('dashboard.eyebrow')}</p><h1>{t('dashboard.title')}</h1><p className="dash-hero-intro">{t('dashboard.intro')}</p></div>
+      <div><h1>{t('dashboard.title')}</h1><p className="dash-hero-intro">{t(data && data.total > 0 && data.with_evidence === 0 ? 'dashboard.startReview' : 'dashboard.intro')}</p></div>
       <label className="dash-municipality"><span>{t('dashboard.municipality')}</span>
-        <select value={municipalityValue} onChange={(e) => update({ gemeente: e.target.value, sector: '', soort: '' })} aria-describedby="municipality-note">
+        <select value={municipalityValue} onChange={(e) => update({ gemeente: e.target.value, sector: '', soort: '' })}>
           {!municipalities.some((m) => m.code === municipalityValue) && <option value={municipalityValue}>{name}</option>}
           {municipalities.map((m) => <option key={m.code} value={m.code}>{m.name}</option>)}
-        </select><small id="municipality-note">{t('dashboard.available')}</small>
+        </select>
       </label>
     </section>
 
@@ -86,21 +91,23 @@ export default function Dashboard() {
     {loading && <div role="status" className="dash-loading"><p>{t('common.loading')}</p><div className="dash-skeleton-grid">{[0, 1, 2, 3].map((i) => <div key={i} />)}</div></div>}
     {error && <div role="alert" className="dash-panel dash-empty"><p>{t('dashboard.error')}</p><button type="button" className="dash-primary" onClick={() => setRevision((v) => v + 1)}>{t('dashboard.retry')}</button></div>}
     {data && <>
-      <div className="dash-dataset-note"><span className="dash-dataset-tag">{t('dashboard.partial')}</span><span>{t(data.provenance.complete_municipality === false ? 'dashboard.partialNote' : 'dashboard.coverageUnknown')}</span><a href="#dashboard-source">{t('dashboard.sourceTitle')} <span aria-hidden="true">↓</span></a></div>
+      <div className="dash-selection-summary">
+        <div><Link to={scopeLink('/zoeken', scope)} className="dash-selection-total">{t(type === 'enterprise' ? 'dashboard.selectionEnterprises' : type === 'establishment' ? 'dashboard.selectionEstablishments' : 'dashboard.selectionRecords', { n: number(data.total) })} <span aria-hidden="true">↗</span></Link>
+          {!type && <span className="dash-note">{t('dashboard.composition', { enterprises: number(data.types.enterprise), establishments: number(data.types.establishment) })}</span>}
+        </div>
+        <div className="dash-dataset-note"><span className="dash-dataset-tag">{t(data.provenance.complete_municipality === false ? 'dashboard.partial' : 'dashboard.coverageLabel')}</span><span>{t(data.provenance.complete_municipality === false ? 'dashboard.partialNote' : 'dashboard.coverageUnknown')}</span><a href="#dashboard-source">{t('dashboard.sourceTitle')} <span aria-hidden="true">↓</span></a></div>
+      </div>
       {data.total === 0 && <div className="dash-panel dash-empty" role="status"><h2>{t('dashboard.empty')}</h2><p>{t('dashboard.emptyHint')}</p></div>}
       <div className="dash-overview-grid">
-        <section className="dash-kpis"><div className="dash-section-heading"><h2>{t('dashboard.kpis')}</h2><span className="dash-note">{name}</span></div>
-          <div className="dash-kpi-grid">{cards.map((card) => {
-            const selectable = !type || !card.filter.type || card.filter.type === type
-            const content = <>
-              <div className="dash-kpi-top"><span className="dash-dot" style={{ background: card.color }} />{selectable && <span aria-hidden="true">↗</span>}</div>
-              <strong className="dash-kpi-number">{number(card.value)}</strong><h3>{card.label}</h3><p>{card.caption}</p>
-              <div className="dash-track" aria-hidden="true"><span style={{ width: `${share(card.value, data.total)}%`, background: card.color }} /></div>
-              <span className="dash-kpi-action">{t(selectable ? 'dashboard.viewRecords' : 'dashboard.excluded')}{selectable && <span aria-hidden="true"> →</span>}</span>
-            </>
-            return selectable ? <Link key={card.label} className="dash-kpi" to={scopeLink('/zoeken', scope, card.filter)}>{content}</Link>
-              : <div key={card.label} className="dash-kpi is-unavailable">{content}</div>
-          })}</div>
+        <section className="dash-kpis"><div className="dash-section-heading"><h2>{t('dashboard.priorities')}</h2></div>
+          <div className="dash-kpi-grid">{cards.map((card) => <Link key={card.label} className="dash-kpi" to={scopeLink('/zoeken', scope, card.filter)}>
+            <div className="dash-kpi-top"><span className="dash-dot" style={{ background: card.color }} /><span aria-hidden="true">↗</span></div>
+            <strong className="dash-kpi-number">{number(card.value)}</strong><h3>{card.label}</h3>
+            <span className="dash-kpi-share">{t('dashboard.ofSelection', { pct: percentage(card.value, data.total) })}</span><p>{card.caption}</p>
+            <div className="dash-track" aria-hidden="true"><span style={{ width: `${share(card.value, data.total)}%`, background: card.color }} /></div>
+            <span className="dash-kpi-action">{t('dashboard.viewRecords')}<span aria-hidden="true">→</span></span>
+          </Link>)}</div>
+          {data.total > 0 && <div className="dash-insight"><strong>{t(data.with_evidence === 0 ? 'dashboard.noObservationsYet' : 'dashboard.assessmentContext')}</strong><p>{t(data.with_evidence === 0 ? 'dashboard.noObservationsMeaning' : 'dashboard.noEvidenceWarning')}</p></div>}
         </section>
         <DashboardChart data={data} scope={scope} />
       </div>
@@ -109,13 +116,12 @@ export default function Dashboard() {
           {data.map.length ? <div className="dash-map"><BusinessMap items={data.map} className="h-full w-full" compact /></div> : <div className="dash-map dash-empty">{t('dashboard.noCoordinates')}</div>}
           <div className="dash-map-footer"><div>{STATUS_CODES.map((status) => <span key={status}><i className="dash-dot" style={{ background: MARKER_COLOURS[status] }} />{statusLabel(lang, status)}</span>)}</div><span>{t('dashboard.mapOutside', { n: number(data.map.filter((p) => p.outside_municipality).length) })}</span></div>
         </section>
-        <section className="dash-panel dash-status-panel"><h2>{t('dashboard.statusTitle')}</h2><p className="dash-note">{t('dashboard.statusNote')}</p>
-          <ul className="dash-status-bars">{STATUS_CODES.map((status) => <li key={status}><Link to={scopeLink('/zoeken', scope, { status })}>
-            <div><span>{statusLabel(lang, status)}</span><strong>{number(data.statuses[status])}<small>{percentage(data.statuses[status], data.total)}</small></strong></div>
-            <div className="dash-track" aria-hidden="true"><span style={{ width: `${share(data.statuses[status], data.total)}%`, background: MARKER_COLOURS[status] }} /></div>
+        <section className="dash-panel dash-status-panel"><h2>{t('dashboard.gapsTitle')}</h2><p className="dash-note">{t('dashboard.gapsNote')}</p>
+          <ul className="dash-status-bars">{gaps.map((gap) => <li key={gap.label}><Link to={scopeLink('/zoeken', scope, gap.filter)}>
+            <div><span>{gap.label}</span><DashboardValue value={gap.value} total={data.total} /></div>
+            <div className="dash-track" aria-hidden="true"><span style={{ width: `${share(gap.value, data.total)}%`, background: gap.color }} /></div>
           </Link></li>)}</ul>
           <Link className="dash-primary" to={scopeLink('/zoeken', scope, { status: 'ter_controle' })}>{t('dashboard.attention')} <span aria-hidden="true">→</span></Link>
-          <p className="dash-note mt-3">{t('dashboard.noEvidenceWarning')}</p>
         </section>
       </div>
       <DashboardCoverage data={data} scope={scope} />

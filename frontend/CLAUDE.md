@@ -56,6 +56,9 @@ Calls `/api/records/{nr}/nbb`. Shows company (naam, rechtsvorm, rechtstoestand +
 Legacy root query links using q/type/status/activity/street redirect to `/zoeken` preserving filters.
 `pages/Dashboard.tsx` calls one aggregate endpoint; `DashboardChart` toggles sector/status distributions,
 `DashboardCoverage` shows observation/contact/certainty/parent coverage and saved proposals.
+The first view prioritizes review, assessed activity and observation coverage; the selected total
+and type composition appear once. Missing-information bars overlap, and inapplicable parent or
+sector links are omitted. The chart legend expands in the page without an internal scrollbar.
 `BusinessMap` shares the actual Leaflet renderer with Kaart. All percentages use the selected total;
 missing parents use selected establishments. No historical sparklines or invented counts.
 Dutch/English labels in `i18n/{nl,en}/dashboard.ts`. Empty/loading/error states are distinct.
