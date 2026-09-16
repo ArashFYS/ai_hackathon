@@ -1,6 +1,6 @@
 # Tickets -- ai_hackathon (Prefix: TICKET)
 
-> Next ID: TICKET-028
+> Next ID: TICKET-029
 >
 > **Deadline: 16:30 Europe/Brussels, 16 Sep 2026.** Build freeze ~15:00 → record 15:00–15:45 → upload + check + form by 16:15.
 > Anything not demoable by 15:00 is a slide in the video, not a feature.
@@ -8,6 +8,13 @@
 > Priority: **MVP** = on the critical path for the 3-min screen recording. **Stretch** = only if MVP is recordable.
 
 ## In Progress
+
+### TICKET-028: Activiteitsindicatoren — KBO / Google Maps / e-facturatie (Peppol) traffic lights
+- **Type:** feat(score) | **Priority:** Stretch (demo value: three sources at a glance)
+- **Created:** 2026-09-16
+- **Description:** Every record carries `indicators: { kbo, google_maps, einvoice }`, each `{ level: groen|geel|rood|onbekend, label, text, checked_at, url }`. KBO light is a pure rule on the register (rood on dissolution/faillissement/doorhaling, groen only when every register signal is clean incl. AR address match and a clean parent, geel otherwise). Google Maps light uses the Places API (New) Text Search with the free-quota Pro field mask only (no reviews): rood = CLOSED_PERMANENTLY, groen = OPERATIONAL listing at the KBO address, geel = no listing / temporarily closed; monthly guard at 4,500 calls; key `GOOGLE_MAPS_API_KEY` in `backend/.env`. E-facturatie light = Peppol SML DNS check on `0208:<ondernemingsnummer>` (groen registered, rood not registered, geel when the legal form is not obliged), enriched with the Peppol Directory on the detail page. Results cached in `indicator_cache`; list endpoints are cache-only. New endpoints `GET /api/records/{nr}/indicators` and `POST /api/streets/{street}/indicators/refresh`. UI: "Signalen" column (three dots) in Zoeken and Straatoverzicht, detailed block in Beoordeling, "Controleer straat" button.
+- **Out of scope:** feeding these signals into `assess()` reasons/proposals; map view; whole-dataset refresh.
+- **Done when:** Paalstraat rows show three dots; LILLYWORLD (0448335384) is rood/rood; a registered BV is groen for e-fact.; with a key, Kapsalon Schoten is groen for Maps; without a key Maps is onbekend and nothing 500s.
 
 ### TICKET-021: Provenance on every reason (source, field, date, verify link) + NBB signal in the assessment
 - **Type:** feat(score)

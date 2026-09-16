@@ -85,3 +85,13 @@ CREATE TABLE IF NOT EXISTS nbb_cache (
   fetched_at TEXT NOT NULL,
   payload    TEXT NOT NULL
 );
+
+-- Cached external indicator lookups (Google Places, Peppol) and monthly quota counters.
+-- kind: 'google_maps' (key = record nr) | 'einvoice' (key = enterprise nr) | 'quota' (key = 'google_maps:YYYY-MM')
+CREATE TABLE IF NOT EXISTS indicator_cache (
+  kind       TEXT NOT NULL,
+  key        TEXT NOT NULL,
+  fetched_at TEXT NOT NULL,
+  payload    TEXT NOT NULL,
+  PRIMARY KEY (kind, key)
+);

@@ -34,10 +34,10 @@ def street_detail(street: str, conn: sqlite3.Connection = Depends(get_db)):
     ).fetchall()]
     if not rows:
         raise HTTPException(404, "Straat niet gevonden")
-    parents, evidence = load_context(conn, rows)
+    parents, evidence, cached = load_context(conn, rows)
     items = {}
     for r in rows:  # assess first so auto-proposals exist before we look up open ones
-        items[r["nr"]] = summarize(r, parents.get(r.get("parent_nr")), evidence.get(r["nr"], []))
+        items[r["nr"]] = summarize(r, parents.get(r.get("parent_nr")), evidence.get(r["nr"], []), cached=cached)
         ensure_auto_proposals(conn, r, items[r["nr"]]["assessment"])
     nrs = [r["nr"] for r in rows]
     open_props: dict[str, dict] = {}

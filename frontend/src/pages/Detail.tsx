@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import type { RecordDetail, RecordFull } from '../api'
-import { CONCLUSION_LABELS, RECORD_TYPE_LABELS, SOURCE_LABELS, dash, getRecord, onbekend } from '../api'
+import type { Indicators, RecordDetail, RecordFull } from '../api'
+import { CONCLUSION_LABELS, RECORD_TYPE_LABELS, SOURCE_LABELS, dash, getIndicators, getRecord, onbekend } from '../api'
 import StatusBadge from '../components/StatusBadge'
 import ZekerheidBadge from '../components/ZekerheidBadge'
 import ReasonsList from '../components/ReasonsList'
@@ -9,6 +9,7 @@ import LinkageCard from '../components/LinkageCard'
 import EvidenceForm from '../components/EvidenceForm'
 import ProposalList from '../components/ProposalList'
 import EvidencePanel from '../components/EvidencePanel'
+import IndicatorLights from '../components/IndicatorLights'
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -105,6 +106,27 @@ export default function Detail() {
   const [error, setError] = useState<string | null>(null)
   const [tick, setTick] = useState(0)
   const reload = useCallback(() => setTick((t) => t + 1), [])
+  const [live, setLive] = useState<Indicators | null>(null)
+  const [checking, setChecking] = useState(false)
+
+  useEffect(() => {
+    // Live Google Maps + Peppol lookups (cached server-side); failures keep the cached dots.
+    if (!nr) return
+    let cancelled = false
+    setLive(null)
+    setChecking(true)
+    getIndicators(nr)
+      .then((ind) => {
+        if (!cancelled) setLive(ind)
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (!cancelled) setChecking(false)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [nr])
 
   useEffect(() => {
     if (!nr) return
@@ -155,6 +177,8 @@ export default function Detail() {
             {a.last_observed && <span className="text-xs text-gray-500">Laatste waarneming: {a.last_observed}</span>}
           </div>
           <p className="mb-3 text-sm"><span className="text-gray-500">Voorstel:</span> <span className="font-medium">{a.proposal_text}</span></p>
+          <h3 className="mb-1 text-sm font-medium text-gray-800">Signalen per bron{checking && <span className="ml-2 text-xs font-normal text-gray-500">controleren…</span>}</h3>
+          <div className="mb-3"><IndicatorLights indicators={live ?? r.indicators} detailed /></div>
           <h3 className="mb-1 text-sm font-medium text-gray-800">Waarom?</h3>
           <ReasonsList reasons={a.reasons} />
         </Section>

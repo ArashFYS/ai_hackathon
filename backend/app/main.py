@@ -4,11 +4,13 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .db import apply_schema
-from .routers import evidence, nbb, proposals, records, streets
+from .env import load_dotenv
+from .routers import evidence, indicators, nbb, proposals, records, streets
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    load_dotenv()
     apply_schema()
     yield
 
@@ -33,3 +35,4 @@ app.include_router(streets.router)
 app.include_router(evidence.router)
 app.include_router(proposals.router)
 app.include_router(nbb.router)
+app.include_router(indicators.router)

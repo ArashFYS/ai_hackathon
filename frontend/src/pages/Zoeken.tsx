@@ -4,6 +4,7 @@ import type { RecordSummary, RecordType, Status } from '../api'
 import { getRecords, RECORD_TYPE_LABELS, STATUS_LABELS, dash } from '../api'
 import StatusBadge from '../components/StatusBadge'
 import ZekerheidBadge from '../components/ZekerheidBadge'
+import IndicatorLights from '../components/IndicatorLights'
 
 export default function Zoeken() {
   const [params, setParams] = useSearchParams()
@@ -110,6 +111,7 @@ export default function Zoeken() {
                 <th className="px-3 py-2">Register</th>
                 <th className="px-3 py-2">Status</th>
                 <th className="px-3 py-2">Zekerheid</th>
+                <th className="px-3 py-2">Signalen</th>
               </tr>
             </thead>
             <tbody className="divide-y">
@@ -126,6 +128,7 @@ export default function Zoeken() {
                   <td className="px-3 py-2 text-gray-700">{dash(r.assessment?.register_label)}</td>
                   <td className="px-3 py-2"><StatusBadge status={r.assessment.status} label={r.assessment.status_label} /></td>
                   <td className="px-3 py-2"><ZekerheidBadge certainty={r.assessment.certainty} label={r.assessment.certainty_label} /></td>
+                  <td className="px-3 py-2"><IndicatorLights indicators={r.indicators} /></td>
                 </tr>
               ))}
             </tbody>

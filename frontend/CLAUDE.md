@@ -8,8 +8,8 @@ src/main.tsx          BrowserRouter
 src/App.tsx           layout (header + nav) and routes
 src/api.ts            typed fetch helpers for every backend endpoint (types mirror backend/CLAUDE.md)
 src/pages/            Zoeken.tsx · Detail.tsx · Straat.tsx · Goedgekeurd.tsx
-src/components/       StatusBadge · ZekerheidBadge · ReasonsList · EvidencePanel (tabs + iframe minibrowser) ·
-                      NbbPanel · EvidenceForm · ProposalList · RecordCard · LinkageCard
+src/components/       StatusBadge · ZekerheidBadge · IndicatorLights (three traffic lights) · ReasonsList ·
+                      EvidencePanel (tabs + iframe minibrowser) · NbbPanel · EvidenceForm · ProposalList · RecordCard · LinkageCard
 ```
 
 Routes: `/` Zoeken · `/record/:nr` Detail · `/straat` and `/straat/:street` Straatoverzicht · `/goedgekeurd` Goedgekeurde wijzigingen.
@@ -21,11 +21,14 @@ Never show an invented value: missing → "onbekend" or "—".
 ## Status colours (Tailwind)
 `actief` green · `ter_controle` amber · `waarschijnlijk_niet_actief` red · `geen_onderneming` gray. Zekerheid: hoog solid, middel outline, laag dashed/light.
 
+## Signalen (IndicatorLights)
+`record.indicators = { kbo, google_maps, einvoice }`, each `{ level, label, text, checked_at, url }`. Dots: groen `bg-green-500` · geel `bg-amber-400` · rood `bg-red-500` · onbekend `bg-gray-300`; captions KBO · Maps · e-fact.; the `title` tooltip carries label + text so colour is never the only signal. Compact (row of dots) in the Zoeken and Straatoverzicht tables (column **Signalen**); `detailed` (one line per source with "gecontroleerd {date} · Controleer bron ↗") in the Detail Beoordeling block. Detail calls `getIndicators(nr)` on mount (live Google Maps + Peppol, cached server-side) and swaps in the result; on failure the cached dots stay. Straatoverzicht has **Controleer straat** → `refreshStreetIndicators(street)` (busy text "Bezig… (kan een halve minuut duren)"), then shows the counts and reloads. Missing Google key → Maps stays onbekend with an explanatory tooltip.
+
 ## Pages
-- **Zoeken** — one search box (naam, ondernemingsnummer, straat), optional type/status filters; results table: naam · type · adres · Register · Status badge · Zekerheid; row → `/record/:nr`. Link to Straatoverzicht.
+- **Zoeken** — one search box (naam, ondernemingsnummer, straat), optional type/status filters; results table: naam · type · adres · Register · Status badge · Zekerheid · Signalen; row → `/record/:nr`. Link to Straatoverzicht.
 - **Detail** — two columns. Left: header (display_name, type badge, nr), Assessment block (status, zekerheid, **reasons list** — this is the "how did the tool decide" view), Register facts (rechtsvorm, rechtstoestand, startdatum, KBO adres vs AR adres side by side, NACE if any), **LinkageCard** (establishment → parent card with "zetel elders" / "moederonderneming niet in dataset" + "Haal op via VKBO" button calling fetch-parent; enterprise → list of its establishments), Contact block (phone/email or "contactgegevens onbekend"; note whether it belongs to vestiging or zetel), EvidenceForm + logged evidence list, Proposals with bevestigen/afwijzen buttons.
   Right (sticky): **EvidencePanel** = tabbed minibrowser. Tabs: Kaart & recensies (iframe google_maps_embed) · Street View (iframe street_view_embed; if it fails to render show the link) · KBO (iframe kbo_public_embed) · Jaarrekeningen (NbbPanel, native) · Website (iframe web_search_embed). Each tab has "Bron", "Wat te controleren" one-liner, and "Open in nieuw venster ↗" (the non-embed URL). Iframes: `sandbox` off, `referrerPolicy="no-referrer"`, height ~70vh.
-- **Straatoverzicht** — street picker (from `/streets`, Paalstraat default), then table grouped by address with columns exactly: **Adres · Onderneming / vestiging · Register · Bewijs van activiteit · Laatste waarneming · Zekerheid · Voorstel · [bevestigen] [afwijzen]** (buttons act on the open_proposal; disabled if none). Status filter. Row name links to detail.
+- **Straatoverzicht** — street picker (from `/streets`, Paalstraat default), then table grouped by address with columns exactly: **Adres · Onderneming / vestiging · Register · Bewijs van activiteit · Laatste waarneming · Zekerheid · Signalen · Voorstel · [bevestigen] [afwijzen]** (buttons act on the open_proposal; disabled if none). Status filter. Row name links to detail.
 - **Goedgekeurd** — table of proposals with status bevestigd (and a toggle to see afgewezen/open), "Exporteer CSV" and "Exporteer JSON" buttons hitting `/api/proposals/export`. Explain in one line: "Alleen bevestigde wijzigingen verlaten de tool."
 
 ## NbbPanel

@@ -1,9 +1,10 @@
 import { Fragment, useCallback, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import type { Status, StreetCount, StreetOverview, StreetRecord } from '../api'
-import { STATUS_LABELS, dash, getStreet, getStreets, valueLabel } from '../api'
+import type { Status, StreetCount, StreetOverview, StreetRecord, StreetRefreshResult } from '../api'
+import { STATUS_LABELS, dash, getStreet, getStreets, refreshStreetIndicators, valueLabel } from '../api'
 import StatusBadge from '../components/StatusBadge'
 import ZekerheidBadge from '../components/ZekerheidBadge'
+import IndicatorLights from '../components/IndicatorLights'
 import { DecideButtons } from '../components/ProposalList'
 
 const DEFAULT_STREET = 'Paalstraat'
@@ -25,6 +26,23 @@ export default function Straat() {
   const [status, setStatus] = useState<Status | ''>('')
   const [tick, setTick] = useState(0)
   const reload = useCallback(() => setTick((t) => t + 1), [])
+  const [checking, setChecking] = useState(false)
+  const [checkResult, setCheckResult] = useState<string | null>(null)
+
+  const checkStreet = () => {
+    setChecking(true)
+    setCheckResult(null)
+    refreshStreetIndicators(street)
+      .then((res: StreetRefreshResult) => {
+        const fmt = (c: Record<string, number>) => `${c.groen} groen, ${c.geel} geel, ${c.rood} rood, ${c.onbekend} onbekend`
+        let msg = `${res.records} records gecontroleerd — Maps: ${fmt(res.google_maps)} · e-fact.: ${fmt(res.einvoice)}`
+        if (!res.has_api_key) msg += ' (geen Google Maps API-sleutel geconfigureerd)'
+        setCheckResult(msg)
+        reload()
+      })
+      .catch(() => setCheckResult('Controle mislukt'))
+      .finally(() => setChecking(false))
+  }
 
   useEffect(() => {
     getStreets().then(setStreets).catch(() => setStreets([]))
@@ -82,6 +100,16 @@ export default function Straat() {
           </select>
         </label>
         {data && <span className="pb-2 text-xs text-gray-500">{total} records op {data.addresses.length} adressen</span>}
+        <button
+          type="button"
+          onClick={checkStreet}
+          disabled={checking || loading}
+          className="ml-auto rounded border border-gray-800 bg-white px-3 py-1.5 text-sm font-medium text-gray-900 hover:bg-gray-100 disabled:opacity-50"
+          title="Zoekt elke vestiging op Google Maps en controleert de Peppol-registratie (resultaten worden 30 dagen bewaard)"
+        >
+          {checking ? 'Bezig… (kan een halve minuut duren)' : 'Controleer straat'}
+        </button>
+        {checkResult && <span className="w-full text-xs text-gray-600">{checkResult}</span>}
       </div>
 
       <div className="overflow-x-auto rounded-lg border bg-white">
@@ -98,6 +126,7 @@ export default function Straat() {
                 <th className="px-3 py-2">Bewijs van activiteit</th>
                 <th className="px-3 py-2">Laatste waarneming</th>
                 <th className="px-3 py-2">Zekerheid</th>
+                <th className="px-3 py-2">Signalen</th>
                 <th className="px-3 py-2">Voorstel</th>
                 <th className="px-3 py-2"></th>
               </tr>
@@ -106,7 +135,7 @@ export default function Straat() {
               {addresses.map((a) => (
                 <Fragment key={a.address}>
                   <tr className="bg-gray-100">
-                    <td colSpan={8} className="px-3 py-1.5 text-xs font-semibold text-gray-700">{a.address}</td>
+                    <td colSpan={9} className="px-3 py-1.5 text-xs font-semibold text-gray-700">{a.address}</td>
                   </tr>
                   {a.records.map((r) => (
                     <tr key={r.nr} className="align-top hover:bg-gray-50">
@@ -120,6 +149,7 @@ export default function Straat() {
                       <td className="max-w-64 px-3 py-2 text-gray-700">{r.last_evidence?.observation ?? '—'}</td>
                       <td className="px-3 py-2 whitespace-nowrap">{r.last_evidence?.observed_at ?? r.assessment.last_observed ?? '—'}</td>
                       <td className="px-3 py-2"><ZekerheidBadge certainty={r.assessment.certainty} label={r.assessment.certainty_label} /></td>
+                      <td className="px-3 py-2"><IndicatorLights indicators={r.indicators} /></td>
                       <td className="max-w-56 px-3 py-2 text-gray-800">
                         {r.assessment.proposal_text}
                         {r.open_proposal && (
