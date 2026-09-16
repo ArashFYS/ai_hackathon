@@ -9,11 +9,6 @@
 
 ## In Progress
 
-### TICKET-029: Remove the Google Places API; Google Maps light from logged observations
-- **Type:** refactor(score)
-- **Created:** 2026-09-16
-- **Description:** The Places API needs a billed Google Cloud project, so it is removed (google_places.py, env loader, .env.example, quota counter). The Google Maps light now derives from officer-logged evidence with source `google_maps`: groen when the latest such observation concludes actief within the last 6 months, rood when it concludes niet actief, geel when onduidelijk or older than 6 months, onbekend when nothing is logged. Peppol light unchanged. Follow-up on the unmerged TICKET-028 branch.
-
 ### TICKET-021: Provenance on every reason (source, field, date, verify link) + NBB signal in the assessment
 - **Type:** feat(score)
 - **Created:** 2026-09-16
@@ -111,6 +106,12 @@
 - **Description:** `ejustice.just.fgov.be/cgi_tsv/tsv_rech.pl?btw=<nr>` returned HTTP 500 on 2026-09-16; find a working publication-search URL before adding.
 
 ## Done
+
+### TICKET-029: Remove the Google Places API; Google Maps light from logged observations
+- **Type:** refactor(score)
+- **Created:** 2026-09-16 | **Completed:** 2026-09-16
+- **Description:** The Places API needs a billed Google Cloud project, so it is removed (google_places.py, env loader, .env.example, quota counter). The Google Maps light now derives from officer-logged evidence with source `google_maps`: groen when the latest such observation concludes actief within the last 6 months, rood when it concludes niet actief, geel when onduidelijk or older than 6 months, onbekend when nothing is logged. Peppol light unchanged. Follow-up on the unmerged TICKET-028 branch.
+- **Branch:** `feat/TICKET-028-activity-indicators` | **Commits:** `d578eed`
 
 ### TICKET-028: Activiteitsindicatoren — KBO / Google Maps / e-facturatie (Peppol) traffic lights
 - **Type:** feat(score) | **Priority:** Stretch (demo value: three sources at a glance)
