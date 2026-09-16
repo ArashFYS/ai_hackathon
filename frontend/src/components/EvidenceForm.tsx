@@ -20,6 +20,9 @@ export default function EvidenceForm({ nr, onSaved }: { nr: string; onSaved: () 
   const [activity, setActivity] = useState('')
   const [conclusion, setConclusion] = useState<Conclusion>('actief')
   const [observedAt, setObservedAt] = useState(today())
+  const [phone, setPhone] = useState('')
+  const [email, setEmail] = useState('')
+  const [website, setWebsite] = useState('')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -39,10 +42,16 @@ export default function EvidenceForm({ nr, onSaved }: { nr: string; onSaved: () 
         observed_activity: activity.trim() || undefined,
         conclusion,
         observed_at: observedAt,
+        phone: phone.trim() || undefined,
+        email: email.trim() || undefined,
+        website: website.trim() || undefined,
       })
       setUrl('')
       setObservation('')
       setActivity('')
+      setPhone('')
+      setEmail('')
+      setWebsite('')
       onSaved()
     } catch {
       setError('Kon waarneming niet opslaan.')
@@ -78,6 +87,14 @@ export default function EvidenceForm({ nr, onSaved }: { nr: string; onSaved: () 
         <span className="text-xs text-gray-600">Datum waarneming</span>
         <input type="date" className={inp} value={observedAt} onChange={(e) => setObservedAt(e.target.value)} />
       </label>
+      <fieldset className="sm:col-span-2">
+        <legend className="text-xs text-gray-600">Contact gezien op Google Maps, website… (optioneel)</legend>
+        <div className="mt-1 grid grid-cols-1 gap-2 sm:grid-cols-3">
+          <input className={inp} value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Telefoon" aria-label="Telefoon" />
+          <input className={inp} value={email} onChange={(e) => setEmail(e.target.value)} placeholder="E-mail" aria-label="E-mail" />
+          <input className={inp} value={website} onChange={(e) => setWebsite(e.target.value)} placeholder="Website" aria-label="Website" />
+        </div>
+      </fieldset>
       <fieldset className="sm:col-span-2">
         <legend className="text-xs text-gray-600">Conclusie</legend>
         <div className="mt-1 flex gap-4">

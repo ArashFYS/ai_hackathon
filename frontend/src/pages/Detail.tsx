@@ -9,6 +9,7 @@ import LinkageCard from '../components/LinkageCard'
 import EvidenceForm from '../components/EvidenceForm'
 import ProposalList from '../components/ProposalList'
 import EvidencePanel from '../components/EvidencePanel'
+import ContactBlock from '../components/ContactBlock'
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -76,29 +77,6 @@ function RegisterFacts({ r }: { r: RecordFull }) {
   )
 }
 
-function Contact({ d }: { d: RecordDetail }) {
-  const own = d.record
-  const ownLabel = own.record_type === 'establishment' ? 'vestiging' : 'zetel'
-  const rows: { label: string; kind: string; value: string; href: string }[] = []
-  if (own.phone) rows.push({ label: 'Telefoon', kind: ownLabel, value: own.phone, href: `tel:${own.phone}` })
-  if (own.email) rows.push({ label: 'E-mail', kind: ownLabel, value: own.email, href: `mailto:${own.email}` })
-  if (d.parent?.phone) rows.push({ label: 'Telefoon', kind: 'zetel', value: d.parent.phone, href: `tel:${d.parent.phone}` })
-  if (d.parent?.email) rows.push({ label: 'E-mail', kind: 'zetel', value: d.parent.email, href: `mailto:${d.parent.email}` })
-  if (rows.length === 0) return <p className="text-sm text-gray-600">contactgegevens onbekend</p>
-  return (
-    <ul className="space-y-1 text-sm">
-      {rows.map((c, i) => (
-        <li key={i} className="flex items-center gap-2">
-          <span className="w-16 text-xs text-gray-500">{c.label}</span>
-          <a href={c.href} className="text-blue-700 hover:underline">{c.value}</a>
-          <span className="rounded bg-gray-100 px-1.5 py-0.5 text-xs text-gray-600">{c.kind}</span>
-          <span className="text-xs text-gray-400">bron: KBO, opgehaald {own.fetched_at?.slice(0, 10)}</span>
-        </li>
-      ))}
-    </ul>
-  )
-}
-
 export default function Detail() {
   const { nr } = useParams<{ nr: string }>()
   const [data, setData] = useState<RecordDetail | null>(null)
@@ -161,7 +139,7 @@ export default function Detail() {
 
         <Section title="Registergegevens"><RegisterFacts r={r} /></Section>
         <Section title="Onderneming ↔ vestiging"><LinkageCard detail={data} onChanged={reload} /></Section>
-        <Section title="Contact"><Contact d={data} /></Section>
+        <Section title="Contact"><ContactBlock contacts={data.contacts} status={data.contact_status} /></Section>
 
         <Section title="Bewijs van activiteit">
           <EvidenceForm nr={r.nr} onSaved={reload} />
@@ -182,6 +160,9 @@ export default function Detail() {
                     </div>
                     <p className="text-gray-800">{ev.observation}</p>
                     {ev.observed_activity && <p className="text-xs text-gray-600">Activiteit: {ev.observed_activity}</p>}
+                    {(ev.phone || ev.email || ev.website) && (
+                      <p className="text-xs text-gray-600">Contact gezien: {[ev.phone, ev.email, ev.website].filter(Boolean).join(' · ')}</p>
+                    )}
                   </li>
                 ))}
               </ul>

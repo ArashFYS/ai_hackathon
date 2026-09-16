@@ -1,4 +1,4 @@
-import type { Certainty, Conclusion, ProposalStatus, RecordType, Status } from './api'
+import type { Certainty, Conclusion, ContactStatus, ProposalStatus, RecordType, Status } from './api'
 
 
 export const STATUS_LABELS: Record<Status, string> = {
@@ -31,6 +31,14 @@ export const SOURCE_LABELS: Record<string, string> = {
   nbb: 'NBB',
   inhoudingsplicht: 'Check Inhoudingsplicht',
   andere: 'Andere',
+}
+
+/** Short contact indicator for lists (no icon library). */
+export const CONTACT_STATUS_LABELS: Record<ContactStatus, string> = {
+  register: '☎ register',
+  zetel: '☎ zetel',
+  waargenomen: '☎ waargenomen',
+  onbekend: '—',
 }
 
 export const RECORD_TYPE_LABELS: Record<RecordType, string> = {
