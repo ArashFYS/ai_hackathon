@@ -9,12 +9,6 @@
 
 ## In Progress
 
-### TICKET-003: Choose stack and scaffold app
-- **Type:** chore | **Priority:** MVP
-- **Created:** 2026-09-16
-- **Description:** Decide the stack (full-stack web app + SQLite), scaffold the project, write ADR-002, fill in CLAUDE.md Build/Test/Run, conventions.md stack section, .gitignore. One command to run locally.
-- **Done when:** `npm run dev` (or equivalent) serves a Dutch-language empty shell page; ADR-002 committed.
-
 ## Backlog
 
 ### MVP — critical path (in build order)
@@ -128,6 +122,13 @@
 - **Description:** `ejustice.just.fgov.be/cgi_tsv/tsv_rech.pl?btw=<nr>` returned HTTP 500 on 2026-09-16; find a working publication-search URL before adding.
 
 ## Done
+
+### TICKET-003: Choose stack and scaffold app
+- **Type:** chore | **Priority:** MVP
+- **Created:** 2026-09-16 | **Completed:** 2026-09-16
+- **Description:** Decide the stack (full-stack web app + SQLite), scaffold the project, write ADR-002, fill in CLAUDE.md Build/Test/Run, conventions.md stack section, .gitignore. One command to run locally.
+- **Done when:** `npm run dev` (or equivalent) serves a Dutch-language empty shell page; ADR-002 committed.
+- **Commits:** `d82fd38`
 
 ### TICKET-002: Document challenge brief and import starter data
 - **Type:** docs
