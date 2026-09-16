@@ -115,7 +115,8 @@ def record_detail(nr: str, conn: sqlite3.Connection = Depends(get_db)):
     cached = load_indicator_cache(conn, [row] + ([parent] if parent else []))
     record = summarize(row, parent, evidence, full=True, nbb=nbb, cached=cached)
     ensure_auto_proposals(conn, row, record["assessment"])
-    contacts = contacts_for(row, parent, evidence, nbb)
+    place = cached["google_maps"].get(nr)
+    contacts = contacts_for(row, parent, evidence, nbb, place)
 
     parent_summary = None
     if parent:
@@ -140,6 +141,7 @@ def record_detail(nr: str, conn: sqlite3.Connection = Depends(get_db)):
         "links": build_links(row, display_name(row), address_of(row)),
         "contacts": contacts,
         "contact_status": contact_status(contacts),
+        "google_maps": place,
     }
 
 

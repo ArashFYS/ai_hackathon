@@ -10,6 +10,7 @@ from .scoring import kbo_url, snapshot_date
 SRC_REGISTER = "KBO (via VKBO)"
 SRC_PARENT = "KBO (via VKBO) — moederonderneming"
 SRC_NBB = "NBB Balanscentrale"
+SRC_MAPS = "Google Maps (via Apify)"
 SOURCE_LABELS = {
     "google_maps": "Google Maps", "street_view": "Street View", "website": "Website",
     "terreinbezoek": "Terreinbezoek", "kbo": "KBO", "nbb": "NBB",
@@ -26,7 +27,8 @@ def _contact(kind: str, value: str, belongs_to: str, source: str, observed_at: s
 def _normalize(kind: str, value: str) -> str:
     v = value.strip().lower()
     if kind == "phone":
-        return re.sub(r"\D", "", v)
+        digits = re.sub(r"\D", "", v)
+        return "0" + digits[2:] if digits.startswith("32") and len(digits) > 9 else digits  # +32 3 … == 03 …
     if kind == "website":
         v = re.sub(r"^https?://", "", v).removeprefix("www.").rstrip("/")
     return v
@@ -61,13 +63,32 @@ def _nbb_contacts(nbb: dict | None) -> list[dict]:
     return out
 
 
-def contacts_for(row: dict, parent: dict | None, evidence: list[dict], nbb: dict | None = None) -> list[dict]:
-    """Every known contact for a record, deduped on (kind, normalized value); vestiging first, newest first."""
+def _maps_contacts(place: dict | None) -> list[dict]:
+    """Phone, e-mails and website of the scraped Google Maps listing (only when it matched the record)."""
+    if not place or place.get("match_quality") == "geen" or not place.get("title"):
+        return []
+    date, url = (place.get("scraped_at") or "")[:10] or None, place.get("url")
+    out = []
+    if (place.get("phone") or "").strip():
+        out.append(_contact("phone", place["phone"], "vestiging", SRC_MAPS, date, url))
+    for e in place.get("emails") or []:
+        if (e or "").strip():
+            out.append(_contact("email", e, "vestiging", SRC_MAPS, date, url))
+    if (place.get("website") or "").strip():
+        out.append(_contact("website", place["website"], "vestiging", SRC_MAPS, date, url))
+    return out
+
+
+def contacts_for(row: dict, parent: dict | None, evidence: list[dict], nbb: dict | None = None,
+                 place: dict | None = None) -> list[dict]:
+    """Every known contact for a record, deduped on (kind, normalized value); vestiging first, newest first,
+    register/observed contacts ahead of scraped ones."""
     is_est = row.get("record_type") == "establishment"
     found = _register_contacts(row, "vestiging" if is_est else "zetel", SRC_REGISTER)
     if is_est and not found and parent:
         found += _register_contacts(parent, "zetel", SRC_PARENT)
     found += _evidence_contacts(evidence)
+    found += _maps_contacts(place)
     found += _nbb_contacts(nbb)
 
     seen: set[tuple[str, str]] = set()
@@ -79,6 +100,7 @@ def contacts_for(row: dict, parent: dict | None, evidence: list[dict], nbb: dict
         seen.add(key)
         unique.append(c)
     unique.sort(key=lambda c: c["observed_at"] or "", reverse=True)
+    unique.sort(key=lambda c: 1 if c["source"] == SRC_MAPS else 0)
     unique.sort(key=lambda c: 0 if c["belongs_to"] == "vestiging" else 1)
     return unique
 

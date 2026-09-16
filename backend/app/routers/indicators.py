@@ -4,6 +4,7 @@ import time
 from fastapi import APIRouter, Depends, HTTPException
 
 from ..db import get_db
+from ..google_maps import fetch_place
 from ..indicators import build_indicators
 from ..links import enterprise_nr_of
 from ..peppol import get_einvoice
@@ -16,7 +17,7 @@ def _lookup(conn, row: dict, with_directory: bool) -> dict:
     parent = fetch_record(conn, row["parent_nr"]) if row.get("parent_nr") else None
     ent = enterprise_nr_of(row)
     ei = get_einvoice(conn, ent, with_directory=with_directory) if ent else None
-    return build_indicators(row, parent, fetch_evidence(conn, row["nr"]), ei)
+    return build_indicators(row, parent, fetch_evidence(conn, row["nr"]), ei, fetch_place(conn, row["nr"]))
 
 
 @router.get("/api/records/{nr}/indicators")

@@ -1,9 +1,6 @@
 # Tickets -- ai_hackathon (Prefix: TICKET)
 
-> Next ID: TICKET-035
-> Next ID: TICKET-035 (028 and 029 are already reserved on remote branches)
-> Next ID: TICKET-035
-> Next ID: TICKET-033
+> Next ID: TICKET-036
 >
 > **Deadline: 16:30 Europe/Brussels, 16 Sep 2026.** Build freeze ~15:00 → record 15:00–15:45 → upload + check + form by 16:15.
 > Anything not demoable by 15:00 is a slide in the video, not a feature.
@@ -11,6 +8,13 @@
 > Priority: **MVP** = on the critical path for the 3-min screen recording. **Stretch** = only if MVP is recordable.
 
 ## In Progress
+
+### TICKET-035: Google Maps data via Apify (compass/crawler-google-places)
+- **Type:** feat(maps) | **Priority:** Stretch (demo value: real listing, reviews, open/closed status, contacts)
+- **Created:** 2026-09-16
+- **Description:** Pull the Google Maps listing per KBO record through the Apify actor `compass/crawler-google-places`: one query per record ("<naam>, <straat> <nr>, <postcode> <gemeente>", 1 place, language nl, contacts add-on for e-mail/website, 3 newest reviews, no reviewer personal data). Stored in `google_maps_places` (+ `apify_runs`), matched on address (`adres`) or name (`naam`), else `geen`. Drives the Google Maps light (permanent gesloten → rood, tijdelijk gesloten → geel, recensie ≤ 6 maanden → groen, vermeld zonder recente recensie → geel, niet gevonden → geel; a newer officer observation wins). Phone / e-mails / website appear in the contacts list with source "Google Maps (via Apify)". Detail page gets a Google Maps card (status, rating, reviews, openingsuren, link, "Ophalen via Apify"); Straatoverzicht gets "Google Maps ophalen (Apify)". Script `scripts/fetch_google_maps.py` (--street / --nr / --all, batches of 100, --dry-run, offline --from-json), Makefile `google-maps`, token `APIFY_TOKEN` in `backend/.env` (loader `app/env.py`). ≈ $0.0075 per searched record.
+- **Out of scope:** feeding the light into `assess()`; periodic re-scrapes; photos.
+- **Done when:** the offline fixture fills rows without a token and the light/contacts/card show them; with a token `POST /api/records/{nr}/google-maps/refresh` returns a real listing; list endpoints stay network-free.
 
 ### TICKET-013: Pitch video and submission
 - **Type:** docs | **Priority:** MVP — hard deadline

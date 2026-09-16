@@ -106,3 +106,51 @@ CREATE TABLE IF NOT EXISTS indicator_cache (
   payload    TEXT NOT NULL,
   PRIMARY KEY (kind, key)
 );
+
+-- Google Maps listing per record, scraped with the Apify actor compass/crawler-google-places (TICKET-035).
+-- One row per searched record, also when nothing was found (title NULL, match_quality 'geen').
+CREATE TABLE IF NOT EXISTS google_maps_places (
+  record_nr          TEXT PRIMARY KEY REFERENCES records(nr),
+  match_quality      TEXT NOT NULL,       -- 'adres' | 'naam' | 'geen'
+  search_string      TEXT NOT NULL,       -- query sent to the actor (= item.searchString)
+  run_id             TEXT,                -- apify_runs.run_id
+  scraped_at         TEXT NOT NULL,       -- ISO timestamp
+  place_id           TEXT,
+  title              TEXT,
+  category           TEXT,
+  categories         TEXT,                -- JSON array
+  address            TEXT,
+  street             TEXT,
+  city               TEXT,
+  postal_code        TEXT,
+  phone              TEXT,
+  website            TEXT,
+  emails             TEXT,                -- JSON array (contacts add-on)
+  phones             TEXT,                -- JSON array (contacts add-on)
+  social             TEXT,                -- JSON {instagrams, facebooks, linkedins}
+  rating             REAL,                -- totalScore
+  reviews_count      INTEGER,
+  permanently_closed INTEGER NOT NULL DEFAULT 0,
+  temporarily_closed INTEGER NOT NULL DEFAULT 0,
+  latest_review_at   TEXT,                -- YYYY-MM-DD of the newest review
+  reviews            TEXT,                -- JSON [{date, stars, text}] — no reviewer data
+  opening_hours      TEXT,                -- JSON [{day, hours}]
+  url                TEXT,
+  image_url          TEXT,
+  lat                REAL,
+  lng                REAL,
+  raw                TEXT                 -- actor item JSON, reviewer fields stripped
+);
+
+-- One row per Apify run (or per offline file load).
+CREATE TABLE IF NOT EXISTS apify_runs (
+  run_id      TEXT PRIMARY KEY,
+  actor       TEXT NOT NULL,
+  started_at  TEXT NOT NULL,
+  finished_at TEXT,
+  status      TEXT NOT NULL,              -- READY|RUNNING|SUCCEEDED|FAILED|ABORTED|TIMED-OUT|FILE
+  scope       TEXT NOT NULL,              -- 'street:Paalstraat' | 'nr:0448335384' | 'all:batch 3/13' | 'file:name'
+  searched    INTEGER NOT NULL,
+  places      INTEGER NOT NULL,
+  cost_usd    REAL
+);
