@@ -1,0 +1,31 @@
+# Claude Code ephemeral files
+.claude/active-ticket
+.claude/settings.local.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Dependencies (stack TBD -- prune once chosen)
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+venv/
+vendor/
+
+# Build output (stack TBD -- prune once chosen)
+dist/
+build/
+*.o
+*.exe
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environment
+.env
+.env.local
