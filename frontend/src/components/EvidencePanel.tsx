@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { Links } from '../api'
 import { useT } from '../i18n'
 import NbbPanel from './NbbPanel'
+import GooglePlacesPanel from './GooglePlacesPanel'
 
 type TabId = 'kaart' | 'streetview' | 'kbo' | 'nbb' | 'inhoudingsplicht' | 'staatsblad' | 'web'
 
@@ -61,7 +62,8 @@ export default function EvidencePanel({ nr, links }: { nr: string; links: Links 
         {tab.id === 'nbb' ? (
           <div className="h-full overflow-auto"><NbbPanel nr={nr} nbbConsultUrl={links.nbb_consult} /></div>
         ) : embedUrl ? (
-          <iframe key={tab.id} src={embedUrl} title={label} className="h-full w-full border-0" referrerPolicy="no-referrer" loading="lazy" />
+          // Kaart: the Maps Embed API key is referrer-restricted, so Google must see our origin (TICKET-038).
+          <iframe key={tab.id} src={embedUrl} title={label} className="h-full w-full border-0" referrerPolicy={tab.id === 'kaart' ? 'strict-origin-when-cross-origin' : 'no-referrer'} loading="lazy" />
         ) : (
           <div className="p-4 text-sm text-gray-600">
             <p>{t('panel.noEmbed')}</p>
@@ -71,6 +73,9 @@ export default function EvidencePanel({ nr, links }: { nr: string; links: Links 
           </div>
         )}
       </div>
+      {tab.id === 'kaart' && links.google_places_key && (
+        <GooglePlacesPanel apiKey={links.google_places_key} query={links.google_places_query} />
+      )}
       {tab.id !== 'nbb' && (
         <p className="source-footer">
           {tab.id === 'streetview' ? t('panel.streetviewFail') : t('panel.mapFail')}{' '}

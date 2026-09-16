@@ -8,7 +8,7 @@ app/db.py          connect() / get_db() dependency; DB at backend/data.db
 app/schema.sql     tables: records, evidence, proposals (+ nbb_cache)
 app/vkbo.py        VKBO property → row mapping, cleaning rules, upsert SQL
 app/scoring.py     rule-based assessment (status + zekerheid + reasons) — NO AI
-app/links.py       external evidence URLs for a record
+app/links.py       external evidence URLs for a record (+ google_places_key/query when GOOGLE_MAPS_EMBED_KEY is set in backend/.env, see app/env.py)
 app/activity.py    NACE 2-digit → sector (Dutch label); keyword map for officer-observed activity text
 app/nacebel.py     official NACEBEL 2025 list (app/data/nacebel_2025.csv): title(code), describe(code), search(q)
 app/kbo_public.py  KBO Public Search page scraper (NACEBEL 2025 activities, phone/e-mail/website, status) → indicator_cache kind kbo_public
