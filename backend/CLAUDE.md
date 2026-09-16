@@ -12,7 +12,10 @@ app/links.py       external evidence URLs for a record
 app/activity.py    NACE 2-digit → sector (Dutch label); keyword map for officer-observed activity text
 app/contact.py     contacts_for(row, parent, evidence, nbb) → Contact[] with owner/source/date; contact_status()
 app/nbb.py         NBB Balanscentrale public API client (+ cache)
-app/routers/       records.py · streets.py · evidence.py · proposals.py · nbb.py · activities.py
+app/indicator_cache.py  generic cache (table indicator_cache)
+app/indicators.py  the three traffic lights (KBO rule, logged Google Maps observations → light, Peppol payload → light)
+app/peppol.py      Peppol SML DNS check + Directory enrichment
+app/routers/       records.py · streets.py · evidence.py · proposals.py · nbb.py · activities.py · indicators.py
 scripts/import_data.py
 ```
 
@@ -64,6 +67,8 @@ Proposal    { id, record_nr: string|null, kind: 'status_change'|'address_check'|
               display_name, address,                              // record's when record_nr set, else observed_name / observed address
               observed_name, observed_activity, source, source_url, observed_at,   // only set for missing_establishment (record_nr NULL)
               record: { display_name, address } | null }
+Indicator   { level: 'groen'|'geel'|'rood'|'onbekend', label: string, text: string, checked_at: 'YYYY-MM-DD'|null, url: string|null }
+            RecordSummary carries indicators: { kbo: Indicator, google_maps: Indicator, einvoice: Indicator }  (TICKET-033)
 Links       { google_maps_embed, google_maps, street_view_embed, street_view, kbo_public, kbo_public_embed,
               kbo_establishments, nbb_consult, inhoudingsplicht_embed, inhoudingsplicht, staatsblad, web_search_embed, web_search }
 ```
@@ -83,6 +88,9 @@ GET  /records/{nr}                                     → { record: RecordSumma
                                                            links: Links, contacts: Contact[], contact_status: ContactStatus }
                                                          side effect: (re)generate open proposals from the assessment, idempotently
 POST /records/{nr}/fetch-parent                        → RecordSummary  (VKBO API by Ondernemingsnr; 404 if not found)
+GET  /records/{nr}/indicators                          → { kbo, google_maps, einvoice }   live Peppol lookup (cached); KBO and Google Maps lights recomputed
+POST /streets/{street}/indicators/refresh              → { street, records, kbo: {groen,geel,rood,onbekend}, google_maps: {...}, einvoice: {...}, seconds }
+                                                         sequential lookups for every record in the street (demo pre-fill); 404 "Straat niet gevonden"
 GET  /records/{nr}/nbb                                 → { available: bool, enterprise_nr, url, company: {name, legal_form, legal_situation, legal_situation_date, address, email, website}|null,
                                                            deposits: [{ id, year, period_start, period_end, model, deposit_date, pdf_url,
                                                                         figures: { omzet, brutomarge, bedrijfsresultaat, winst_verlies, eigen_vermogen, balanstotaal, vte } }],
@@ -149,3 +157,12 @@ Send `User-Agent: Mozilla/5.0` and `Accept: application/json`. Rubric → figure
 ## VKBO client (`vkbo.py`)
 `https://geo.api.vlaanderen.be/VKBO/ogc/features/v1/collections/Vkbo/items?f=application/json&limit=1000&filter=<cql2>&filter-lang=cql2-text`
 Filters: `Ondernemingsnr='{nr}'` (fetch parent) · `KBO_Gemeente='{gemeente}'` (import another municipality; page with `&startIndex=`). Insert with `source='vkbo-api'`.
+
+## Activity indicators (`indicators.py`) — three lights per record, additive to the assessment
+List endpoints (`/records`, `/streets/{street}`) never hit the network: they read `indicator_cache` (any age) and show `onbekend` when nothing is cached. Live lookups only via `/records/{nr}/indicators` and the street refresh. Indicators never feed `assess()`.
+
+**KBO** (`kbo_indicator(row, parent)`, pure, reuses `scoring.register_negative_reasons`), in order: own rule 1–3 hit → rood · parent (in DB) hits 1–3 → rood · VME → geel · establishment whose parent is not in DB → geel · KBO≠AR or AR missing → geel · else groen. `url` = KBO public page, `checked_at` = register snapshot date.
+
+**Google Maps** (`google_maps_indicator(evidence)`) — **no Google API** (the Places API needs a billed Cloud project; removed in TICKET-029). Uses the latest officer-logged evidence row with `source = 'google_maps'`: conclusion `niet_actief` → rood · `actief` observed within 183 days → groen · `actief` older → geel · `onduidelijk` → geel · nothing logged → onbekend "Nog geen Google Maps-waarneming gelogd". `checked_at` = observed_at, `url` = the evidence URL.
+
+**E-facturatie** (`peppol.py`). Participant id = `0208:<ondernemingsnummer>` only (enterprise nr; `links.enterprise_nr_of`). SML DNS: host = `base32(sha256(pid.lower())).rstrip('=').lower() + ".iso6523-actorid-upis.edelivery.tech.ec.europa.eu"`; `socket.getaddrinfo` → exists (`EAI_NODATA`: NAPTR only) = registered, `EAI_NONAME` = not registered, else onbekend (not cached). Sanity-resolves `edelivery.tech.ec.europa.eu` first. groen = registered (detail page adds Peppol Directory name + regDate; the Directory is rate-limited, so only `with_directory=True` there) · rood = not registered · geel = not registered but legal form not obliged (vereniging, stichting, maatschap, openbare instelling). Cache kind `einvoice`, key = enterprise nr, TTL 7 days. `url` = Peppol Directory public search.

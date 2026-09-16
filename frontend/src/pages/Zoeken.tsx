@@ -6,6 +6,7 @@ import { useLang, useT } from '../i18n'
 import StatusBadge from '../components/StatusBadge'
 import ZekerheidBadge from '../components/ZekerheidBadge'
 import ActivitySelect from '../components/ActivitySelect'
+import IndicatorLights from '../components/IndicatorLights'
 
 export default function Zoeken() {
   const t = useT()
@@ -118,6 +119,7 @@ export default function Zoeken() {
                 <th className="px-3 py-2">{t('col.status')}</th>
                 <th className="px-3 py-2">{t('col.certainty')}</th>
                 <th className="px-3 py-2">{t('search.col.contact')}</th>
+                <th className="px-3 py-2">{t('col.signals')}</th>
               </tr>
             </thead>
             <tbody className="divide-y">
@@ -139,6 +141,7 @@ export default function Zoeken() {
                   <td className="px-3 py-2"><StatusBadge status={r.assessment.status} label={r.assessment.status_label} /></td>
                   <td className="px-3 py-2"><ZekerheidBadge certainty={r.assessment.certainty} label={r.assessment.certainty_label} /></td>
                   <td className="px-3 py-2 text-xs text-gray-600" title={t('search.contactTitle')}>{contactStatusLabel(lang, r.contact_status)}</td>
+                  <td className="px-3 py-2"><IndicatorLights indicators={r.indicators} /></td>
                 </tr>
               ))}
             </tbody>

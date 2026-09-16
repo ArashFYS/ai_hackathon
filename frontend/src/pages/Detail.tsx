@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import type { RecordDetail, RecordFull } from '../api'
-import { activitySectorLabel, activitySourceLabel, conclusionLabel, dash, getRecord, onbekend, proposalTextLabel, recordTypeLabel, registerLabel, sourceLabel } from '../api'
+import type { Indicators, RecordDetail, RecordFull } from '../api'
+import { activitySectorLabel, activitySourceLabel, conclusionLabel, dash, getIndicators, getRecord, onbekend, proposalTextLabel, recordTypeLabel, registerLabel, sourceLabel } from '../api'
 import type { Lang, TKey } from '../i18n'
 import { useLang, useT } from '../i18n'
 import StatusBadge from '../components/StatusBadge'
@@ -12,6 +12,7 @@ import EvidenceForm from '../components/EvidenceForm'
 import ProposalList from '../components/ProposalList'
 import EvidencePanel from '../components/EvidencePanel'
 import ContactBlock from '../components/ContactBlock'
+import IndicatorLights from '../components/IndicatorLights'
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -101,6 +102,27 @@ export default function Detail() {
   const [error, setError] = useState<'notFound' | 'load' | null>(null)
   const [tick, setTick] = useState(0)
   const reload = useCallback(() => setTick((x) => x + 1), [])
+  const [live, setLive] = useState<Indicators | null>(null)
+  const [checking, setChecking] = useState(false)
+
+  useEffect(() => {
+    // Live Peppol lookup (cached server-side); failures keep the cached dots.
+    if (!nr) return
+    let cancelled = false
+    setLive(null)
+    setChecking(true)
+    getIndicators(nr)
+      .then((ind) => {
+        if (!cancelled) setLive(ind)
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (!cancelled) setChecking(false)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [nr])
 
   useEffect(() => {
     if (!nr) return
@@ -153,6 +175,8 @@ export default function Detail() {
             {lang === 'en' && <span className="text-xs italic text-gray-400">{t('detail.sourceTextNote')}</span>}
           </div>
           <p className="mb-3 text-sm"><span className="text-gray-500">{t('detail.proposal')}</span> <span className="font-medium">{proposalTextLabel(lang, a.proposal_text)}</span></p>
+          <h3 className="mb-1 text-sm font-medium text-gray-800">{t('indicators.title')}{checking && <span className="ml-2 text-xs font-normal text-gray-500">{t('indicators.checking')}</span>}</h3>
+          <div className="mb-3"><IndicatorLights indicators={live ?? r.indicators} detailed /></div>
           <h3 className="mb-1 text-sm font-medium text-gray-800">{t('detail.why')}</h3>
           <ReasonsList reasons={a.reasons} />
         </Section>

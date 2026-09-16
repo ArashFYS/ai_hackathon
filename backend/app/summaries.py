@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 
 from .activity import activity_of
 from .contact import contact_status, contacts_for
+from .indicators import indicators_for, load_indicator_cache
 from .scoring import assess
 
 SUMMARY_COLS = [
@@ -50,8 +51,10 @@ def _chunked_in(conn: sqlite3.Connection, sql: str, keys: list[str]) -> list[sql
     return out
 
 
-def load_context(conn: sqlite3.Connection, rows: list[dict]) -> tuple[dict, dict]:
-    """Batch-load parents and evidence for many rows. Returns (parents_by_nr, evidence_by_nr)."""
+def load_context(conn: sqlite3.Connection, rows: list[dict]) -> tuple[dict, dict, dict]:
+    """Batch-load parents, evidence and cached indicator payloads for many rows.
+
+    Returns (parents_by_nr, evidence_by_nr, indicator_cache). No network."""
     parent_nrs = sorted({r["parent_nr"] for r in rows if r.get("parent_nr")})
     parents = {}
     if parent_nrs:
@@ -64,7 +67,8 @@ def load_context(conn: sqlite3.Connection, rows: list[dict]) -> tuple[dict, dict
             conn, "SELECT * FROM evidence WHERE record_nr IN ({ph}) ORDER BY observed_at DESC, id DESC", nrs
         ):
             evidence.setdefault(e["record_nr"], []).append(dict(e))
-    return parents, evidence
+    cached = load_indicator_cache(conn, rows + list(parents.values()))
+    return parents, evidence, cached
 
 
 def cached_nbb(conn: sqlite3.Connection, row: dict) -> dict | None:
@@ -77,14 +81,17 @@ def cached_nbb(conn: sqlite3.Connection, row: dict) -> dict | None:
 
 
 def summarize(row: dict, parent: dict | None, evidence: list[dict], full: bool = False,
-              nbb: dict | None = None) -> dict:
-    """RecordSummary; with full=True every column except `raw` is included."""
+              nbb: dict | None = None, cached: dict | None = None) -> dict:
+    """RecordSummary; with full=True every column except `raw` is included.
+
+    `cached` = load_indicator_cache() result; without it the Peppol light is 'onbekend'."""
     base = {k: v for k, v in row.items() if k != "raw"} if full else {k: row.get(k) for k in SUMMARY_COLS}
     base["display_name"] = display_name(row)
     base["address"] = address_of(row)
     base["assessment"] = assess(row, parent, evidence, nbb)
     base["activity"] = activity_of(row, evidence)
     base["contact_status"] = contact_status(contacts_for(row, parent, evidence))  # NBB deliberately not counted
+    base["indicators"] = indicators_for(row, parent, evidence, cached)
     if row.get("record_type") == "establishment":
         base["parent_in_dataset"] = parent is not None
         # seat is "elsewhere" when the parent is known and sits in another municipality
@@ -96,8 +103,8 @@ def summarize(row: dict, parent: dict | None, evidence: list[dict], full: bool =
 
 
 def summarize_many(conn: sqlite3.Connection, rows: list[dict]) -> list[dict]:
-    parents, evidence = load_context(conn, rows)
-    return [summarize(r, parents.get(r.get("parent_nr")), evidence.get(r["nr"], [])) for r in rows]
+    parents, evidence, cached = load_context(conn, rows)
+    return [summarize(r, parents.get(r.get("parent_nr")), evidence.get(r["nr"], []), cached=cached) for r in rows]
 
 
 def ensure_auto_proposals(conn: sqlite3.Connection, row: dict, assessment: dict) -> None:

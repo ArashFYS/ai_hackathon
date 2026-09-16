@@ -97,3 +97,12 @@ CREATE TABLE IF NOT EXISTS nbb_cache (
   fetched_at TEXT NOT NULL,
   payload    TEXT NOT NULL
 );
+
+-- Cached external indicator lookups. kind: 'einvoice' (Peppol, key = enterprise nr).
+CREATE TABLE IF NOT EXISTS indicator_cache (
+  kind       TEXT NOT NULL,
+  key        TEXT NOT NULL,
+  fetched_at TEXT NOT NULL,
+  payload    TEXT NOT NULL,
+  PRIMARY KEY (kind, key)
+);

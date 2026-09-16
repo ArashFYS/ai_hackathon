@@ -1,6 +1,6 @@
 # Tickets -- ai_hackathon (Prefix: TICKET)
 
-> Next ID: TICKET-031
+> Next ID: TICKET-035
 >
 > **Deadline: 16:30 Europe/Brussels, 16 Sep 2026.** Build freeze ~15:00 → record 15:00–15:45 → upload + check + form by 16:15.
 > Anything not demoable by 15:00 is a slide in the video, not a feature.
@@ -42,6 +42,20 @@
 - **Description:** Browser upload of a VKBO export instead of running the import script; reuses TICKET-004 parser.
 
 ## Done
+
+### TICKET-033: Activiteitsindicatoren — KBO / Google Maps / e-facturatie (Peppol) traffic lights (merge of Wolfgang's TICKET-028 branch)
+- **Type:** feat(score) | **Priority:** Stretch (demo value: three sources at a glance)
+- **Created:** 2026-09-16 | **Completed:** 2026-09-16
+- **Description:** Every record carries `indicators: { kbo, google_maps, einvoice }`, each `{ level: groen|geel|rood|onbekend, label, text, checked_at, url }`. KBO light is a pure rule on the register (rood on dissolution/faillissement/doorhaling, groen only when every register signal is clean incl. AR address match and a clean parent, geel otherwise). Google Maps light = latest officer-logged evidence with source `google_maps` (see TICKET-034; no Google API). E-facturatie light = Peppol SML DNS check on `0208:<ondernemingsnummer>` (groen registered, rood not registered, geel when the legal form is not obliged), enriched with the Peppol Directory on the detail page. Results cached in `indicator_cache`; list endpoints are cache-only. New endpoints `GET /api/records/{nr}/indicators` and `POST /api/streets/{street}/indicators/refresh`. UI: "Signalen" column (three dots) in Zoeken and Straatoverzicht, detailed block in Beoordeling, "Controleer straat" button. Merged onto the themed i18n main: `IndicatorLights` captions/tooltips go through `t('indicators.*')` (NL + EN), the Straat/Zoeken tables keep the Activiteit/Contact columns and the missing-establishment rows (colSpan 9), `summarize(..., cached=)` sits next to `activity` and `contact_status`.
+- **Out of scope:** feeding these signals into `assess()` reasons/proposals; map view; whole-dataset refresh.
+- **Done when:** Paalstraat rows show three dots; LILLYWORLD (0448335384) is rood/rood; a registered BV is groen for e-fact.; without any key Maps is onbekend and nothing 500s.
+- **Branch:** `feat/TICKET-033-activity-indicators` (was `feat/TICKET-028-activity-indicators`, `45952d8`) | **Commits:** (merge commit on this branch)
+
+### TICKET-034: Remove the Google Places API; Google Maps light from logged observations
+- **Type:** refactor(score)
+- **Created:** 2026-09-16 | **Completed:** 2026-09-16
+- **Description:** The Places API needs a billed Google Cloud project, so it is removed (google_places.py, env loader, .env.example, quota counter). The Google Maps light now derives from officer-logged evidence with source `google_maps`: groen when the latest such observation concludes actief within the last 6 months, rood when it concludes niet actief, geel when onduidelijk or older than 6 months, onbekend when nothing is logged. Peppol light unchanged. Was Wolfgang's TICKET-029 on the same branch (`d578eed`); re-numbered because 028/029 were already taken on main.
+- **Branch:** `feat/TICKET-033-activity-indicators` | **Commits:** `d578eed` (merged via TICKET-033)
 
 ### TICKET-030: Province of Antwerp visual theme merged onto main
 - **Type:** feat(ui)
@@ -134,6 +148,20 @@
 - **Done when:** on Paalstraat, adding "Kapsalon Voorbeeld" at nr 20 with bron Street View shows the third-example row; bevestigen moves it to Goedgekeurd and into the CSV export with kind `missing_establishment`.
 - **Out of scope:** matching the observed name against records on nearby addresses (nice-to-have suggestion: "Lijkt op … op nr 22").
 - **Commits:** `45b175a, e231b16`
+
+### TICKET-029: Remove the Google Places API; Google Maps light from logged observations
+- **Type:** refactor(score)
+- **Created:** 2026-09-16 | **Completed:** 2026-09-16
+- **Description:** The Places API needs a billed Google Cloud project, so it is removed (google_places.py, env loader, .env.example, quota counter). The Google Maps light now derives from officer-logged evidence with source `google_maps`: groen when the latest such observation concludes actief within the last 6 months, rood when it concludes niet actief, geel when onduidelijk or older than 6 months, onbekend when nothing is logged. Peppol light unchanged. Follow-up on the unmerged TICKET-028 branch.
+- **Branch:** `feat/TICKET-028-activity-indicators` | **Commits:** `d578eed`
+
+### TICKET-028: Activiteitsindicatoren — KBO / Google Maps / e-facturatie (Peppol) traffic lights
+- **Type:** feat(score) | **Priority:** Stretch (demo value: three sources at a glance)
+- **Created:** 2026-09-16 | **Completed:** 2026-09-16
+- **Description:** Every record carries `indicators: { kbo, google_maps, einvoice }`, each `{ level: groen|geel|rood|onbekend, label, text, checked_at, url }`. KBO light is a pure rule on the register (rood on dissolution/faillissement/doorhaling, groen only when every register signal is clean incl. AR address match and a clean parent, geel otherwise). Google Maps light uses the Places API (New) Text Search with the free-quota Pro field mask only (no reviews): rood = CLOSED_PERMANENTLY, groen = OPERATIONAL listing at the KBO address, geel = no listing / temporarily closed; monthly guard at 4,500 calls; key `GOOGLE_MAPS_API_KEY` in `backend/.env`. E-facturatie light = Peppol SML DNS check on `0208:<ondernemingsnummer>` (groen registered, rood not registered, geel when the legal form is not obliged), enriched with the Peppol Directory on the detail page. Results cached in `indicator_cache`; list endpoints are cache-only. New endpoints `GET /api/records/{nr}/indicators` and `POST /api/streets/{street}/indicators/refresh`. UI: "Signalen" column (three dots) in Zoeken and Straatoverzicht, detailed block in Beoordeling, "Controleer straat" button.
+- **Out of scope:** feeding these signals into `assess()` reasons/proposals; map view; whole-dataset refresh.
+- **Done when:** Paalstraat rows show three dots; LILLYWORLD (0448335384) is rood/rood; a registered BV is groen for e-fact.; with a key, Kapsalon Schoten is groen for Maps; without a key Maps is onbekend and nothing 500s.
+- **Branch:** `feat/TICKET-028-activity-indicators` | **Commits:** `45952d8`
 
 ### TICKET-022: Branch-per-ticket policy, no pushes to main
 - **Type:** chore
