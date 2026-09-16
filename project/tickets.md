@@ -1,6 +1,6 @@
 # Tickets -- ai_hackathon (Prefix: TICKET)
 
-> Next ID: TICKET-021
+> Next ID: TICKET-022
 >
 > **Deadline: 16:30 Europe/Brussels, 16 Sep 2026.** Build freeze ~15:00 → record 15:00–15:45 → upload + check + form by 16:15.
 > Anything not demoable by 15:00 is a slide in the video, not a feature.
@@ -9,6 +9,10 @@
 
 ## In Progress
 
+### TICKET-021: Provenance on every reason (source, field, date, verify link) + NBB signal in the assessment
+- **Type:** feat(score)
+- **Created:** 2026-09-16
+- **Description:** A reason is not just a sentence: every entry in `assessment.reasons` carries `source` (KBO via VKBO · Vlaams Adressenregister · VKBO geometrie · NBB Balanscentrale · officer observation), `field` (the register field, e.g. `Rechtstoestand`, `Datum_adresdoorhaling`), `observed_at` (snapshot date of the register row, or the observation date) and `url` (KBO Public Search page of the enterprise or establishment, NBB consult page, officer-supplied URL). Starter rows are stamped with the real snapshot date (2026-09-07 from source-metadata.json) instead of import time. The detail assessment also reads the cached NBB payload: last filing > 24 months → negatief; NBB legal situation ≠ Normale toestand → sterk negatief (second, independent source). UI shows "Bron · veld · datum · Controleer bron ↗" under each reason. Also fixes an intermittent 500 (`check_same_thread`).
 ### TICKET-013: Pitch video and submission
 - **Type:** docs | **Priority:** MVP — hard deadline
 - **Created:** 2026-09-16

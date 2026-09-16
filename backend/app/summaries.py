@@ -1,4 +1,5 @@
 """Turn `records` rows into RecordSummary dicts (with assessment) and manage auto-proposals."""
+import json
 import sqlite3
 from datetime import datetime, timezone
 
@@ -64,12 +65,22 @@ def load_context(conn: sqlite3.Connection, rows: list[dict]) -> tuple[dict, dict
     return parents, evidence
 
 
-def summarize(row: dict, parent: dict | None, evidence: list[dict], full: bool = False) -> dict:
+def cached_nbb(conn: sqlite3.Connection, row: dict) -> dict | None:
+    """Balanscentrale payload from cache only (no network) for the record's enterprise."""
+    nr = row.get("parent_nr") if row.get("record_type") == "establishment" else row.get("nr")
+    if not nr:
+        return None
+    hit = conn.execute("SELECT payload FROM nbb_cache WHERE nr = ?", (nr,)).fetchone()
+    return json.loads(hit["payload"], strict=False) if hit else None
+
+
+def summarize(row: dict, parent: dict | None, evidence: list[dict], full: bool = False,
+              nbb: dict | None = None) -> dict:
     """RecordSummary; with full=True every column except `raw` is included."""
     base = {k: v for k, v in row.items() if k != "raw"} if full else {k: row.get(k) for k in SUMMARY_COLS}
     base["display_name"] = display_name(row)
     base["address"] = address_of(row)
-    base["assessment"] = assess(row, parent, evidence)
+    base["assessment"] = assess(row, parent, evidence, nbb)
     if row.get("record_type") == "establishment":
         base["parent_in_dataset"] = parent is not None
         # seat is "elsewhere" when the parent is known and sits in another municipality
