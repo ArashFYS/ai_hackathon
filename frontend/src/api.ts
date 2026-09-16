@@ -32,6 +32,21 @@ export interface Assessment {
   last_observed: string | null
 }
 
+/** Sector of a record: from KBO NACE (RSZ → BTW) or the latest officer-observed activity; else onbekend. */
+export interface Activity {
+  sector: string
+  label: string
+  source: 'KBO (RSZ)' | 'KBO (BTW)' | 'waarneming' | null
+  nace: string | null
+  description: string | null
+}
+
+export interface ActivityCount {
+  sector: string
+  label: string
+  count: number
+}
+
 export interface RecordSummary {
   nr: string
   record_type: RecordType
@@ -53,6 +68,7 @@ export interface RecordSummary {
   email: string | null
   start_date: string | null
   assessment: Assessment
+  activity: Activity
   parent_in_dataset?: boolean
   seat_elsewhere?: boolean
   parent_display_name?: string | null
@@ -264,6 +280,7 @@ export interface RecordsQuery {
   street?: string
   type?: RecordType | ''
   status?: Status | ''
+  activity?: string
   limit?: number
 }
 
@@ -296,8 +313,12 @@ export function getStreets(): Promise<StreetCount[]> {
   return api<StreetCount[]>('/streets')
 }
 
-export function getStreet(street: string): Promise<StreetOverview> {
-  return api<StreetOverview>(`/streets/${encodeURIComponent(street)}`)
+export function getStreet(street: string, activity?: string): Promise<StreetOverview> {
+  return api<StreetOverview>(`/streets/${encodeURIComponent(street)}${qs({ activity })}`)
+}
+
+export function getActivities(): Promise<ActivityCount[]> {
+  return api<ActivityCount[]>('/activities')
 }
 
 export function getProposals(status?: ProposalStatus): Promise<Proposal[]> {

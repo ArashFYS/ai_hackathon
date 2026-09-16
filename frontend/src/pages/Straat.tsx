@@ -5,6 +5,7 @@ import { STATUS_LABELS, dash, getStreet, getStreets, valueLabel } from '../api'
 import StatusBadge from '../components/StatusBadge'
 import ZekerheidBadge from '../components/ZekerheidBadge'
 import { DecideButtons } from '../components/ProposalList'
+import ActivitySelect from '../components/ActivitySelect'
 
 const DEFAULT_STREET = 'Paalstraat'
 
@@ -23,6 +24,7 @@ export default function Straat() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [status, setStatus] = useState<Status | ''>('')
+  const [activity, setActivity] = useState('')
   const [tick, setTick] = useState(0)
   const reload = useCallback(() => setTick((t) => t + 1), [])
 
@@ -34,7 +36,7 @@ export default function Straat() {
     let cancelled = false
     setLoading(true)
     setError(null)
-    getStreet(street)
+    getStreet(street, activity || undefined)
       .then((d) => {
         if (!cancelled) setData(d)
       })
@@ -47,7 +49,7 @@ export default function Straat() {
     return () => {
       cancelled = true
     }
-  }, [street, tick])
+  }, [street, activity, tick])
 
   const addresses = (data?.addresses ?? [])
     .map((a) => ({ ...a, records: status ? a.records.filter((r) => r.assessment.status === status) : a.records }))
@@ -81,6 +83,7 @@ export default function Straat() {
             ))}
           </select>
         </label>
+        <ActivitySelect value={activity} onChange={setActivity} />
         {data && <span className="pb-2 text-xs text-gray-500">{total} records op {data.addresses.length} adressen</span>}
       </div>
 

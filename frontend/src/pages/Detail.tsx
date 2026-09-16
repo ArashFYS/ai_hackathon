@@ -66,13 +66,22 @@ function RegisterFacts({ r }: { r: RecordFull }) {
         </div>
       </div>
       {differs && <p className="text-xs text-amber-800">Adres wijkt af van het Adressenregister: nazien.</p>}
-      {(r.nace_rsz || r.nace_vat) && (
-        <dl className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-          {r.nace_rsz && <Field label="NACE (RSZ)" value={`${r.nace_rsz} – ${r.nace_rsz_desc ?? ''}`} />}
-          {r.nace_vat && <Field label="NACE (BTW)" value={`${r.nace_vat} – ${r.nace_vat_desc ?? ''}`} />}
-        </dl>
-      )}
+      <ActivityFacts r={r} />
     </div>
+  )
+}
+
+function ActivityFacts({ r }: { r: RecordFull }) {
+  const a = r.activity
+  return (
+    <dl className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+      <Field label="Activiteit" value={a?.sector === 'onbekend' ? null : a?.label} />
+      <Field
+        label={a?.source === 'waarneming' ? 'Waargenomen activiteit' : 'NACE-code'}
+        value={a?.nace ? (a.source === 'waarneming' ? a.description : `${a.nace}${a.description ? ` – ${a.description}` : ''}`) : null}
+      />
+      <Field label="Bron activiteit" value={a?.source} />
+    </dl>
   )
 }
 

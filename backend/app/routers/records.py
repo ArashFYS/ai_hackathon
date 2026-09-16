@@ -25,6 +25,7 @@ def list_records(
     street: str | None = None,
     type: str | None = None,
     status: str | None = None,
+    activity: str | None = None,
     limit: int = Query(50, ge=1, le=2000),
     conn: sqlite3.Connection = Depends(get_db),
 ):
@@ -49,13 +50,17 @@ def list_records(
     if where:
         sql += " WHERE " + " AND ".join(where)
     sql += " ORDER BY kbo_street, kbo_housenr, name"
-    if not status:  # status is an assessment field → filter in Python, so only limit in SQL when unused
+    if not status and not activity:  # computed fields → filter in Python, so only limit in SQL when unused
         sql += " LIMIT ?"
         params.append(limit)
     rows = [dict(r) for r in conn.execute(sql, params).fetchall()]
     items = summarize_many(conn, rows)
     if status:
-        items = [i for i in items if i["assessment"]["status"] == status][:limit]
+        items = [i for i in items if i["assessment"]["status"] == status]
+    if activity:
+        items = [i for i in items if i["activity"]["sector"] == activity]
+    if status or activity:
+        items = items[:limit]
     return {"items": items}
 
 
