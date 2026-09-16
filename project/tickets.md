@@ -9,10 +9,6 @@
 
 ## In Progress
 
-## Backlog
-
-### MVP — critical path (in build order)
-
 ### TICKET-004: SQLite schema and starter-data import
 - **Type:** feat(data) | **Priority:** MVP
 - **Created:** 2026-09-16
@@ -20,6 +16,10 @@
 - **Rules:** registry numbers stay text (leading zeros); a single space `' '` → NULL; `1900-01-01` / `9999-12-31` → NULL; use `strict=False` JSON parsing (API responses contain control chars).
 - **Assumption:** import is a script, not an upload UI (upload UI = TICKET-018).
 - **Done when:** `records` has 1000 rows, 457 enterprises / 543 establishments; a query for Paalstraat returns 35.
+
+## Backlog
+
+### MVP — critical path (in build order)
 
 ### TICKET-005: Company lookup (search)
 - **Type:** feat(search) | **Priority:** MVP
