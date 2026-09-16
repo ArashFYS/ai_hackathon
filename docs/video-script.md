@@ -21,12 +21,16 @@ Recording setup: 1440×900 browser window, Chrome, zoom 110%, backend on :8010 +
    > "Every conclusion is a list of reasons, not a score. No AI — rules the officer can read."
 3. Show **Onderneming ↔ vestiging**: an establishment whose parent is elsewhere → "zetel elders / moederonderneming niet in dataset" → click **Haal op via VKBO** → parent appears.
    > "Establishment and legal entity stay linked; the seat can be in another municipality."
-4. Right panel — the **minibrowser**: KBO tab (live register page), Kaart & recensies (Google Maps), **Jaarrekeningen** (NBB filings with omzet / winst / VTE, from the National Bank's public data, no key).
-   > "She checks the evidence herself; we just bring it to one screen."
+4. Right panel — the **minibrowser**: KBO tab (live register page), Kaart & recensies (Google Maps), Street View (real imagery), **Jaarrekeningen** (NBB filings with omzet / winst / VTE, from the National Bank's public data, no key), Inhoudingsplicht (fiscal/social debts), Staatsblad.
+   > "She checks the evidence herself; we just bring it to one screen. And every reason says where it comes from: source, register field, date, and a link to verify."
+   Point at one reason's provenance line: *Bron: KBO (via VKBO) · veld Rechtstoestand · 2026-09-07 · Controleer bron ↗* and at the NBB reason confirming the bankruptcy from a second source.
 5. **Bewijs van activiteit** form: bron = Google Maps, waarneming "openingsuren en recente recensies", conclusie = actief, datum today → save. Status flips to **Actief · Hoog**, reason "Bewijs: …" appears.
 6. **Voorstellen** → click **Bevestigen** on one, **Afwijzen** on another.
-7. **Goedgekeurde wijzigingen** → "Exporteer CSV".
+7. Back on **Straatoverzicht**: click **"Vestiging ontbreekt op dit adres"** at Paalstraat 20 → "Kapsalon Voorbeeld", bron Street View → the third jury row appears (*niet in register op dit adres · Middel · Nazicht*).
+   > "And the shop she sees on the street that the register doesn't know? She adds it — same approval flow."
+8. **Goedgekeurde wijzigingen** → "Exporteer CSV".
    > "Nothing leaves the tool until she confirms it."
+9. (5 s) **Kaart** — 1,000 points coloured by status; "Buiten Schoten: 60" → one is in France.
 
 ## 1:30–2:20 — How it was built (architecture slide + quick code/terminal glimpse)
 
@@ -36,8 +40,8 @@ Recording setup: 1440×900 browser window, Chrome, zoom 110%, backend on :8010 +
 - **Frontend:** React + TypeScript, Dutch UI using the officer's vocabulary.
 
 **Echt vs. gemockt (say this explicitly):**
-- Real: register data, rule engine, evidence log, approval + export, KBO embed, NBB figures, VKBO fetch-parent.
-- Not done / limited: only 1,000 of Schoten's records loaded (API pagination ready); Google reviews are opened, not scraped; "vestiging ontbreekt op dit adres" (business not in register) is ___ [done / a known gap]; no user accounts; SQLite single-user.
+- Real: register data, rule engine with provenance on every reason, evidence log (incl. observed phone/website), approval + export, missing-establishment flow, KBO / Google Maps / Street View / Inhoudingsplicht embeds, NBB figures from the live public API, VKBO live fetch of parent enterprises, contact via zetel, activity sectors from NACE + observations, map.
+- Not done / limited: only 1,000 of Schoten's records loaded (API pagination ready); activity known for ~8 % of rows (KBO Open Data import would fix it); Google reviews are opened, not scraped; no user accounts; SQLite single-user; English UI is a toggle, Dutch is the working language.
 
 ## 2:20–3:00 — Value, limits, reuse
 
