@@ -1,6 +1,6 @@
 # Tickets -- ai_hackathon (Prefix: TICKET)
 
-> Next ID: TICKET-021
+> Next ID: TICKET-024
 >
 > **Deadline: 16:30 Europe/Brussels, 16 Sep 2026.** Build freeze ~15:00 → record 15:00–15:45 → upload + check + form by 16:15.
 > Anything not demoable by 15:00 is a slide in the video, not a feature.
@@ -9,6 +9,10 @@
 
 ## In Progress
 
+### TICKET-023: "Inhoudingsplicht" tab — fiscal and social debts check
+- **Type:** feat(evidence)
+- **Created:** 2026-09-16
+- **Description:** Add https://www.checkinhoudingsplicht.be (RSZ · FOD Financiën · RSVZ) as a minibrowser tab. Verified: no frame restrictions, `?identificationnumber=<nr>` prefills the enterprise number; the lookup is captcha-protected so it stays a click for the officer (no automated calls). Evidence source option "Check Inhoudingsplicht".
 ### TICKET-013: Pitch video and submission
 - **Type:** docs | **Priority:** MVP — hard deadline
 - **Created:** 2026-09-16
