@@ -9,14 +9,6 @@
 
 ## In Progress
 
-### TICKET-004: SQLite schema and starter-data import
-- **Type:** feat(data) | **Priority:** MVP
-- **Created:** 2026-09-16
-- **Description:** Single `records` table mirroring the GeoJSON properties (superset of the CSV) with `record_type` = `enterprise` | `establishment`, `parent_nr` (from `Ondernemingsnr_maatsch_zetel`), `lat`, `lng`. Plus `evidence` and `proposals` tables (see TICKET-009/010). Import script reads `data/raw/*.geojson` (it has phone/email/doorhaling fields the CSV lacks).
-- **Rules:** registry numbers stay text (leading zeros); a single space `' '` → NULL; `1900-01-01` / `9999-12-31` → NULL; use `strict=False` JSON parsing (API responses contain control chars).
-- **Assumption:** import is a script, not an upload UI (upload UI = TICKET-018).
-- **Done when:** `records` has 1000 rows, 457 enterprises / 543 establishments; a query for Paalstraat returns 35.
-
 ## Backlog
 
 ### MVP — critical path (in build order)
@@ -49,18 +41,17 @@
   Officer-logged evidence (TICKET-009) moves status/Zekerheid up or down; latest observation date shown as "Laatste waarneming".
 - **Note:** this is what the user calls the "trust score". Present it as status + Zekerheid + reasons, not a bare number — the brief says show uncertainty rather than invent it.
 
-### TICKET-008: External evidence panel (link-outs)
+### TICKET-008: External evidence panel — minibrowser (iframes) + NBB data panel
 - **Type:** feat(evidence) | **Priority:** MVP
 - **Created:** 2026-09-16
-- **Description:** Side panel on the detail page with dated, clickable referrals the officer checks themselves. Verified working without API keys:
-  - Google Maps search by name + address: `https://www.google.com/maps/search/?api=1&query=<naam>+<adres>` (reviews, opening hours, photos live there)
-  - Google Street View at registered coordinates: `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=<lat>,<lng>`
-  - KBO Public Search (enterprise): `https://kbopub.economie.fgov.be/kbopub/toonondernemingps.html?ondernemingsnummer=<nr>&lang=nl` ✔ 200
-  - KBO establishment list: `https://kbopub.economie.fgov.be/kbopub/vestiginglijst.html?ondernemingsnummer=<nr>&lang=nl` ✔ 200
-  - NBB annual accounts (jaarrekeningen): `JAARREK_URL_NBB` from the data (`https://consult.cbso.nbb.be/consult-enterprise/<nr>`) ✔ 200 — "earnings" lookup
-  - Web search for trade name + municipality (own website)
-  Each link opens in a new tab / side window. Panel shows "Bron · Wat te controleren".
-- **Assumption:** link-outs, not embeds. Embeds need a Google Maps API key → TICKET-015.
+- **Description:** Side panel on the detail page with tabs; each tab is an embedded view where the site allows framing, otherwise a native panel or a link-out. Verified 2026-09-16 with curl (no API keys, no billing):
+  - **Google Maps (kaart, recensies, openingsuren):** iframe `https://maps.google.com/maps?q=<naam>+<adres>&output=embed` — redirects to `google.com/maps/embed?pb=…` which sends no X-Frame-Options ✔ embeddable
+  - **Street View:** `output=svembed` redirects to an empty pb; try the `maps/embed?pb=!4v0!6m8!1m7!1s!2m2!1d<lat>!2d<lng>!3f0!4f0!5f0.75` form in the browser; fallback = link-out `google.com/maps/@?api=1&map_action=pano&viewpoint=<lat>,<lng>`
+  - **KBO Public Search:** iframe `https://kbopub.economie.fgov.be/kbopub/toonondernemingps.html?ondernemingsnummer=<nr>&lang=nl` — no frame restriction ✔ embeddable; establishment list: `vestiginglijst.html?ondernemingsnummer=<nr>&lang=nl`
+  - **NBB Balanscentrale (jaarrekeningen / "earnings"):** site sends `X-Frame-Options: SAMEORIGIN` → **not embeddable**, but its public JSON API works without a key (see TICKET-016, promoted to MVP). Link-out to `https://consult.cbso.nbb.be/consult-enterprise/<nr>` kept as "Open in NBB".
+  - **Web search (eigen website):** DuckDuckGo html / Bing send no frame header ✔ embeddable
+  Every tab shows "Bron · URL · Wat te controleren" and a "Open in nieuw venster" link. Sites that refuse to render inside the iframe fall back to the link.
+- **Assumption:** the iframe approach is a demo convenience; some sites may block framing at runtime (consent screens). The officer's own observation is what gets recorded (TICKET-009).
 
 ### TICKET-009: Officer evidence log
 - **Type:** feat(officer) | **Priority:** MVP
@@ -101,10 +92,17 @@
 - **Created:** 2026-09-16
 - **Description:** Replace link-outs with Maps Embed API iframes (place + streetview modes; free tier, key required). Google reviews need Places API + billing — likely stays a link-out.
 
-### TICKET-016: NBB annual-accounts data and plausibility check
-- **Type:** feat(earnings) | **Priority:** Stretch — verify API access first
+### TICKET-016: NBB annual-accounts panel from the public consult API
+- **Type:** feat(earnings) | **Priority:** MVP (promoted — verified working without a key)
 - **Created:** 2026-09-16
-- **Description:** The NBB CBSO open-data API needs a registered subscription key. If available: fetch latest filed accounts (turnover / staff) per enterprise and show "laatste neerlegging" + simple rules (no filing in > 2 years → Ter controle). Any "earnings vs expected footfall" analysis is out of scope today; the link-out in TICKET-008 covers the demo.
+- **Description:** Backend endpoint `/api/records/{nr}/nbb` that calls NBB's public API (as used by consult.cbso.nbb.be, verified 2026-09-16):
+  - `GET https://consult.cbso.nbb.be/api/rs-consult/companies/<nr>/NL` → name, address, legalForm, legalSituation + date
+  - `GET https://consult.cbso.nbb.be/api/rs-consult/published-deposits?page=0&size=10&enterpriseNumber=<nr>&sort=depositDate,desc` → filed annual accounts (periodStartDate/EndDate, modelName, depositDate, id)
+  - `GET https://consult.cbso.nbb.be/api/external/broker/public/deposits/consult/csv/<depositId>` → full accounts as `"rubric","value"` rows. Key rubrics: `70` omzet · `9900` brutomarge · `9901` bedrijfswinst/verlies · `9904` winst/verlies boekjaar · `10/15` eigen vermogen · `20/58` balanstotaal · `1003` gemiddeld personeel (VTE)
+  - PDF of a deposit: `/api/external/broker/public/deposits/pdf/<depositId>` (link-out; sends X-Frame-Options DENY)
+  - Parse JSON with `strict=False` (responses contain control chars). Cache per nr in SQLite (`nbb_cache`) with fetched_at. For establishments use the parent enterprise number.
+  Frontend panel "Jaarrekeningen (NBB)": table of last 5 filings with year, model, omzet/brutomarge, winst/verlies, eigen vermogen, VTE; "laatste neerlegging" date. Rule for TICKET-007: vennootschap with no filing in > 24 months → Ter controle; `legalSituation` ≠ Normale toestand → mirror KBO signal.
+- **Out of scope today:** any "earnings vs expected footfall" analysis.
 
 ### TICKET-017: Sector-specific review sources (horeca)
 - **Type:** feat(evidence) | **Priority:** Stretch
@@ -122,6 +120,15 @@
 - **Description:** `ejustice.just.fgov.be/cgi_tsv/tsv_rech.pl?btw=<nr>` returned HTTP 500 on 2026-09-16; find a working publication-search URL before adding.
 
 ## Done
+
+### TICKET-004: SQLite schema and starter-data import
+- **Type:** feat(data) | **Priority:** MVP
+- **Created:** 2026-09-16 | **Completed:** 2026-09-16
+- **Description:** Single `records` table mirroring the GeoJSON properties (superset of the CSV) with `record_type` = `enterprise` | `establishment`, `parent_nr` (from `Ondernemingsnr_maatsch_zetel`), `lat`, `lng`. Plus `evidence` and `proposals` tables (see TICKET-009/010). Import script reads `data/raw/*.geojson` (it has phone/email/doorhaling fields the CSV lacks).
+- **Rules:** registry numbers stay text (leading zeros); a single space `' '` → NULL; `1900-01-01` / `9999-12-31` → NULL; use `strict=False` JSON parsing (API responses contain control chars).
+- **Assumption:** import is a script, not an upload UI (upload UI = TICKET-018).
+- **Done when:** `records` has 1000 rows, 457 enterprises / 543 establishments; a query for Paalstraat returns 35.
+- **Commits:** `6facd3e`
 
 ### TICKET-003: Choose stack and scaffold app
 - **Type:** chore | **Priority:** MVP
