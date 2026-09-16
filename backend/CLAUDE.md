@@ -40,9 +40,11 @@ RecordSummary { nr, record_type, parent_nr, display_name, name, trade_name, lega
                 phone, email, start_date, assessment: Assessment }
 Evidence    { id, record_nr, source, url, observation, observed_activity, conclusion: 'actief'|'niet_actief'|'onduidelijk',
               observed_at, created_at }
-Proposal    { id, record_nr, kind: 'status_change'|'address_check'|'missing_establishment'|'field_correction',
+Proposal    { id, record_nr: string|null, kind: 'status_change'|'address_check'|'missing_establishment'|'field_correction',
               field, current_value, proposed_value, reason, status: 'open'|'bevestigd'|'afgewezen', created_at, decided_at,
-              record?: { display_name, address } }
+              display_name, address,                              // record's when record_nr set, else observed_name / observed address
+              observed_name, observed_activity, source, source_url, observed_at,   // only set for missing_establishment (record_nr NULL)
+              record: { display_name, address } | null }
 Links       { google_maps_embed, google_maps, street_view_embed, street_view, kbo_public, kbo_public_embed,
               kbo_establishments, nbb_consult, inhoudingsplicht_embed, inhoudingsplicht, web_search_embed, web_search }
 ```
@@ -65,10 +67,14 @@ GET  /records/{nr}/nbb                                 → { available: bool, en
 POST /records/{nr}/evidence  body {source,url?,observation,observed_activity?,conclusion,observed_at}  → Evidence
 POST /records/{nr}/proposals body {kind,field?,current_value?,proposed_value?,reason}                 → Proposal
 GET  /streets                                          → [{ street, count }]  sorted by count desc
-GET  /streets/{street}                                 → { street, addresses: [{ address, housenr, lat, lng, records: RecordSummary[] (+ last_evidence: Evidence|null, open_proposal: Proposal|null) }] }
-GET  /proposals?status=open|bevestigd|afgewezen        → Proposal[] (with record)
+GET  /streets/{street}                                 → { street, addresses: [{ address, housenr, lat, lng, records: RecordSummary[] (+ last_evidence: Evidence|null, open_proposal: Proposal|null) }],
+                                                           missing: Proposal[] }   open missing_establishment proposals whose address starts with "<street> "
+POST /proposals/missing  body {street,housenr,box?,postcode,municipality,observed_name,observed_activity?,source,source_url?,observed_at,reason}
+                                                       → Proposal  kind='missing_establishment', record_nr=NULL, proposed_value=observed_name, address "Paalstraat 20, 2900 Schoten"
+                                                         ("Vestiging ontbreekt op dit adres": a business seen on the street with no KBO record there)
+GET  /proposals?status=open|bevestigd|afgewezen        → Proposal[] (with record; record=null for missing_establishment)
 POST /proposals/{id}/decide  body {status:'bevestigd'|'afgewezen'}  → Proposal
-GET  /proposals/export?format=csv|json                 → only status='bevestigd' rows; CSV download
+GET  /proposals/export?format=csv|json                 → only status='bevestigd' rows (incl. missing_establishment); CSV download
 ```
 
 ## Scoring rules (`scoring.py`) — deterministic, every reason is shown
@@ -87,7 +93,6 @@ Evaluate in order; first "sterk negatief" fixes the status, later rules only add
 11. No sterk-negatief rule and no evidence → `ter_controle`, laag (middel if phone or email present). Reason neutraal "Enkel registergegevens, nog geen bewijs van activiteit".
 `register_label`: "Niet actief" if rule 1–3 hit, "—" for geen_onderneming, else "Actief".
 `proposal_text`: waarschijnlijk_niet_actief → "Markeer als niet actief"; geen_onderneming → "Uitsluiten uit overzicht (geen onderneming)"; ter_controle → "Ter controle: geen bewijs van activiteit"; actief → "Geen actie". Address mismatch adds "; adres nazien".
-Optional (if time): make `proposals.record_nr` nullable and add `address TEXT` so a `missing_establishment` proposal ("Vestiging ontbreekt op dit adres") can be created from Straatoverzicht for a business that is not in the register — the jury's third worked-example row.
 Auto-proposals from the assessment (idempotent — skip if an open or decided proposal with same kind+proposed_value exists): status_change for niet actief / geen onderneming; address_check for rule 7/8.
 
 ## External links (`links.py`)

@@ -131,6 +131,11 @@ def ensure_auto_proposals(conn: sqlite3.Connection, row: dict, assessment: dict)
 
 
 def proposal_with_record(conn: sqlite3.Connection, p: dict) -> dict:
+    """Attach `record` (None when record_nr is NULL, e.g. missing_establishment) plus a uniform
+    top-level `display_name` / `address`: the record's when linked, else the observed name/address."""
     row = fetch_record(conn, p["record_nr"]) if p.get("record_nr") else None
     p["record"] = {"display_name": display_name(row), "address": address_of(row)} if row else None
+    p["display_name"] = display_name(row) if row else (p.get("observed_name") or "")
+    if row and not p.get("address"):
+        p["address"] = address_of(row)
     return p
