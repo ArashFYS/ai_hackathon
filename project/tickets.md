@@ -9,13 +9,6 @@
 
 ## In Progress
 
-### TICKET-028: Activiteitsindicatoren — KBO / Google Maps / e-facturatie (Peppol) traffic lights
-- **Type:** feat(score) | **Priority:** Stretch (demo value: three sources at a glance)
-- **Created:** 2026-09-16
-- **Description:** Every record carries `indicators: { kbo, google_maps, einvoice }`, each `{ level: groen|geel|rood|onbekend, label, text, checked_at, url }`. KBO light is a pure rule on the register (rood on dissolution/faillissement/doorhaling, groen only when every register signal is clean incl. AR address match and a clean parent, geel otherwise). Google Maps light uses the Places API (New) Text Search with the free-quota Pro field mask only (no reviews): rood = CLOSED_PERMANENTLY, groen = OPERATIONAL listing at the KBO address, geel = no listing / temporarily closed; monthly guard at 4,500 calls; key `GOOGLE_MAPS_API_KEY` in `backend/.env`. E-facturatie light = Peppol SML DNS check on `0208:<ondernemingsnummer>` (groen registered, rood not registered, geel when the legal form is not obliged), enriched with the Peppol Directory on the detail page. Results cached in `indicator_cache`; list endpoints are cache-only. New endpoints `GET /api/records/{nr}/indicators` and `POST /api/streets/{street}/indicators/refresh`. UI: "Signalen" column (three dots) in Zoeken and Straatoverzicht, detailed block in Beoordeling, "Controleer straat" button.
-- **Out of scope:** feeding these signals into `assess()` reasons/proposals; map view; whole-dataset refresh.
-- **Done when:** Paalstraat rows show three dots; LILLYWORLD (0448335384) is rood/rood; a registered BV is groen for e-fact.; with a key, Kapsalon Schoten is groen for Maps; without a key Maps is onbekend and nothing 500s.
-
 ### TICKET-021: Provenance on every reason (source, field, date, verify link) + NBB signal in the assessment
 - **Type:** feat(score)
 - **Created:** 2026-09-16
@@ -113,6 +106,14 @@
 - **Description:** `ejustice.just.fgov.be/cgi_tsv/tsv_rech.pl?btw=<nr>` returned HTTP 500 on 2026-09-16; find a working publication-search URL before adding.
 
 ## Done
+
+### TICKET-028: Activiteitsindicatoren — KBO / Google Maps / e-facturatie (Peppol) traffic lights
+- **Type:** feat(score) | **Priority:** Stretch (demo value: three sources at a glance)
+- **Created:** 2026-09-16 | **Completed:** 2026-09-16
+- **Description:** Every record carries `indicators: { kbo, google_maps, einvoice }`, each `{ level: groen|geel|rood|onbekend, label, text, checked_at, url }`. KBO light is a pure rule on the register (rood on dissolution/faillissement/doorhaling, groen only when every register signal is clean incl. AR address match and a clean parent, geel otherwise). Google Maps light uses the Places API (New) Text Search with the free-quota Pro field mask only (no reviews): rood = CLOSED_PERMANENTLY, groen = OPERATIONAL listing at the KBO address, geel = no listing / temporarily closed; monthly guard at 4,500 calls; key `GOOGLE_MAPS_API_KEY` in `backend/.env`. E-facturatie light = Peppol SML DNS check on `0208:<ondernemingsnummer>` (groen registered, rood not registered, geel when the legal form is not obliged), enriched with the Peppol Directory on the detail page. Results cached in `indicator_cache`; list endpoints are cache-only. New endpoints `GET /api/records/{nr}/indicators` and `POST /api/streets/{street}/indicators/refresh`. UI: "Signalen" column (three dots) in Zoeken and Straatoverzicht, detailed block in Beoordeling, "Controleer straat" button.
+- **Out of scope:** feeding these signals into `assess()` reasons/proposals; map view; whole-dataset refresh.
+- **Done when:** Paalstraat rows show three dots; LILLYWORLD (0448335384) is rood/rood; a registered BV is groen for e-fact.; with a key, Kapsalon Schoten is groen for Maps; without a key Maps is onbekend and nothing 500s.
+- **Branch:** `feat/TICKET-028-activity-indicators` | **Commits:** `45952d8`
 
 ### TICKET-022: Branch-per-ticket policy, no pushes to main
 - **Type:** chore
