@@ -9,6 +9,11 @@
 
 ## In Progress
 
+### TICKET-014: Map view
+- **Type:** feat(map) | **Priority:** Stretch
+- **Created:** 2026-09-16
+- **Description:** Leaflet + OpenStreetMap tiles (no key) with records coloured by status; click → detail. Flags the "few points well outside Schoten".
+
 ### TICKET-021: Provenance on every reason (source, field, date, verify link) + NBB signal in the assessment
 - **Type:** feat(score)
 - **Created:** 2026-09-16
@@ -79,11 +84,6 @@
 - **Description:** "Zoek op OpenStreetMap" button on the detail page: Overpass query within ~60 m of the coordinates, fuzzy-match on name; on a hit create evidence rows (source `openstreetmap`, URL `https://www.openstreetmap.org/<type>/<id>`, observed_at = OSM `timestamp`) with phone/website/opening_hours and the `shop`/`amenity` tag as observed activity. Use a mirror list (overpass-api.de, overpass.kumi.systems) and a proper User-Agent. Verify coverage on Paalstraat first.
 
 ### Stretch — only after MVP is recordable
-
-### TICKET-014: Map view
-- **Type:** feat(map) | **Priority:** Stretch
-- **Created:** 2026-09-16
-- **Description:** Leaflet + OpenStreetMap tiles (no key) with records coloured by status; click → detail. Flags the "few points well outside Schoten".
 
 ### TICKET-015: Google Maps / Street View embeds and reviews
 - **Type:** feat(evidence) | **Priority:** Stretch — needs a Google Maps API key

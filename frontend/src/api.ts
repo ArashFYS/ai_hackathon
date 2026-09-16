@@ -203,6 +203,21 @@ export interface StreetOverview {
   addresses: StreetAddress[]
 }
 
+/** One map marker: GET /records/geo. */
+export interface GeoItem {
+  nr: string
+  display_name: string
+  record_type: RecordType
+  lat: number
+  lng: number
+  status: Status
+  status_label: string
+  certainty: Certainty
+  address: string | null
+  /** lat/lng outside the Schoten bbox used in scoring. */
+  outside_municipality: boolean
+}
+
 export interface EvidenceInput {
   source: string
   url?: string
@@ -269,6 +284,17 @@ export interface RecordsQuery {
 
 export async function getRecords(query: RecordsQuery): Promise<RecordSummary[]> {
   const data = await api<{ items: RecordSummary[] }>(`/records${qs({ ...query })}`)
+  return data.items
+}
+
+export interface GeoQuery {
+  street?: string
+  status?: Status | ''
+  limit?: number
+}
+
+export async function getGeo(query: GeoQuery): Promise<GeoItem[]> {
+  const data = await api<{ items: GeoItem[] }>(`/records/geo${qs({ ...query })}`)
   return data.items
 }
 
