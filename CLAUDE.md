@@ -1,6 +1,10 @@
 # ai_hackathon
 
-AI-powered business trust score checker: evaluates a business and produces a trust score with supporting evidence.
+Hackathon entry for **Challenge 01: Find the Real Businesses** (ns2agi, Province of Antwerp). A tool for local economy officers to determine which KBO-registered businesses are actually active in their municipality — combining register data with dated public evidence, confidence markers, and officer approval before any correction is published.
+
+**Full brief:** [docs/challenge.md](docs/challenge.md) — read this first.
+**Deadline:** 16:30 Europe/Brussels, 16 Sep 2026 — 3-min YouTube pitch video via Google Form. Demo is an optional bonus.
+**Officer-facing UI text must be in Dutch.**
 
 **Stack:** TBD (not yet chosen)
 
@@ -12,7 +16,11 @@ AI-powered business trust score checker: evaluates a business and produces a tru
 ./.claude/settings.json
 ./.gitignore
 ./CLAUDE.md
+./data/raw/schoten-kbo-1000-2026-09-07.csv
+./data/raw/schoten-kbo-1000-2026-09-07.geojson
+./data/raw/source-metadata.json
 ./docs/adr/001-initial-setup.md
+./docs/challenge.md
 ./docs/notes.md
 ./project/conventions.md
 ./project/tickets.md
