@@ -42,6 +42,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     document.documentElement.lang = lang
+    document.title = translate(lang, 'app.title')
     try {
       localStorage.setItem(STORAGE_KEY, lang)
     } catch {
