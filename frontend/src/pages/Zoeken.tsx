@@ -94,7 +94,7 @@ export default function Zoeken() {
     const source = result?.key === requestKey ? result.items : []
     return sortTableRows(makeSearchRows(source, lang), (row) => row.cells[sort], lang, descending)
   }, [result, requestKey, lang, sort, descending])
-  const exportRows = useMemo(() => exportSearchRows(rows), [rows])
+  const exportRows = useMemo(() => exportSearchRows(rows, lang), [rows, lang])
   const exportHeaders = [headers.name, t('search.col.number'), ...SEARCH_COLUMNS.slice(1).map((column) => headers[column])]
 
   return (

@@ -214,6 +214,9 @@ export interface Links {
   staatsblad: string | null
   web_search_embed: string
   web_search: string
+  social_facebook: string
+  social_instagram: string
+  social_tiktok: string
 }
 
 export interface RecordDetail {
