@@ -1,6 +1,6 @@
 # Tickets -- ai_hackathon (Prefix: TICKET)
 
-> Next ID: TICKET-040
+> Next ID: TICKET-041
 >
 > **Deadline: 16:30 Europe/Brussels, 16 Sep 2026.** Build freeze ~15:00 → record 15:00–15:45 → upload + check + form by 16:15.
 > Anything not demoable by 15:00 is a slide in the video, not a feature.
@@ -8,6 +8,11 @@
 > Priority: **MVP** = on the critical path for the 3-min screen recording. **Stretch** = only if MVP is recordable.
 
 ## In Progress
+
+### TICKET-040: Commit the SQLite database with all collected data
+- **Type:** chore(data)
+- **Created:** 2026-09-16
+- **Description:** `backend/data.db` is now versioned (removed from .gitignore; the `-wal`/`-shm` side files stay ignored) so a checkout carries everything the demo needs without re-running imports or paying Apify again: 1,309 KBO records (starter sample + parents fetched from VKBO), 964 Peppol SML results, 212 Google Maps listings scraped via Apify (all of Paalstraat + one batch of other streets, ≈ $0.85), 3 Apify run records, 10 auto-proposals. `make import` remains the way to rebuild from scratch. The file is ≈ 5 MB and changes on every run: commit it deliberately, not with every code change.
 
 ### TICKET-037: Staatsblad-publicaties ophalen — knop in het Staatsblad-tabblad, gemachtigde/boekhouder vinden
 - **Type:** feat(staatsblad) | **Priority:** Stretch (contact route via the accountant)
