@@ -15,7 +15,7 @@ ACTOR_NAME = "compass/crawler-google-places"
 SYNC_MAX_QUERIES = 50
 SYNC_TIMEOUT = 300          # Apify's cap for run-sync
 POLL_SECONDS = 5
-RUN_TIMEOUT_SECS = 900      # bounds cost of an async run
+RUN_TIMEOUT_SECS = 3600     # bounds cost of an async run (≈ 5 places/min with the contacts add-on)
 COST_PER_QUERY_USD = 0.0075  # place + contacts add-on + 3 reviews, free plan
 
 
@@ -80,12 +80,14 @@ def get_run(run_id: str) -> dict:
     return _run_info((_request("GET", f"/actor-runs/{run_id}") or {}).get("data") or {})
 
 
-def wait_for_run(run_id: str, timeout: int = RUN_TIMEOUT_SECS + 60, poll: int = POLL_SECONDS) -> dict:
+def wait_for_run(run_id: str, timeout: int = RUN_TIMEOUT_SECS + 600, poll: int = POLL_SECONDS) -> dict:
+    """Returns the run info once it stopped. TIMED-OUT is returned too (its dataset holds partial results);
+    FAILED / ABORTED raise."""
     deadline = time.monotonic() + timeout
     while True:
         info = get_run(run_id)
         if info["status"] not in ("READY", "RUNNING"):
-            if info["status"] != "SUCCEEDED":
+            if info["status"] not in ("SUCCEEDED", "TIMED-OUT"):
                 raise ApifyError(f"Apify-run {run_id} mislukt (status {info['status']})")
             return info
         if time.monotonic() > deadline:

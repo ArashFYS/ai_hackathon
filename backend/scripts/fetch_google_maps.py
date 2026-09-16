@@ -61,21 +61,33 @@ def from_run(conn, rows, run_id: str, scope: str) -> None:
 
 
 def live(conn, rows, batch: int, scope: str) -> None:
-    queries = list(queries_for(rows))
+    """Start every batch at once (Apify queues what its memory limit cannot run yet), then wait and store
+    each. A TIMED-OUT run still yields its partial dataset; records without an item stay unscraped so a
+    later run picks them up."""
     by_query = queries_for(rows)
+    queries = list(by_query)
     chunks = [queries[i:i + batch] for i in range(0, len(queries), batch)]
+    runs: list[tuple[int, list[str], dict | None]] = []
     for i, chunk in enumerate(chunks, 1):
-        chunk_rows = [r for q in chunk for r in by_query[q]]
         try:
             run = start_run(actor_input(chunk))
-            print(f"batch {i}/{len(chunks)}: run {run['run_id']} started ({len(chunk)} queries)…", flush=True)
+            print(f"batch {i}/{len(chunks)}: run {run['run_id']} started ({len(chunk)} queries)", flush=True)
+            runs.append((i, chunk, run))
+        except ApifyError as exc:
+            print(f"batch {i}/{len(chunks)} kon niet starten: {exc}", flush=True)
+            runs.append((i, chunk, None))
+    for i, chunk, run in runs:
+        if run is None:
+            continue
+        chunk_rows = [r for q in chunk for r in by_query[q]]
+        try:
             run = {**run, **wait_for_run(run["run_id"]), "scope": f"{scope}:batch {i}/{len(chunks)}"}
             items = fetch_items(run["dataset_id"])
         except ApifyError as exc:
-            print(f"batch {i}/{len(chunks)} mislukt: {exc}")
+            print(f"batch {i}/{len(chunks)} mislukt: {exc}", flush=True)
             continue
-        res = store_items(conn, chunk_rows, items, run)
-        print(f"batch {i}/{len(chunks)}: {res}, cost ${run.get('cost_usd') or 0:.3f}")
+        res = store_items(conn, chunk_rows, items, run, only_present=True)
+        print(f"batch {i}/{len(chunks)}: {run['status']} {res}, cost ${run.get('cost_usd') or 0:.3f}", flush=True)
 
 
 def main() -> None:
