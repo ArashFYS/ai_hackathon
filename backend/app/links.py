@@ -40,6 +40,8 @@ def build_links(row: dict, display_name: str, address: str) -> dict:
         # officer clicks "Controleren" (captcha-protected, so no automated lookup).
         "inhoudingsplicht_embed": f"https://www.checkinhoudingsplicht.be/?identificationnumber={ent}" if ent else None,
         "inhoudingsplicht": f"https://www.checkinhoudingsplicht.be/?identificationnumber={ent}" if ent else "https://www.checkinhoudingsplicht.be/",
+        # Belgisch Staatsblad publications (oprichting, ontbinding, faillissement …). Not iframeable (frame-ancestors 'self').
+        "staatsblad": f"https://www.ejustice.just.fgov.be/cgi_tsv/rech_res.pl?language=nl&btw={ent}" if ent else None,
         "web_search_embed": f"https://www.bing.com/search?q={name_muni}",
         "web_search": f"https://www.google.com/search?q={name_muni}",
     }

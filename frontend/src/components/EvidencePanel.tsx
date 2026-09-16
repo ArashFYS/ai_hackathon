@@ -2,7 +2,7 @@ import { useState } from 'react'
 import type { Links } from '../api'
 import NbbPanel from './NbbPanel'
 
-type TabId = 'kaart' | 'streetview' | 'kbo' | 'nbb' | 'web' | 'inhoudingsplicht'
+type TabId = 'kaart' | 'streetview' | 'kbo' | 'nbb' | 'web' | 'inhoudingsplicht' | 'staatsblad'
 
 interface Tab {
   id: TabId
@@ -19,6 +19,7 @@ const TABS: Tab[] = [
   { id: 'kbo', label: 'KBO', bron: 'KBO Public Search (FOD Economie)', check: 'Activiteiten, vestigingen, status', embed: (l) => l.kbo_public_embed, open: (l) => l.kbo_public },
   { id: 'nbb', label: 'Jaarrekeningen', bron: 'NBB Balanscentrale', check: 'Recente neerleggingen, omzet, personeel', embed: () => null, open: (l) => l.nbb_consult },
   { id: 'inhoudingsplicht', label: 'Inhoudingsplicht', bron: 'Check Inhoudingsplicht (RSZ · FOD Financiën · RSVZ)', check: 'Fiscale of sociale schulden: klik op "Controleren"', embed: (l) => l.inhoudingsplicht_embed, open: (l) => l.inhoudingsplicht },
+  { id: 'staatsblad', label: 'Staatsblad', bron: 'Belgisch Staatsblad (FOD Justitie)', check: 'Publicaties: oprichting, ontbinding, faillissement, adreswijziging', embed: () => null, open: (l) => l.staatsblad ?? 'https://www.ejustice.just.fgov.be/' },
   { id: 'web', label: 'Website', bron: 'Webzoekopdracht', check: 'Eigen website, contactgegevens, recente berichten', embed: (l) => l.web_search_embed, open: (l) => l.web_search },
 ]
 
@@ -57,7 +58,12 @@ export default function EvidencePanel({ nr, links }: { nr: string; links: Links 
         ) : embedUrl ? (
           <iframe key={tab.id} src={embedUrl} title={tab.label} className="h-full w-full border-0" referrerPolicy="no-referrer" loading="lazy" />
         ) : (
-          <p className="p-3 text-sm text-gray-500">Geen ingesloten weergave beschikbaar.</p>
+          <div className="p-4 text-sm text-gray-600">
+            <p>Deze bron laat geen ingesloten weergave toe.</p>
+            <a href={openUrl} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block rounded border border-blue-700 px-3 py-1.5 text-blue-700 hover:bg-blue-50">
+              Open {tab.label} in nieuw venster ↗
+            </a>
+          </div>
         )}
       </div>
       {tab.id !== 'nbb' && (

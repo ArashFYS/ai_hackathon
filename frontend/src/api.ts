@@ -124,6 +124,7 @@ export interface Links {
   nbb_consult: string
   inhoudingsplicht_embed: string | null
   inhoudingsplicht: string
+  staatsblad: string | null
   web_search_embed: string
   web_search: string
 }

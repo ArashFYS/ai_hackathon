@@ -30,6 +30,7 @@ export const SOURCE_LABELS: Record<string, string> = {
   kbo: 'KBO',
   nbb: 'NBB',
   inhoudingsplicht: 'Check Inhoudingsplicht',
+  staatsblad: 'Belgisch Staatsblad',
   andere: 'Andere',
 }
 

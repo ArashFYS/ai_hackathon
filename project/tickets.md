@@ -90,12 +90,13 @@
 - **Created:** 2026-09-16
 - **Description:** Browser upload of a VKBO export instead of running the import script; reuses TICKET-004 parser.
 
+## Done
+
 ### TICKET-019: Belgisch Staatsblad link
 - **Type:** feat(evidence) | **Priority:** Stretch
-- **Created:** 2026-09-16
+- **Created:** 2026-09-16 | **Completed:** 2026-09-16
 - **Description:** `ejustice.just.fgov.be/cgi_tsv/tsv_rech.pl?btw=<nr>` returned HTTP 500 on 2026-09-16; find a working publication-search URL before adding.
-
-## Done
+- **Outcome:** working URL is `cgi_tsv/rech_res.pl?language=nl&btw=<nr>` (verified: 3 publications for Tene Quod Bene). Site sends `frame-ancestors 'self'` → link-out tab "Staatsblad" in the minibrowser.
 
 ### TICKET-015: Google Maps / Street View embeds and reviews
 - **Type:** feat(evidence) | **Priority:** Stretch — needs a Google Maps API key
