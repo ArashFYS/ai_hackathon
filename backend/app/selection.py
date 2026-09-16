@@ -76,7 +76,7 @@ def filter_records(items: list[dict], filters: RecordFilters) -> list[dict]:
         assessment = item["assessment"]
         missing = item["record_type"] == "establishment" and not item.get("parent_in_dataset")
         return (
-            (not filters.activity or item["activity"]["sector"] == filters.activity)
+            (not filters.activity or filters.activity in item["activity"]["sectors"])
             and (not filters.status or assessment["status"] == filters.status)
             and (not filters.certainty or assessment["certainty"] == filters.certainty)
             and (not filters.contact or item["contact_status"] == filters.contact)

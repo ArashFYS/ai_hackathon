@@ -62,7 +62,7 @@ def list_records(
     if status:
         items = [i for i in items if i["assessment"]["status"] == status]
     if activity:
-        items = [i for i in items if i["activity"]["sector"] == activity]
+        items = [i for i in items if activity in i["activity"]["sectors"]]
     return {"items": items[:limit], "total": len(items)}
 
 

@@ -73,7 +73,7 @@ class SearchTests(unittest.TestCase):
     def test_mode_preserves_other_filters_and_counts_before_cap(self):
         def summarize(_conn, rows):
             return [{**r, "assessment": {"status": r["test_status"]},
-                     "activity": {"sector": r["test_activity"]}} for r in rows]
+                     "activity": {"sector": r["test_activity"], "sectors": [r["test_activity"]]}} for r in rows]
         with patch("app.routers.records.summarize_many", side_effect=summarize), patch("app.routers.records.known_contacts", return_value={}):
             result = list_records(q="roos paalstraat", mode="or", type="enterprise",
                                   status="actief", activity="detailhandel", limit=1, conn=self.conn)

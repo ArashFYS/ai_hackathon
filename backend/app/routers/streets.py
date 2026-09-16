@@ -54,7 +54,7 @@ def street_detail(street: str, activity: str | None = None, conn: sqlite3.Connec
 
     street_name = rows[0]["kbo_street"]
     if activity:  # sector is a computed field → filter after summarizing
-        rows = [r for r in rows if items[r["nr"]]["activity"]["sector"] == activity]
+        rows = [r for r in rows if activity in items[r["nr"]]["activity"]["sectors"]]
     groups: dict[str, dict] = {}
     for r in rows:
         ev = evidence.get(r["nr"], [])
