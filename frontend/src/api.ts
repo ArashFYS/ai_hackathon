@@ -48,6 +48,9 @@ export interface RecordSummary {
   email: string | null
   start_date: string | null
   assessment: Assessment
+  parent_in_dataset?: boolean
+  seat_elsewhere?: boolean
+  parent_display_name?: string | null
 }
 
 /** Every column of `records` except `raw` (see backend/app/schema.sql). */

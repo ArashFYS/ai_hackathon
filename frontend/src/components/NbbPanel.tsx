@@ -80,7 +80,7 @@ export default function NbbPanel({ nr, nbbConsultUrl }: { nr: string; nbbConsult
         <p className="text-gray-500">Geen neerleggingen gevonden.</p>
       ) : (
         <div className="overflow-x-auto">
-          <table className="w-full text-xs">
+          <table className="w-full min-w-[620px] text-xs">
             <thead className="bg-gray-50 text-left text-gray-500">
               <tr>
                 <th className="px-2 py-1">Boekjaar</th>

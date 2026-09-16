@@ -10,9 +10,8 @@ const DEFAULT_STREET = 'Paalstraat'
 
 function nameHint(r: StreetRecord): string {
   if (r.record_type === 'enterprise') return '(onderneming)'
-  // parent_nr set but parent not in the street data → seat elsewhere (the API does not say; assume when not co-located)
-  const seatElsewhere = r.parent_nr && r.assessment.reasons.some((x) => x.code.includes('moeder') || x.text.includes('niet in dataset'))
-  return seatElsewhere ? '(vestiging, zetel elders)' : '(vestiging)'
+  if (r.parent_in_dataset === false) return '(vestiging, moederonderneming niet in dataset)'
+  return r.seat_elsewhere ? '(vestiging, zetel elders)' : '(vestiging)'
 }
 
 export default function Straat() {

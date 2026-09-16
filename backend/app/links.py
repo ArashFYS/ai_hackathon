@@ -22,7 +22,7 @@ def build_links(row: dict, display_name: str, address: str) -> dict:
         "google_maps_embed": f"https://maps.google.com/maps?q={name_addr}&output=embed",
         "google_maps": f"https://www.google.com/maps/search/?api=1&query={name_addr}",
         "street_view_embed": (
-            f"https://www.google.com/maps/embed?pb=!4v0!6m8!1m7!1s!2m2!1d{lat}!2d{lng}!3f0!4f0!5f0.75"
+            f"https://maps.google.com/maps?q=&layer=c&cbll={lat},{lng}&cbp=11,0,0,0,0&output=svembed"
             if lat is not None and lng is not None else None
         ),
         "street_view": (

@@ -151,6 +151,10 @@ def assess(row: dict, parent: dict | None = None, evidence: list[dict] | None = 
         register_label = "Actief"
 
     proposal_text = PROPOSAL_TEXTS[status]
+    if any(r["code"] == "tegenstrijdig" for r in reasons):
+        proposal_text = "Ter controle: register en waarneming spreken elkaar tegen"
+    elif any(r["code"] == "bewijs_onduidelijk" for r in reasons):
+        proposal_text = "Ter controle: waarneming onduidelijk, opnieuw nakijken"
     if address_issue:
         proposal_text += "; adres nazien"
 

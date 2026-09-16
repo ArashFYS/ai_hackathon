@@ -70,6 +70,13 @@ def summarize(row: dict, parent: dict | None, evidence: list[dict], full: bool =
     base["display_name"] = display_name(row)
     base["address"] = address_of(row)
     base["assessment"] = assess(row, parent, evidence)
+    if row.get("record_type") == "establishment":
+        base["parent_in_dataset"] = parent is not None
+        # seat is "elsewhere" when the parent is known and sits in another municipality
+        base["seat_elsewhere"] = bool(
+            parent and (parent.get("kbo_municipality") or "") != (row.get("kbo_municipality") or "")
+        )
+        base["parent_display_name"] = display_name(parent) if parent else None
     return base
 
 
@@ -86,7 +93,7 @@ def ensure_auto_proposals(conn: sqlite3.Connection, row: dict, assessment: dict)
         strong = [r["text"] for r in assessment["reasons"] if r["weight"] == "sterk" and r["direction"] == "negatief"]
         wanted.append({
             "kind": "status_change", "field": "status",
-            "current_value": assessment["register_label"], "proposed_value": status,
+            "current_value": "Actief in KBO", "proposed_value": status,
             "reason": "; ".join(strong) or assessment["status_label"],
         })
     addr_reasons = [r for r in assessment["reasons"] if r["code"] in ("adres_afwijking", "buiten_schoten")]
