@@ -8,18 +8,19 @@ import LanguageToggle from './components/LanguageToggle'
 import { useT } from './i18n'
 
 const navCls = ({ isActive }: { isActive: boolean }) =>
-  isActive ? 'font-medium text-gray-900' : 'text-gray-600 hover:text-gray-900'
+  isActive ? 'site-nav-link is-active' : 'site-nav-link'
 
 export default function App() {
   const t = useT()
   return (
-    <div className="flex min-h-screen flex-col bg-gray-50 text-gray-900">
-      <header className="border-b bg-white">
-        <div className="mx-auto flex max-w-7xl items-center gap-6 px-4 py-3">
-          <NavLink to="/" className="text-lg font-semibold">
-            {t('app.title')}
+    <div className="antwerp-app">
+      <header className="site-header">
+        <div className="site-header-inner">
+          <NavLink to="/" className="site-brand">
+            <img src="/provincie-antwerpen-logo.svg" width="170" height="52" alt="Provincie Antwerpen" />
+            <span>{t('app.title')}</span>
           </NavLink>
-          <nav className="flex gap-4 text-sm">
+          <nav className="site-nav" aria-label="Main navigation">
             <NavLink to="/" end className={navCls}>{t('nav.search')}</NavLink>
             <NavLink to="/straat" className={navCls}>{t('nav.street')}</NavLink>
             <NavLink to="/kaart" className={navCls}>{t('nav.map')}</NavLink>
@@ -28,7 +29,7 @@ export default function App() {
           <div className="ml-auto"><LanguageToggle /></div>
         </div>
       </header>
-      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6">
+      <main className="site-main">
         <Routes>
           <Route path="/" element={<Zoeken />} />
           <Route path="/record/:nr" element={<Detail />} />
@@ -39,8 +40,8 @@ export default function App() {
           <Route path="*" element={<p className="text-gray-600">{t('app.notFound')}</p>} />
         </Routes>
       </main>
-      <footer className="border-t bg-white">
-        <p className="mx-auto max-w-7xl px-4 py-3 text-xs text-gray-500">{t('app.footer')}</p>
+      <footer className="site-footer">
+        <p>{t('app.footer')}</p>
       </footer>
     </div>
   )

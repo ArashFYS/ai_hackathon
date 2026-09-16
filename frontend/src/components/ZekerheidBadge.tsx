@@ -15,7 +15,7 @@ export default function ZekerheidBadge({ certainty, label }: { certainty: Certai
   const cls = STYLES[certainty] ?? STYLES.laag
   const text = certainty in STYLES ? certaintyLabel(lang, certainty) : (label ?? certainty)
   return (
-    <span className={`inline-block whitespace-nowrap rounded border px-2 py-0.5 text-xs font-medium ${cls}`} title={t('certainty.title')}>
+    <span data-certainty={certainty in STYLES ? certainty : 'laag'} className={`certainty-label inline-block whitespace-nowrap rounded border px-2 py-0.5 text-xs font-medium ${cls}`} title={t('certainty.title')}>
       {text}
     </span>
   )

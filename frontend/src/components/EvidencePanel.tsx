@@ -31,29 +31,33 @@ export default function EvidencePanel({ nr, links }: { nr: string; links: Links 
   const label = t(`panel.tab.${tab.id}`)
 
   return (
-    <div className="flex h-[70vh] flex-col overflow-hidden rounded-lg border bg-white">
-      <div className="flex flex-wrap border-b bg-gray-50 text-sm">
-        {TABS.map((x) => (
-          <button
-            key={x.id}
-            type="button"
-            onClick={() => setActive(x.id)}
-            className={`px-3 py-2 ${x.id === active ? 'border-b-2 border-gray-900 bg-white font-medium text-gray-900' : 'text-gray-600 hover:text-gray-900'}`}
-          >
-            {t(`panel.tab.${x.id}`)}
-          </button>
-        ))}
-      </div>
-      <div className="flex items-start justify-between gap-3 border-b px-3 py-2 text-xs text-gray-600">
-        <p>
-          <span className="font-medium text-gray-800">{t('panel.source')}</span> {t(`panel.bron.${tab.id}`)} ·{' '}
-          <span className="font-medium text-gray-800">{t('panel.whatToCheck')}</span> {t(`panel.check.${tab.id}`)}
-        </p>
-        <a href={openUrl} target="_blank" rel="noopener noreferrer" className="shrink-0 rounded border bg-white px-2 py-1 font-medium text-blue-700 hover:bg-gray-50">
+    <section className="source-browser" aria-label={label}>
+      <div className="source-toolbar">
+        <div className="flex flex-wrap border-b text-sm" role="tablist">
+          {TABS.map((x) => (
+            <button
+              key={x.id}
+              type="button"
+              role="tab"
+              aria-selected={x.id === active}
+              onClick={() => setActive(x.id)}
+              className={`px-3 py-2 ${x.id === active ? 'border-b-2 border-gray-900 bg-white font-medium text-gray-900' : 'text-gray-600 hover:text-gray-900'}`}
+            >
+              {t(`panel.tab.${x.id}`)}
+            </button>
+          ))}
+        </div>
+        <a href={openUrl} target="_blank" rel="noopener noreferrer" className="source-external">
           {t('panel.openNew')}
         </a>
       </div>
-      <div className="min-h-0 flex-1">
+      <div className="source-context" aria-live="polite">
+        <p className="source-name">{t(`panel.bron.${tab.id}`)}</p>
+        <p className="source-guidance">
+          <span className="font-medium text-gray-800">{t('panel.whatToCheck')}</span> {t(`panel.check.${tab.id}`)}
+        </p>
+      </div>
+      <div id="source-view" className="source-viewport" role="region" aria-label={label}>
         {tab.id === 'nbb' ? (
           <div className="h-full overflow-auto"><NbbPanel nr={nr} nbbConsultUrl={links.nbb_consult} /></div>
         ) : embedUrl ? (
@@ -68,11 +72,11 @@ export default function EvidencePanel({ nr, links }: { nr: string; links: Links 
         )}
       </div>
       {tab.id !== 'nbb' && (
-        <p className="border-t px-3 py-1.5 text-xs text-gray-500">
+        <p className="source-footer">
           {tab.id === 'streetview' ? t('panel.streetviewFail') : t('panel.mapFail')}{' '}
           <a href={openUrl} target="_blank" rel="noopener noreferrer" className="text-blue-700 underline">{t('panel.openNew')}</a>
         </p>
       )}
-    </div>
+    </section>
   )
 }

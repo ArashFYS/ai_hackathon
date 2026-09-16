@@ -1,0 +1,24 @@
+const fs = require('node:fs');
+const path = require('node:path');
+const vm = require('node:vm');
+const assert = require('node:assert/strict');
+const ts = require('typescript');
+
+const source = fs.readFileSync(path.join(__dirname, '../src/mapLocation.ts'), 'utf8');
+const compiled = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS } });
+const scope = { exports: {} };
+vm.runInNewContext(compiled.outputText, scope);
+const locate = scope.exports.mapLocation;
+const base = { lat: 51.27033844, lng: 4.53454983, address: 'Acaciadreef 7, 2900 Schoten', assessment: { reasons: [] } };
+const exact = locate(base);
+assert.equal(new URL(exact.embed).searchParams.get('q'), '51.27033844,4.53454983');
+assert.equal(new URL(exact.open).searchParams.get('query'), '51.27033844,4.53454983');
+assert.equal(exact.hasCoordinates, true);
+assert.equal(locate({ ...base, lat: null }).hasCoordinates, false);
+assert.equal(new URL(locate({ ...base, lat: null }).embed).searchParams.get('q'), base.address);
+assert.equal(locate({ ...base, lat: Infinity }).hasCoordinates, false);
+assert.equal(locate({ ...base, lng: 181 }).hasCoordinates, false);
+assert.equal(locate({ ...base, lat: null, address: null }).embed, null);
+assert.equal(locate({ ...base, assessment: { reasons: [{ code: 'adres_afwijking' }] } }).needsReview, true);
+assert.equal(locate({ ...base, assessment: { reasons: [{ code: 'buiten_schoten' }] } }).needsReview, true);
+console.log('PASS: coordinate pin, external link, missing/invalid coordinates, empty address and location warnings.');

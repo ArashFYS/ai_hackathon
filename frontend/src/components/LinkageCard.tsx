@@ -41,7 +41,7 @@ export default function LinkageCard({ detail, onChanged }: Props) {
         {parent ? (
           <RecordCard record={parent} tag={seat_elsewhere ? t('linkage.seatElsewhere') : undefined} />
         ) : (
-          <div className="rounded border border-dashed bg-gray-50 px-3 py-2">
+          <div className="linked-missing">
             <p className="text-gray-700">{t('linkage.parentNotInDataset')}</p>
             {record.parent_nr && (
               <button

@@ -19,9 +19,8 @@ src/components/       StatusBadge · ZekerheidBadge · ReasonsList · EvidencePa
 
 Routes: `/` Zoeken · `/record/:nr` Detail · `/straat` and `/straat/:street` Straatoverzicht · `/kaart?street=&status=` Kaart · `/goedgekeurd` Goedgekeurde wijzigingen.
 
-## Language and vocabulary — officer-facing text is Dutch
-Use the challenge's own words: **Adres · Onderneming / vestiging · Register · Bewijs van activiteit · Laatste waarneming · Zekerheid (Hoog / Middel / Laag) · Voorstel · bevestigen / afwijzen · contactgegevens onbekend · zetel elders · moederonderneming niet in dataset**.
-Never show an invented value: missing → "onbekend" or "—".
+## Province of Antwerp theme — TICKET-030
+Visual restyle from `feat/TICKET-029-provincial-ui` merged on top of the i18n/feature set: `@theme` palette + semantic classes in `src/index.css` (`antwerp-app`, `site-header`/`site-brand`/`site-nav-link`/`site-footer`, `page-filters`, `results-table`/`address-group`, `record-layout`/`record-heading`/`detail-section`/`register-fields`/`address-comparison`, `source-browser`/`source-viewport`, `activity-status[data-status]`, `certainty-label[data-certainty]`), logo `public/provincie-antwerpen-logo.svg`. All text still goes through `t()`/`useT()` (NL default, EN toggle). `ConfidenceScore` and `mapLocation.ts` exist but are not wired in (the API supplies no numeric score; the minibrowser keeps the backend map links).
 
 ## Language / i18n — Dutch default, English toggle (TICKET-029)
 No library. `src/i18n/nl/*.ts` is the source of truth (`labels.ts` = enum codes, `ui.ts` = everything else); `src/i18n/en/*.ts` mirrors it and is typed `Record<keyof typeof nl…, string>`, so a key missing in EN is a tsc error. `useT()` gives `t(key, vars?)` with `{name}` interpolation; `useLang()` gives `{ lang, setLang }`. Persisted in `localStorage.lang`, `<html lang>` follows. Default `nl`.

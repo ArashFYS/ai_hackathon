@@ -1,6 +1,6 @@
 # Tickets -- ai_hackathon (Prefix: TICKET)
 
-> Next ID: TICKET-030
+> Next ID: TICKET-031
 >
 > **Deadline: 16:30 Europe/Brussels, 16 Sep 2026.** Build freeze ~15:00 → record 15:00–15:45 → upload + check + form by 16:15.
 > Anything not demoable by 15:00 is a slide in the video, not a feature.
@@ -42,6 +42,12 @@
 - **Description:** Browser upload of a VKBO export instead of running the import script; reuses TICKET-004 parser.
 
 ## Done
+
+### TICKET-030: Province of Antwerp visual theme merged onto main
+- **Type:** feat(ui)
+- **Created:** 2026-09-16 | **Completed:** 2026-09-16
+- **Description:** Teammate restyle (branch feat/TICKET-029-provincial-ui, based on an older main) merged on top of the i18n + feature set: brand palette, logo, semantic layout classes, data-status badges. Kept: NL/EN toggle, Kaart, activity filter, contact block, missing establishment, provenance. Dropped from the restyle: hardcoded English strings, removal of leaflet.
+- **Commits:** (merge commit on feat/TICKET-030-provincial-theme)
 
 ### TICKET-028: README — features and how the tool works
 - **Type:** docs

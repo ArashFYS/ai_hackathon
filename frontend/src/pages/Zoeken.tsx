@@ -64,7 +64,7 @@ export default function Zoeken() {
       </div>
 
       <form
-        className="flex flex-wrap items-end gap-3 rounded-lg border bg-white p-4"
+        className="page-filters flex flex-wrap items-end gap-3"
         onSubmit={(e) => {
           e.preventDefault()
           update({ q: input.trim() })
@@ -102,7 +102,7 @@ export default function Zoeken() {
         </button>
       </form>
 
-      <div className="overflow-x-auto rounded-lg border bg-white">
+      <div className="results-table overflow-x-auto">
         {loading && <p className="p-4 text-sm text-gray-500">{t('common.loading')}</p>}
         {!loading && error && <p className="p-4 text-sm text-red-700">{t('common.loadError')}</p>}
         {!loading && !error && items && items.length === 0 && <p className="p-4 text-sm text-gray-500">{t('common.noResults')}</p>}

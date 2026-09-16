@@ -15,8 +15,8 @@ import ContactBlock from '../components/ContactBlock'
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-lg border bg-white p-4">
-      <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-500">{title}</h2>
+    <section className="detail-section">
+      <h2>{title}</h2>
       {children}
     </section>
   )
@@ -49,7 +49,7 @@ function RegisterFacts({ r, lang }: { r: RecordFull; lang: Lang }) {
   const differs = bothSet && (r.kbo_street !== r.ar_street || (r.kbo_housenr ?? '') !== (r.ar_housenr ?? ''))
   return (
     <div className="space-y-3">
-      <dl className="grid grid-cols-2 gap-x-4 gap-y-2 sm:grid-cols-3">
+      <dl className="register-fields">
         <Field label={f('detail.field.legalForm')} value={r.legal_form} />
         <Field label={f('detail.field.legalStatus')} value={r.legal_status} />
         <Field label={f('detail.field.type')} value={r.entity_type ?? recordTypeLabel(lang, r.record_type)} />
@@ -62,12 +62,12 @@ function RegisterFacts({ r, lang }: { r: RecordFull; lang: Lang }) {
         )}
         {r.address_strike_date && <Field label={f('detail.field.addressStrike')} value={`${r.address_strike_date}${r.address_strike_reason ? ` · ${r.address_strike_reason}` : ''}`} />}
       </dl>
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <div className="rounded border bg-gray-50 p-2">
+      <div className="address-comparison">
+        <div>
           <div className="text-xs text-gray-500">{f('detail.field.kboAddress')}</div>
           <div className="text-sm">{onbekend(lang, kbo)}</div>
         </div>
-        <div className={`rounded border p-2 ${differs ? 'border-amber-400 bg-amber-50' : 'bg-gray-50'}`}>
+        <div className={differs ? 'address-differs' : undefined}>
           <div className="text-xs text-gray-500">{f('detail.field.arAddress')}</div>
           <div className="text-sm">{onbekend(lang, ar)}</div>
         </div>
@@ -125,9 +125,9 @@ export default function Detail() {
   const r = data.record
   const a = r.assessment
   return (
-    <div className="grid grid-cols-1 gap-4 lg:grid-cols-5">
-      <div className="space-y-4 lg:col-span-3">
-        <header className="rounded-lg border bg-white p-4">
+    <div className="record-layout">
+      <div className="record-content">
+        <header className="record-heading">
           <div className="flex flex-wrap items-center gap-2">
             <h1 className="text-xl font-semibold">{r.display_name || dash(r.name)}</h1>
             <span className="rounded bg-gray-100 px-2 py-0.5 text-xs text-gray-700">{recordTypeLabel(lang, r.record_type)}</span>
@@ -193,8 +193,8 @@ export default function Detail() {
         <Section title={t('detail.proposals')}><ProposalList proposals={data.proposals} onChanged={reload} /></Section>
       </div>
 
-      <div className="lg:col-span-2">
-        <div className="lg:sticky lg:top-4">
+      <div className="record-sources">
+        <div>
           <EvidencePanel nr={r.nr} links={data.links} />
         </div>
       </div>

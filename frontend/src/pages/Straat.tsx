@@ -112,7 +112,7 @@ export default function Straat() {
         <p className="text-sm text-gray-600">{t('street.intro')}</p>
       </div>
 
-      <div className="flex flex-wrap items-end gap-3 rounded-lg border bg-white p-4 text-sm">
+      <div className="page-filters flex flex-wrap items-end gap-3 text-sm">
         <label className="flex flex-col">
           <span className="mb-1 text-gray-600">{t('common.street')}</span>
           <select className="min-w-56 rounded border px-2 py-1.5" value={street} onChange={(e) => navigate(`/straat/${encodeURIComponent(e.target.value)}`)}>
@@ -154,7 +154,7 @@ export default function Straat() {
         />
       )}
 
-      <div className="overflow-x-auto rounded-lg border bg-white">
+      <div className="results-table overflow-x-auto">
         {loading && <p className="p-4 text-sm text-gray-500">{t('common.loading')}</p>}
         {!loading && error && <p className="p-4 text-sm text-red-700">{t('common.loadError')}</p>}
         {!loading && !error && groups.length === 0 && <p className="p-4 text-sm text-gray-500">{t('common.noResults')}</p>}
@@ -175,7 +175,7 @@ export default function Straat() {
             <tbody className="divide-y">
               {groups.map((a) => (
                 <Fragment key={a.address}>
-                  <tr className="bg-gray-100">
+                  <tr className="address-group">
                     <td colSpan={8} className="px-3 py-1.5 text-xs font-semibold text-gray-700">
                       <div className="flex items-center justify-between gap-2">
                         <span>{a.address}</span>

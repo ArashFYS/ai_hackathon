@@ -53,12 +53,13 @@ export default function Goedgekeurd() {
         </div>
       </div>
 
-      <div className="flex gap-2 text-sm">
+      <div className="approval-filters flex gap-2 text-sm">
         {FILTERS.map((f) => (
           <button
             key={f}
             type="button"
             onClick={() => setFilter(f)}
+            aria-pressed={f === filter}
             className={`rounded-full border px-3 py-1 ${f === filter ? 'border-gray-900 bg-gray-900 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}`}
           >
             {proposalStatusLabel(lang, f)}
@@ -66,7 +67,7 @@ export default function Goedgekeurd() {
         ))}
       </div>
 
-      <div className="overflow-x-auto rounded-lg border bg-white">
+      <div className="results-table overflow-x-auto">
         {loading && <p className="p-4 text-sm text-gray-500">{t('common.loading')}</p>}
         {!loading && error && <p className="p-4 text-sm text-red-700">{t('common.loadError')}</p>}
         {!loading && !error && items && items.length === 0 && <p className="p-4 text-sm text-gray-500">{t('common.noResults')}</p>}
