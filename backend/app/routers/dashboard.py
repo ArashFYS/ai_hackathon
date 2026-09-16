@@ -16,7 +16,8 @@ router = APIRouter(prefix="/api/dashboard", tags=["dashboard"])
 
 
 def sector_counts(items: list[dict]) -> list[dict]:
-    counts = Counter(item["activity"]["sector"] for item in items)
+    # A record counts once per sector it belongs to (any KBO activity), so it matches the filter (TICKET-042).
+    counts = Counter(sector for item in items for sector in item["activity"]["sectors"])
     return sorted(
         [{"sector": key, "label": SECTOR_LABELS.get(key, key), "count": n} for key, n in counts.items()],
         key=lambda item: (item["sector"] == "onbekend", -item["count"], item["sector"]),

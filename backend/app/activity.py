@@ -73,10 +73,23 @@ def activity_of(row: dict, evidence: list[dict], kbo_public: dict | None = None)
 
     `evidence` is expected sorted latest-first (observed_at DESC, id DESC); `kbo_public` is the cached
     KBO Public Search payload for this record (or None).
-    Returns {"sector", "label", "source", "nace", "description", "activities"}; `activities` lists every
-    NACEBEL 2025 activity known from KBO Public Search (may be empty).
+    Returns {"sector", "label", "source", "nace", "description", "activities", "sectors"}; `activities` lists every
+    NACEBEL 2025 activity known from KBO Public Search (may be empty) and `sectors` every sector key the record
+    belongs to (primary + one per KBO activity) — the activity filter matches on any of them (TICKET-042).
     """
     acts = (kbo_public or {}).get("activities") or []
+    return _with_sectors(_primary(row, evidence, kbo_public, acts), acts)
+
+
+def _with_sectors(activity: dict, acts: list[dict]) -> dict:
+    sectors = [activity["sector"]] + [sector_for_nace(a.get("code"))[0] for a in acts]
+    unique = list(dict.fromkeys(sectors))
+    if len(unique) > 1:
+        unique = [k for k in unique if k != ONBEKEND[0]]
+    return {**activity, "sectors": unique}
+
+
+def _primary(row: dict, evidence: list[dict], kbo_public: dict | None, acts: list[dict]) -> dict:
     for col, source in (("nace_rsz", "KBO (RSZ)"), ("nace_vat", "KBO (BTW)")):
         code = (row.get(col) or "").strip()
         if code:

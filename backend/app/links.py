@@ -66,4 +66,9 @@ def build_links(row: dict, display_name: str, address: str, streetview: dict | N
         "staatsblad": f"https://www.ejustice.just.fgov.be/cgi_tsv/rech_res.pl?language=nl&btw={ent}" if ent else None,
         "web_search_embed": f"https://www.bing.com/search?q={name_muni}",
         "web_search": f"https://www.google.com/search?q={name_muni}",
+        # TICKET-042: social media placeholder — outbound searches for the business name + municipality.
+        # None of these embed; Instagram may bounce to a login page when logged out.
+        "social_facebook": f"https://www.facebook.com/search/top?q={name_muni}",
+        "social_instagram": f"https://www.instagram.com/explore/search/keyword/?q={name_muni}",
+        "social_tiktok": f"https://www.tiktok.com/search?q={name_muni}",
     }

@@ -1,6 +1,6 @@
 # Tickets -- ai_hackathon (Prefix: TICKET)
 
-> Next ID: TICKET-042
+> Next ID: TICKET-043
 >
 > **Deadline: 16:30 Europe/Brussels, 16 Sep 2026.** Build freeze ~15:00 → record 15:00–15:45 → upload + check + form by 16:15.
 > Anything not demoable by 15:00 is a slide in the video, not a feature.
@@ -8,6 +8,12 @@
 > Priority: **MVP** = on the critical path for the 3-min screen recording. **Stretch** = only if MVP is recordable.
 
 ## In Progress
+
+### TICKET-042: NACEBEL activities in the search table + social media source tab
+- **Type:** feat(ui) | **Priority:** Stretch (demo polish)
+- **Created:** 2026-09-16
+- **Description:** (1) Zoeken results: show the KBO Public Search activities (Hoofd-/Nevenactiviteit, code, title, since) under the sector label in the activity column (first 3, "+N meer" toggle) and include them in the export. Data already ships in `RecordSummary.activity.activities`; the cache is filled with `scripts/prefetch_kbo_public.py --only kbo`. (2) "Bron raadplegen" gets a **Sociale media** placeholder entry: outbound search links to Facebook, Instagram and TikTok for the business name + municipality (`links.social_*`), no embed.
+- **Branch:** `feat/TICKET-042-activities-social-tab`
 
 ### TICKET-038: Integrate reviewed UI, scoped live search/export and trustworthy maps
 - **Type:** feat(integration) | **Created:** 2026-09-16

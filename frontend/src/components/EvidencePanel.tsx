@@ -7,7 +7,7 @@ import RecordMap from './RecordMap'
 import StaatsbladPanel from './StaatsbladPanel'
 
 
-type TabId = 'kaart' | 'streetview' | 'kbo' | 'nbb' | 'inhoudingsplicht' | 'staatsblad' | 'web'
+type TabId = 'kaart' | 'streetview' | 'kbo' | 'nbb' | 'inhoudingsplicht' | 'staatsblad' | 'web' | 'social'
 
 interface Tab {
   id: TabId
@@ -24,6 +24,14 @@ const TABS: Tab[] = [
   { id: 'inhoudingsplicht', embed: (l) => l.inhoudingsplicht_embed, open: (l) => l.inhoudingsplicht },
   { id: 'staatsblad', embed: () => null, open: (l) => l.staatsblad ?? 'https://www.ejustice.just.fgov.be/' },
   { id: 'web', embed: (l) => l.web_search_embed, open: (l) => l.web_search },
+  { id: 'social', embed: () => null, open: (l) => l.social_facebook },
+]
+
+// TICKET-042: social media placeholder — plain outbound searches, nothing embeds.
+const SOCIAL: { id: 'facebook' | 'instagram' | 'tiktok'; url: (l: Links) => string }[] = [
+  { id: 'facebook', url: (l) => l.social_facebook },
+  { id: 'instagram', url: (l) => l.social_instagram },
+  { id: 'tiktok', url: (l) => l.social_tiktok },
 ]
 
 export default function EvidencePanel({ nr, links, record }: { nr: string; links: Links; record: RecordFull }) {
@@ -66,6 +74,18 @@ export default function EvidencePanel({ nr, links, record }: { nr: string; links
           <div className="h-full overflow-auto"><NbbPanel nr={nr} nbbConsultUrl={links.nbb_consult} /></div>
         ) : tab.id === 'staatsblad' ? (
           <div className="h-full overflow-auto"><StaatsbladPanel nr={nr} listingUrl={openUrl} /></div>
+        ) : tab.id === 'social' ? (
+          <div className="p-4 text-sm text-gray-600">
+            <p>{t('panel.socialIntro')}</p>
+            <ul className="mt-3 flex flex-wrap gap-2">
+              {SOCIAL.map((x) => <li key={x.id}>
+                <a href={x.url(links)} target="_blank" rel="noopener noreferrer" className="inline-block rounded border border-blue-700 px-3 py-1.5 text-blue-700 hover:bg-blue-50">
+                  {t(`panel.social.${x.id}`)} ↗
+                </a>
+              </li>)}
+            </ul>
+            <p className="mt-3 text-xs text-gray-500">{t('panel.socialNote')}</p>
+          </div>
         ) : embedUrl ? (
           <iframe key={`${nr}-${tab.id}`} src={embedUrl} title={label} className="h-full w-full border-0" referrerPolicy="no-referrer" loading="eager" />
         ) : (
@@ -77,7 +97,7 @@ export default function EvidencePanel({ nr, links, record }: { nr: string; links
           </div>
         )}
       </div>
-      {tab.id !== 'nbb' && tab.id !== 'staatsblad' && (
+      {tab.id !== 'nbb' && tab.id !== 'staatsblad' && tab.id !== 'social' && (
         <p className="source-footer">
           {tab.id === 'streetview' ? t('panel.streetviewFail') : t('panel.mapFail')}{' '}
           <a href={openUrl} target="_blank" rel="noopener noreferrer" className="text-blue-700 underline">{t('panel.openNew')}</a>

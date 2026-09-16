@@ -61,6 +61,8 @@ export interface Activity {
   nace: string | null
   description: string | null
   activities: NaceActivity[]
+  /** Every sector the record belongs to (primary + one per KBO activity); the filter matches any. */
+  sectors: string[]
 }
 
 /** Cached scrape of the record's own KBO Public Search page (null when never fetched). */
@@ -214,6 +216,9 @@ export interface Links {
   staatsblad: string | null
   web_search_embed: string
   web_search: string
+  social_facebook: string
+  social_instagram: string
+  social_tiktok: string
 }
 
 export interface RecordDetail {
