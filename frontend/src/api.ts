@@ -46,12 +46,35 @@ export interface Assessment {
 }
 
 /** Sector of a record: from KBO NACE (RSZ → BTW) or the latest officer-observed activity; else onbekend. */
+/** One NACEBEL 2025 activity as listed on the KBO Public Search page (TICKET-035). */
+export interface NaceActivity {
+  code: string
+  title: string | null
+  kind: 'hoofd' | 'neven'
+  since: string | null
+}
+
 export interface Activity {
   sector: string
   label: string
-  source: 'KBO (RSZ)' | 'KBO (BTW)' | 'waarneming' | null
+  source: 'KBO (RSZ)' | 'KBO (BTW)' | 'KBO (publiek)' | 'waarneming' | null
   nace: string | null
   description: string | null
+  activities: NaceActivity[]
+}
+
+/** Cached scrape of the record's own KBO Public Search page (null when never fetched). */
+export interface KboPublic {
+  available: boolean
+  url: string
+  status: string | null
+  snapshot_date: string | null
+  phone: string | null
+  email: string | null
+  website: string | null
+  activities: NaceActivity[]
+  note: string | null
+  fetched_at?: string
 }
 
 export interface ActivityCount {
@@ -200,6 +223,7 @@ export interface RecordDetail {
   contacts: Contact[]
   contact_status: ContactStatus
   google_maps: GoogleMapsPlace | null
+  kbo_public: KboPublic | null
 }
 
 export interface NbbFigures {
@@ -388,6 +412,33 @@ export async function getGeo(query: GeoQuery): Promise<GeoItem[]> {
 
 export function getRecord(nr: string): Promise<RecordDetail> {
   return api<RecordDetail>(`/records/${encodeURIComponent(nr)}`)
+}
+
+export interface StaatsbladPublication {
+  date: string
+  rubric: string | null
+  pdf_url: string | null
+  article_url: string
+  likely_gemachtigde: boolean
+}
+
+export interface StaatsbladData {
+  available: boolean
+  url: string | null
+  last_publication: string | null
+  count: number
+  publications: StaatsbladPublication[]
+  note: string | null
+}
+
+/** Live fetch of the Belgisch Staatsblad publication list (enterprise level); cached server-side. */
+export function refreshStaatsblad(nr: string): Promise<StaatsbladData> {
+  return api<StaatsbladData>(`/records/${encodeURIComponent(nr)}/staatsblad`, { method: 'POST' })
+}
+
+/** Live fetch of the KBO Public Search page (activities, contact, status); cached server-side. */
+export function refreshKboPublic(nr: string): Promise<KboPublic> {
+  return api<KboPublic>(`/records/${encodeURIComponent(nr)}/kbo-public`, { method: 'POST' })
 }
 
 export function fetchParent(nr: string): Promise<RecordSummary> {

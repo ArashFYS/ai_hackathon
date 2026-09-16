@@ -82,7 +82,11 @@ def _directory(client: httpx.Client, pid: str) -> dict | None:
     for match in data.get("matches") or []:
         for ent in match.get("entities") or []:
             names = ent.get("name") or []
-            return {"name": names[0].get("name") if names else None, "reg_date": ent.get("regDate")}
+            return {"name": names[0].get("name") if names else None, "reg_date": ent.get("regDate"),
+                    # business-card contacts (rarely filled, but free when present)
+                    "contacts": [{"name": c.get("name"), "phone": c.get("phone"), "email": c.get("email")}
+                                 for c in (ent.get("contacts") or [])],
+                    "websites": list(ent.get("websites") or [])}
     return None
 
 

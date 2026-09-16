@@ -1,6 +1,6 @@
 # Tickets -- ai_hackathon (Prefix: TICKET)
 
-> Next ID: TICKET-037
+> Next ID: TICKET-040
 >
 > **Deadline: 16:30 Europe/Brussels, 16 Sep 2026.** Build freeze ~15:00 → record 15:00–15:45 → upload + check + form by 16:15.
 > Anything not demoable by 15:00 is a slide in the video, not a feature.
@@ -8,6 +8,24 @@
 > Priority: **MVP** = on the critical path for the 3-min screen recording. **Stretch** = only if MVP is recordable.
 
 ## In Progress
+
+### TICKET-037: Staatsblad-publicaties ophalen — knop in het Staatsblad-tabblad, gemachtigde/boekhouder vinden
+- **Type:** feat(staatsblad) | **Priority:** Stretch (contact route via the accountant)
+- **Created:** 2026-09-16
+- **Description:** Contacts are the hardest field. Every Staatsblad publication (Luik B) ends with who filed it — usually the accountancy firm holding a volmacht — and that firm is easy to reach online to ask for the company's phone number. The ejustice listing (`rech_res.pl?btw=`) is scrapeable (no captcha): date, rubric, article link and the "BEELD" PDF per publication. The PDFs are scanned images (JBIG2, even in 2022) with no text layer and there is no OCR on this machine, so automatic extraction of the gemachtigde is out of scope. v1: `app/staatsblad.py` fetches + parses the listing → `indicator_cache` kind `staatsblad` (key = enterprise nr); `POST /api/records/{nr}/staatsblad`; the Staatsblad tab gets a "Publicaties ophalen" button that lists the publications newest first, flags the ones likely to name the gemachtigde (ONTSLAGEN-BENOEMINGEN, STATUTEN, DIVERSEN, OPRICHTING, VOLMACHT), links the PDF, and explains the workflow to the officer. Jaarrekening rows (NBB pointers, no PDF) are dropped. Follow-ups: OCR (tesseract) or vision on the PDF to read the filer's name; `last_publication` as an activity signal in scoring; NBB deposit "externe accountant" block as a text alternative.
+- **Branch:** `feat/TICKET-037-staatsblad-publicaties`
+
+### TICKET-035: KBO Public Search enrichment (NACEBEL 2025 activities + contact) and NACEBEL 2025 code list
+- **Type:** feat(data) | **Priority:** MVP (fills activity for ~all rows; official contact source)
+- **Created:** 2026-09-16
+- **Description:** Only 86/1006 rows carry a NACE code and 54 a phone in the VKBO sample. The KBO Public Search pages (`toonvestigingps.html?vestigingsnummer=` / `toonondernemingps.html?ondernemingsnummer=`) list every NACEBEL 2025 activity (Hoofd-/Nevenactiviteit, since date), phone / e-mail / website and the entity status, with the register snapshot date in the footer. `app/kbo_public.py` fetches + parses one page, cached in `indicator_cache` (kind `kbo_public`, key = own nr). `app/nacebel.py` loads the official NACEBEL 2025 list (`app/data/nacebel_2025.csv`, from NACEBEL_2025.xlsx) for canonical Dutch titles at any level. `activity_of()` falls through to the KBO-public main activity (source `KBO (publiek)`), `contacts_for()` adds KBO-public phone/e-mail/website (source `KBO (publieke opzoeking)`). `scripts/prefetch_kbo_public.py` pre-fills the cache for the whole DB; `POST /api/records/{nr}/kbo-public` refreshes one record. `GET /api/nacebel?q=` searches the list.
+- **Branch:** `feat/TICKET-035-kbo-public-enrichment`
+
+### TICKET-036: Street View opens on the wrong street / faces north
+- **Type:** fix(evidence)
+- **Created:** 2026-09-16
+- **Description:** Record coordinates are the Adressenregister position "afgeleid van object" (parcel/building), so Google picks the nearest pano — for deep or corner parcels that is another street (Gelmelenstraat 204 opened on "1 Merelstraat") — and `cbp=11,0,...` always looks north. Fix: Wegenregister (geo.api.vlaanderen.be, OGC Features `Wegsegment`) segments in a small bbox whose left/right street name matches the record's street → nearest point on the street as `cbll`, heading = bearing street point → address point. Cached (`indicator_cache` kind `streetview`) by the prefetch script; falls back to the old URL when nothing is cached.
+- **Branch:** `feat/TICKET-035-kbo-public-enrichment` (same PR)
 
 ### TICKET-013: Pitch video and submission
 - **Type:** docs | **Priority:** MVP — hard deadline
@@ -94,13 +112,13 @@
 
 ## Done
 
-### TICKET-036: Bulk Peppol (e-facturatie) check for every record
+### TICKET-039: Bulk Peppol (e-facturatie) check for every record — commits tagged TICKET-036 (id later reused on main)
 - **Type:** feat(score)
 - **Created:** 2026-09-16 | **Completed:** 2026-09-16
 - **Description:** `scripts/fetch_peppol.py` (Makefile `peppol`) runs the Peppol SML DNS check for every enterprise number in the database (or one street), storing results in `indicator_cache` so the e-fact. light is filled on every list and detail page without waiting for a street refresh. Free, no key; cached results younger than 7 days are skipped unless `--force`. Directory enrichment stays lazy on the detail page.
 - **Branch:** `feat/TICKET-035-apify-google-maps` | **Commits:** `77b8843`
 
-### TICKET-035: Google Maps data via Apify (compass/crawler-google-places)
+### TICKET-038: Google Maps data via Apify (compass/crawler-google-places) — commits tagged TICKET-035 (id later reused on main)
 - **Type:** feat(maps) | **Priority:** Stretch (demo value: real listing, reviews, open/closed status, contacts)
 - **Created:** 2026-09-16 | **Completed:** 2026-09-16
 - **Description:** Pull the Google Maps listing per KBO record through the Apify actor `compass/crawler-google-places`: one query per record ("<naam>, <straat> <nr>, <postcode> <gemeente>", 1 place, language nl, contacts add-on for e-mail/website, 3 newest reviews, no reviewer personal data). Stored in `google_maps_places` (+ `apify_runs`), matched on address (`adres`) or name (`naam`), else `geen`. Drives the Google Maps light (permanent gesloten → rood, tijdelijk gesloten → geel, recensie ≤ 6 maanden → groen, vermeld zonder recente recensie → geel, niet gevonden → geel; a newer officer observation wins). Phone / e-mails / website appear in the contacts list with source "Google Maps (via Apify)". Detail page gets a Google Maps card (status, rating, reviews, openingsuren, link, "Ophalen via Apify"); Straatoverzicht gets "Google Maps ophalen (Apify)". Script `scripts/fetch_google_maps.py` (--street / --nr / --all, batches of 100, --dry-run, offline --from-json), Makefile `google-maps`, token `APIFY_TOKEN` in `backend/.env` (loader `app/env.py`). ≈ $0.0075 per searched record.

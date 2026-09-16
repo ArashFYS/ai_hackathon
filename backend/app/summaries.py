@@ -88,9 +88,16 @@ def summarize(row: dict, parent: dict | None, evidence: list[dict], full: bool =
     base = {k: v for k, v in row.items() if k != "raw"} if full else {k: row.get(k) for k in SUMMARY_COLS}
     base["display_name"] = display_name(row)
     base["address"] = address_of(row)
-    base["assessment"] = assess(row, parent, evidence, nbb)
-    base["activity"] = activity_of(row, evidence)
-    base["contact_status"] = contact_status(contacts_for(row, parent, evidence))  # NBB deliberately not counted
+    kbo_public = (cached or {}).get("kbo_public", {}).get(row["nr"])
+    # Scoring rules 9/11 look at register contact; a phone/e-mail scraped from the record's own KBO page
+    # is register data too, so let assess() see it (TICKET-035).
+    scored = dict(row)
+    for kind in ("phone", "email"):
+        if not (scored.get(kind) or "").strip() and (kbo_public or {}).get(kind):
+            scored[kind] = kbo_public[kind]
+    base["assessment"] = assess(scored, parent, evidence, nbb)
+    base["activity"] = activity_of(row, evidence, kbo_public)
+    base["contact_status"] = contact_status(contacts_for(row, parent, evidence, kbo_public=kbo_public))  # NBB not counted
     base["indicators"] = indicators_for(row, parent, evidence, cached)
     if row.get("record_type") == "establishment":
         base["parent_in_dataset"] = parent is not None
