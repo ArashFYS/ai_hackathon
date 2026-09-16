@@ -82,15 +82,15 @@
   Frontend panel "Jaarrekeningen (NBB)": table of last 5 filings with year, model, omzet/brutomarge, winst/verlies, eigen vermogen, VTE; "laatste neerlegging" date. Rule for TICKET-007: vennootschap with no filing in > 24 months → Ter controle; `legalSituation` ≠ Normale toestand → mirror KBO signal.
 - **Out of scope today:** any "earnings vs expected footfall" analysis.
 
-## Backlog
-
-### MVP — critical path (in build order)
-
 ### TICKET-013: Pitch video and submission
 - **Type:** docs | **Priority:** MVP — hard deadline
 - **Created:** 2026-09-16
 - **Description:** 3-minute video (NL or EN), first frame = team name + "Challenge 1". Structure: 0:00–0:30 officer problem · 0:30–1:30 screen recording of the real flow (search → detail → evidence → log observation → approve → street overview → export) · 1:30–2:20 architecture, data, what is real vs mocked · 2:20–3:00 value, limits, reuse (other municipality). Upload to YouTube as public/unlisted, **open in a private window to verify no sign-in**, submit via Google Form (link in docs/challenge.md).
 - **Times:** record by 15:45, uploaded and verified by 16:15, form submitted by 16:20.
+
+## Backlog
+
+### MVP — critical path (in build order)
 
 ### Stretch — only after MVP is recordable
 
