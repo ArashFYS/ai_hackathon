@@ -12,13 +12,14 @@ app/links.py       external evidence URLs for a record
 app/activity.py    NACE 2-digit → sector (Dutch label); keyword map for officer-observed activity text
 app/nacebel.py     official NACEBEL 2025 list (app/data/nacebel_2025.csv): title(code), describe(code), search(q)
 app/kbo_public.py  KBO Public Search page scraper (NACEBEL 2025 activities, phone/e-mail/website, status) → indicator_cache kind kbo_public
+app/staatsblad.py  Belgisch Staatsblad listing scraper (date, rubric, PDF, likely_gemachtigde) → indicator_cache kind staatsblad (key = enterprise nr)
 app/streetview.py  Wegenregister snap: point on the record's own street + heading → indicator_cache kind streetview
 app/contact.py     contacts_for(row, parent, evidence, nbb) → Contact[] with owner/source/date; contact_status()
 app/nbb.py         NBB Balanscentrale public API client (+ cache)
 app/indicator_cache.py  generic cache (table indicator_cache)
 app/indicators.py  the three traffic lights (KBO rule, logged Google Maps observations → light, Peppol payload → light)
 app/peppol.py      Peppol SML DNS check + Directory enrichment
-app/routers/       records.py · streets.py · evidence.py · proposals.py · nbb.py · activities.py · indicators.py
+app/routers/       records.py · streets.py · evidence.py · proposals.py · nbb.py · activities.py · indicators.py · staatsblad.py
 scripts/import_data.py
 ```
 
@@ -26,7 +27,7 @@ Run: `uv run uvicorn app.main:app --reload --port 8010` · Import: `make import`
 Test quickly with `curl localhost:8010/api/...`. Keep files < 300 lines; split routers rather than grow them.
 
 ## Data rules
-- TICKET-037 integration: `load_context` returns parents, evidence and indicator cache. `contact_selection.known_contacts` includes upstream KBO/Peppol enrichment and related headquarters. `/api/locations` exposes the provincial city catalogue with loaded counts and grouped street/city suggestions. `/records/geo?city=` returns `location_valid`/`location_issue`; rejected coordinates remain in the response for review but must not be plotted. `geography.py` holds the officially sourced Schoten envelope; original DB coordinates remain unchanged.
+- TICKET-038 integration: `load_context` returns parents, evidence and indicator cache. `contact_selection.known_contacts` includes upstream KBO/Peppol enrichment and related headquarters. `/api/locations` exposes the provincial city catalogue with loaded counts and grouped street/city suggestions. `/records/geo?city=` returns `location_valid`/`location_issue`; rejected coordinates remain in the response for review but must not be plotted. `geography.py` holds the officially sourced Schoten envelope; original DB coordinates remain unchanged.
 - TICKET-034: `/records` accepts `mode=phrase|and|or` (legacy phrase default), AND/OR words, quoted phrases, type keywords and contact queries; returns `total` before `limit`. Contact queries read related local records, observations and NBB cache only. `POST /records/contacts` accepts `{numbers: string[]}` (up to 2,000) and returns `{contacts: {record_nr: Contact[]}}`, without fetching remotely or creating proposals.
 - Registry numbers (`nr`, `parent_nr`) are TEXT with leading zeros. Never cast to int.
 - `record_type` = `enterprise` (legal entity; carries `legal_status`, `legal_form`) or `establishment` (has `parent_nr`).
@@ -95,6 +96,7 @@ GET  /records/{nr}                                     → { record: RecordSumma
                                                            kbo_public: { available, url, status, snapshot_date, phone, email, website, activities, note } | null }
                                                          side effect: (re)generate open proposals from the assessment, idempotently
 POST /records/{nr}/kbo-public                          → kbo_public payload (live scrape of the KBO Public Search page, cached; TICKET-035)
+POST /records/{nr}/staatsblad                          → { available, url, last_publication, count, publications: [{ date, rubric, pdf_url, article_url, likely_gemachtigde }], note }  (live, cached; enterprise nr via parent for establishments)
 GET  /nacebel?q=&limit=20  · GET /nacebel/{code}       → [{ code, level, title }] · { code, title, division, division_title, section, section_title }|null
 POST /records/{nr}/fetch-parent                        → RecordSummary  (VKBO API by Ondernemingsnr; 404 if not found)
 GET  /records/{nr}/indicators                          → { kbo, google_maps, einvoice }   live Peppol lookup (cached); KBO and Google Maps lights recomputed

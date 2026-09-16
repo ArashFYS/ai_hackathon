@@ -4,6 +4,8 @@ import { mapLocation } from '../mapLocation'
 import { useT } from '../i18n'
 import NbbPanel from './NbbPanel'
 import RecordMap from './RecordMap'
+import StaatsbladPanel from './StaatsbladPanel'
+
 
 type TabId = 'kaart' | 'streetview' | 'kbo' | 'nbb' | 'inhoudingsplicht' | 'staatsblad' | 'web'
 
@@ -62,6 +64,8 @@ export default function EvidencePanel({ nr, links, record }: { nr: string; links
             : <p className="p-4 text-sm text-gray-600">{t('panel.noCoordinates')}</p>
         ) : tab.id === 'nbb' ? (
           <div className="h-full overflow-auto"><NbbPanel nr={nr} nbbConsultUrl={links.nbb_consult} /></div>
+        ) : tab.id === 'staatsblad' ? (
+          <div className="h-full overflow-auto"><StaatsbladPanel nr={nr} listingUrl={openUrl} /></div>
         ) : embedUrl ? (
           <iframe key={`${nr}-${tab.id}`} src={embedUrl} title={label} className="h-full w-full border-0" referrerPolicy="no-referrer" loading="eager" />
         ) : (
@@ -73,7 +77,7 @@ export default function EvidencePanel({ nr, links, record }: { nr: string; links
           </div>
         )}
       </div>
-      {tab.id !== 'nbb' && (
+      {tab.id !== 'nbb' && tab.id !== 'staatsblad' && (
         <p className="source-footer">
           {tab.id === 'streetview' ? t('panel.streetviewFail') : t('panel.mapFail')}{' '}
           <a href={openUrl} target="_blank" rel="noopener noreferrer" className="text-blue-700 underline">{t('panel.openNew')}</a>

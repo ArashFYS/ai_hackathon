@@ -1,6 +1,8 @@
 # Tickets -- ai_hackathon (Prefix: TICKET)
 
-> Next ID: TICKET-038
+> Next ID: TICKET-039
+
+
 
 >
 > **Deadline: 16:30 Europe/Brussels, 16 Sep 2026.** Build freeze ~15:00 → record 15:00–15:45 → upload + check + form by 16:15.
@@ -10,15 +12,22 @@
 
 ## In Progress
 
-### TICKET-037: Integrate reviewed UI, scoped live search/export and trustworthy maps
+### TICKET-038: Integrate reviewed UI, scoped live search/export and trustworthy maps
 - **Type:** feat(integration) | **Created:** 2026-09-16
-- **Base:** Merge latest main 6377aa8 while preserving the reviewed detail layout, source selector, direct record map, aligned navigation and single-row live search.
+- **Base:** Merge latest main a2abe3a while preserving the reviewed detail layout, source selector, direct record map, aligned navigation and single-row live search.
 - **Search/export:** Typed AND/OR, type intent, normalized email/phone lookup; sortable results; table/column/email/phone export limited to displayed record IDs and order. Include all locally cached upstream contact enrichment. Numeric scores and approval semantics are unchanged.
 - **Map follow-up:** Reject unreliable coordinate points instead of plotting Schoten records near Paris; add typed city/street suggestions with municipality labels and honest loaded-data coverage.
-- **History:** Local UI/search iterations used IDs 033/034 before discovering upstream independently used those IDs. This integration is tracked only as TICKET-037; upstream tickets 033–036 are retained.
-- **Status:** Integrated latest main 6377aa8; ready for branch review. Another maintainer merges main.
+- **History:** Local UI/search iterations used IDs 033/034 before discovering upstream independently used those IDs. This integration is tracked only as TICKET-038; upstream tickets 033–036 are retained.
+- **Status:** Integrated latest main a2abe3a; ready for branch review. Another maintainer merges main.
 - **Validation:** 20 backend tests pass, including upstream-enriched contact search/export, read-only selection scope, city filtering, bad-coordinate rejection and preserved snapped Street View. Frontend typecheck/build and map/export tests pass. Browser checks verified auto-detected establishment type (543 records), normalized phone search and a deduplicated clipboard list scoped to the two matching businesses, seven source choices, indicator colours, 67 city suggestions, street-with-city labels and honest empty-city coverage.
 - **Coordinate evidence:** 36 original Schoten GeoJSON records share 49.2933354, 2.30668925; these source points are rejected, not rewritten. The official Schoten municipality envelope retains 964 plausible map points, including valid northern records rejected by the previous hard-coded envelope.
+
+### TICKET-037: Staatsblad-publicaties ophalen — knop in het Staatsblad-tabblad, gemachtigde/boekhouder vinden
+- **Type:** feat(staatsblad) | **Priority:** Stretch (contact route via the accountant)
+- **Created:** 2026-09-16
+- **Description:** Contacts are the hardest field. Every Staatsblad publication (Luik B) ends with who filed it — usually the accountancy firm holding a volmacht — and that firm is easy to reach online to ask for the company's phone number. The ejustice listing (`rech_res.pl?btw=`) is scrapeable (no captcha): date, rubric, article link and the "BEELD" PDF per publication. The PDFs are scanned images (JBIG2, even in 2022) with no text layer and there is no OCR on this machine, so automatic extraction of the gemachtigde is out of scope. v1: `app/staatsblad.py` fetches + parses the listing → `indicator_cache` kind `staatsblad` (key = enterprise nr); `POST /api/records/{nr}/staatsblad`; the Staatsblad tab gets a "Publicaties ophalen" button that lists the publications newest first, flags the ones likely to name the gemachtigde (ONTSLAGEN-BENOEMINGEN, STATUTEN, DIVERSEN, OPRICHTING, VOLMACHT), links the PDF, and explains the workflow to the officer. Jaarrekening rows (NBB pointers, no PDF) are dropped. Follow-ups: OCR (tesseract) or vision on the PDF to read the filer's name; `last_publication` as an activity signal in scoring; NBB deposit "externe accountant" block as a text alternative.
+- **Branch:** `feat/TICKET-037-staatsblad-publicaties`
+
 
 ### TICKET-035: KBO Public Search enrichment (NACEBEL 2025 activities + contact) and NACEBEL 2025 code list
 - **Type:** feat(data) | **Priority:** MVP (fills activity for ~all rows; official contact source)

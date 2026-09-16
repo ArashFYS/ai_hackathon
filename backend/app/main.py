@@ -4,8 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .db import apply_schema
-from .routers import locations
-from .routers import activities, evidence, indicators, nacebel, nbb, proposals, record_contacts, records, streets
+from .routers import activities, evidence, indicators, locations, nacebel, nbb, proposals, record_contacts, records, staatsblad, streets
 
 
 
@@ -40,3 +39,4 @@ app.include_router(proposals.router)
 app.include_router(nbb.router)
 app.include_router(indicators.router)
 app.include_router(nacebel.router)
+app.include_router(staatsblad.router)

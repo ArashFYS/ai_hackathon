@@ -1,8 +1,8 @@
 # ADR-004: Integrated search, contact export and location validation
 
-Ticket: TICKET-037
+Ticket: TICKET-038
 Date: 2026-09-16
-Base: main 6377aa8
+Base: main a2abe3a (including the Staatsblad publication panel and backend)
 
 ## Preserved upstream functionality
 
