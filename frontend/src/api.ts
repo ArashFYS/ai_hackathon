@@ -412,6 +412,28 @@ export function getRecord(nr: string): Promise<RecordDetail> {
   return api<RecordDetail>(`/records/${encodeURIComponent(nr)}`)
 }
 
+export interface StaatsbladPublication {
+  date: string
+  rubric: string | null
+  pdf_url: string | null
+  article_url: string
+  likely_gemachtigde: boolean
+}
+
+export interface StaatsbladData {
+  available: boolean
+  url: string | null
+  last_publication: string | null
+  count: number
+  publications: StaatsbladPublication[]
+  note: string | null
+}
+
+/** Live fetch of the Belgisch Staatsblad publication list (enterprise level); cached server-side. */
+export function refreshStaatsblad(nr: string): Promise<StaatsbladData> {
+  return api<StaatsbladData>(`/records/${encodeURIComponent(nr)}/staatsblad`, { method: 'POST' })
+}
+
 /** Live fetch of the KBO Public Search page (activities, contact, status); cached server-side. */
 export function refreshKboPublic(nr: string): Promise<KboPublic> {
   return api<KboPublic>(`/records/${encodeURIComponent(nr)}/kbo-public`, { method: 'POST' })
