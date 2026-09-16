@@ -99,6 +99,7 @@ export interface RecordSummary {
   activity: Activity
   contact_status: ContactStatus
   indicators: Indicators
+  has_evidence: boolean
   parent_in_dataset?: boolean
   seat_elsewhere?: boolean
   parent_display_name?: string | null
@@ -330,7 +331,7 @@ export class ApiError extends Error {
   }
 }
 
-async function api<T>(path: string, init?: RequestInit): Promise<T> {
+export async function api<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`/api${path}`, {
     ...init,
     headers: { Accept: 'application/json', ...(init?.body ? { 'Content-Type': 'application/json' } : {}), ...(init?.headers ?? {}) },
@@ -348,7 +349,7 @@ async function api<T>(path: string, init?: RequestInit): Promise<T> {
   return (await res.json()) as T
 }
 
-function qs(params: Record<string, string | number | undefined>): string {
+export function qs(params: Record<string, string | number | boolean | undefined>): string {
   const p = new URLSearchParams()
   for (const [k, v] of Object.entries(params)) {
     if (v !== undefined && v !== '') p.set(k, String(v))
@@ -360,6 +361,12 @@ function qs(params: Record<string, string | number | undefined>): string {
 // ---------- endpoints ----------
 
 export interface RecordsQuery {
+  municipality?: string
+  certainty?: Certainty
+  contact?: ContactStatus
+  has_evidence?: boolean
+  parent_missing?: boolean
+  offset?: number
   q?: string
   street?: string
   type?: RecordType | ''
@@ -368,16 +375,16 @@ export interface RecordsQuery {
   limit?: number
 }
 
+export function getRecordPage(query: RecordsQuery) {
+  return api<{ items: RecordSummary[]; total: number; offset: number; limit: number }>(`/records${qs({ ...query })}`)
+}
+
 export async function getRecords(query: RecordsQuery): Promise<RecordSummary[]> {
   const data = await api<{ items: RecordSummary[] }>(`/records${qs({ ...query })}`)
   return data.items
 }
 
-export interface GeoQuery {
-  street?: string
-  status?: Status | ''
-  limit?: number
-}
+export type GeoQuery = RecordsQuery
 
 export async function getGeo(query: GeoQuery): Promise<GeoItem[]> {
   const data = await api<{ items: GeoItem[] }>(`/records/geo${qs({ ...query })}`)
@@ -435,12 +442,12 @@ export function getStreet(street: string, activity?: string): Promise<StreetOver
   return api<StreetOverview>(`/streets/${encodeURIComponent(street)}${qs({ activity })}`)
 }
 
-export function getActivities(): Promise<ActivityCount[]> {
-  return api<ActivityCount[]>('/activities')
+export function getActivities(query: Pick<RecordsQuery, "municipality" | "type"> = {}): Promise<ActivityCount[]> {
+  return api<ActivityCount[]>(`/activities${qs({ ...query })}`)
 }
 
-export function getProposals(status?: ProposalStatus): Promise<Proposal[]> {
-  return api<Proposal[]>(`/proposals${qs({ status })}`)
+export function getProposals(status?: ProposalStatus, query: Pick<RecordsQuery, "municipality" | "type" | "activity"> & { linked?: boolean } = {}): Promise<Proposal[]> {
+  return api<Proposal[]>(`/proposals${qs({ ...query, status })}`)
 }
 
 export function decideProposal(id: number, status: 'bevestigd' | 'afgewezen'): Promise<Proposal> {

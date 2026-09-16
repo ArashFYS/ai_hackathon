@@ -76,11 +76,11 @@ Links       { google_maps_embed, google_maps, street_view_embed, street_view, kb
 Endpoints (all under `/api`):
 ```
 GET  /health
-GET  /records?q=&street=&type=&status=&activity=&limit=50  → { items: RecordSummary[] }   q matches name/trade_name/search_name/street (LIKE, case-insensitive);
+GET  /records?q=&street=&type=&status=&activity=&municipality=&limit=50&offset=0 → { items: RecordSummary[], total, offset, limit }   q matches name/trade_name/search_name/street (LIKE, case-insensitive);
                                                          if q stripped of non-digits is 9–10 digits (officers paste '0448.335.384' or 'BE 0448 335 384'), zfill(10) and also match nr/parent_nr
                                                          activity=<Activity.sector> filters on the computed sector (in Python, before limit)
-GET  /activities                                       → [{ sector, label, count }] over all records; count desc, 'onbekend' last; only sectors with count > 0
-GET  /records/geo?street=&status=&limit=2000          → { items: [{ nr, display_name, record_type, lat, lng, status, status_label, certainty, address, outside_municipality }] }
+GET  /activities?municipality=&type=                    → [{ sector, label, count }] over the municipality/type selection; count desc, 'onbekend' last; only sectors with count > 0
+GET  /records/geo?street=&status=&municipality=&type=&activity= → { total, items: [{ nr, display_name, record_type, lat, lng, status, status_label, certainty, address, outside_municipality }] }
                                                          only rows with coordinates; outside_municipality = lat/lng outside SCHOTEN_BBOX (scoring rule 8). Declared before /{nr}.
 GET  /records/{nr}                                     → { record: RecordSummary + every column of `records` except `raw`, parent: RecordSummary|null,
                                                            parent_in_dataset: bool, seat_elsewhere: bool,
@@ -166,3 +166,35 @@ List endpoints (`/records`, `/streets/{street}`) never hit the network: they rea
 **Google Maps** (`google_maps_indicator(evidence)`) — **no Google API** (the Places API needs a billed Cloud project; removed in TICKET-029). Uses the latest officer-logged evidence row with `source = 'google_maps'`: conclusion `niet_actief` → rood · `actief` observed within 183 days → groen · `actief` older → geel · `onduidelijk` → geel · nothing logged → onbekend "Nog geen Google Maps-waarneming gelogd". `checked_at` = observed_at, `url` = the evidence URL.
 
 **E-facturatie** (`peppol.py`). Participant id = `0208:<ondernemingsnummer>` only (enterprise nr; `links.enterprise_nr_of`). SML DNS: host = `base32(sha256(pid.lower())).rstrip('=').lower() + ".iso6523-actorid-upis.edelivery.tech.ec.europa.eu"`; `socket.getaddrinfo` → exists (`EAI_NODATA`: NAPTR only) = registered, `EAI_NONAME` = not registered, else onbekend (not cached). Sanity-resolves `edelivery.tech.ec.europa.eu` first. groen = registered (detail page adds Peppol Directory name + regDate; the Directory is rate-limited, so only `with_directory=True` there) · rood = not registered · geel = not registered but legal form not obliged (vereniging, stichting, maatschap, openbare instelling). Cache kind `einvoice`, key = enterprise nr, TTL 7 days. `url` = Peppol Directory public search.
+
+## Municipal dashboard — TICKET-032
+
+`GET /api/dashboard?municipality=Schoten&type=&activity=` is read-only and uses one SQLite snapshot.
+Only Schoten is offered by the current UI. Record selection is shared with search and map:
+municipality = own KBO NIS code or normalized municipality name, then type and computed sector.
+Parents outside the municipality remain assessment context and do not enter counts.
+No row limit, external lookups, proposal generation or database writes occur during aggregation.
+All list/map/street assessments now batch-load the same NBB cache used by Detail; contact coverage
+continues to exclude NBB. RecordSummary also contains `has_evidence`, `source`, `fetched_at`, `kbo_niscode`.
+
+Response (frontend type in `src/dashboard.ts`):
+- `scope: {municipality, name, type, activity}`, `municipalities: [{code,name}]`
+- `total` = unique record numbers; `types: {enterprise,establishment}`
+- `statuses`, `certainty`, `contacts`: counts keyed by existing enum codes, including zero categories
+- `with_evidence`: records with any evidence row; `missing_parents`: establishments whose parent is absent from the entire DB
+- `sectors`, `sector_options`: `[{sector,label,count}]`; options ignore selected sector and retain municipality/type
+- `proposals: {open,bevestigd,afgewezen}` counts linked proposal rows, not businesses
+- `unlinked_proposals_all_municipalities`: separate global count of proposals with record_nr NULL
+- `map`: all valid finite world coordinates in the existing GeoItem shape; outliers flagged, not discarded
+- `provenance: {retrieved_from,retrieved_to,sources,complete_municipality,registry_snapshot_date,computed_at}`;
+  dates from stored record retrieval timestamps; completeness false for starter data, otherwise null;
+  federal snapshot date unknown. Retrieval is not verification. Empty results have null dates.
+
+`/records` and `/records/geo` additionally accept `certainty`, `contact`, `has_evidence` (bool),
+`parent_missing` (bool), alongside existing q/street/type/status/activity and municipality filters.
+Filtering precedes pagination. Search default/max limit remains 50/2000, offset >= 0, with complete total.
+Geo has no default cap; optional explicit limit <= 5000 retains a complete total.
+`/proposals` additionally accepts municipality/type/activity and `linked=true|false`; scoped proposals
+exclude unlinked reports. Omit status to include all decisions. Export remains all confirmed rows.
+
+Validation: from backend, `python -m unittest discover -s scripts -p 'test_dashboard.py'`.

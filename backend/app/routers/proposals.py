@@ -9,6 +9,7 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
 from ..db import get_db
+from ..selection import RecordFilters, read_snapshot, select_records
 from ..summaries import address_of, fetch_record, now_iso, proposal_with_record
 
 router = APIRouter(prefix="/api", tags=["proposals"])
@@ -104,13 +105,23 @@ def export_proposals(format: Literal["csv", "json"] = "json", conn: sqlite3.Conn
 
 
 @router.get("/proposals")
-def list_proposals(status: str | None = Query(None), conn: sqlite3.Connection = Depends(get_db)):
+def list_proposals(
+    status: str | None = Query(None), municipality: str | None = None,
+    type: Literal["enterprise", "establishment"] | None = None, activity: str | None = None,
+    linked: bool | None = None, conn: sqlite3.Connection = Depends(get_db),
+):
     sql, params = "SELECT * FROM proposals", []
     if status:
         sql += " WHERE status = ?"
         params.append(status)
     sql += " ORDER BY id DESC"
-    return [proposal_with_record(conn, dict(r)) for r in conn.execute(sql, params).fetchall()]
+    with read_snapshot(conn):
+        selected = None
+        if municipality or type or activity:
+            selected = {i["nr"] for i in select_records(conn, RecordFilters(municipality=municipality, type=type, activity=activity))}
+        return [proposal_with_record(conn, dict(r)) for r in conn.execute(sql, params)
+                if (selected is None or r["record_nr"] in selected)
+                and (linked is None or (r["record_nr"] is not None) == linked)]
 
 
 @router.post("/proposals/{pid}/decide")

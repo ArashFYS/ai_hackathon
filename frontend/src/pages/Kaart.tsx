@@ -1,37 +1,17 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
-import { CircleMarker, MapContainer, Popup, TileLayer, useMap } from 'react-leaflet'
-import * as L from 'leaflet'
-import 'leaflet/dist/leaflet.css'
+import { useSearchParams } from 'react-router-dom'
 import type { GeoItem, Status } from '../api'
-import { STATUS_CODES, dash, getGeo, recordTypeLabel, statusLabel } from '../api'
+import { STATUS_CODES, getGeo, statusLabel } from '../api'
 import { useLang, useT } from '../i18n'
-import StatusBadge from '../components/StatusBadge'
-
-const SCHOTEN_CENTER: [number, number] = [51.2525, 4.501]
-const SCHOTEN_ZOOM = 14
-
-const MARKER_COLOURS: Record<Status, string> = {
-  actief: '#16a34a',
-  ter_controle: '#d97706',
-  waarschijnlijk_niet_actief: '#dc2626',
-  geen_onderneming: '#6b7280',
-}
-
-/** Fits the map to `points` every time `tick` changes (click on "Buiten Schoten"). */
-function FitBounds({ points, tick }: { points: [number, number][]; tick: number }) {
-  const map = useMap()
-  useEffect(() => {
-    if (tick === 0 || points.length === 0) return
-    map.fitBounds(L.latLngBounds(points), { padding: [40, 40] })
-  }, [map, points, tick])
-  return null
-}
+import BusinessMap, { MARKER_COLOURS } from '../components/BusinessMap'
+import ScopeChips from '../components/ScopeChips'
+import { readRecordQuery } from '../dashboard'
 
 export default function Kaart() {
   const t = useT()
   const { lang } = useLang()
   const [searchParams, setSearchParams] = useSearchParams()
+  const queryString = searchParams.toString()
   const street = searchParams.get('street') ?? ''
   const status = (searchParams.get('status') ?? '') as Status | ''
   const [streetInput, setStreetInput] = useState(street)
@@ -46,7 +26,7 @@ export default function Kaart() {
     let cancelled = false
     setLoading(true)
     setError(false)
-    getGeo({ street: street || undefined, status: status || undefined, limit: 2000 })
+    getGeo(readRecordQuery(new URLSearchParams(queryString)))
       .then((d) => {
         if (!cancelled) {
           setItems(d)
@@ -62,7 +42,7 @@ export default function Kaart() {
     return () => {
       cancelled = true
     }
-  }, [street, status])
+  }, [queryString])
 
   const outside = useMemo(() => items.filter((i) => i.outside_municipality), [items])
   const outsidePoints = useMemo<[number, number][]>(() => outside.map((i) => [i.lat, i.lng]), [outside])
@@ -83,6 +63,7 @@ export default function Kaart() {
         <p className="text-sm text-gray-600">{t('map.intro')}</p>
       </div>
 
+      <ScopeChips params={searchParams} onClear={() => setSearchParams({})} />
       <form
         className="flex flex-wrap items-end gap-3 rounded-lg border bg-white p-4 text-sm"
         onSubmit={(e) => {
@@ -129,32 +110,7 @@ export default function Kaart() {
       </form>
 
       <div className="overflow-hidden rounded-lg border bg-white">
-        <MapContainer center={SCHOTEN_CENTER} zoom={SCHOTEN_ZOOM} className="h-[70vh] w-full" scrollWheelZoom>
-          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution={t('map.attribution')} />
-          <FitBounds points={outsidePoints} tick={fitTick} />
-          {items.map((i) => (
-            <CircleMarker
-              key={i.nr}
-              center={[i.lat, i.lng]}
-              radius={6}
-              pathOptions={{ color: MARKER_COLOURS[i.status], fillColor: MARKER_COLOURS[i.status], fillOpacity: 0.7, weight: 1.5 }}
-            >
-              <Popup>
-                <div className="space-y-1 text-sm">
-                  <div className="font-semibold">{i.display_name}</div>
-                  <div className="text-xs text-gray-600">
-                    {recordTypeLabel(lang, i.record_type)} · {dash(i.address)}
-                  </div>
-                  <StatusBadge status={i.status} label={i.status_label} />
-                  {i.outside_municipality && <div className="text-xs text-amber-700">{t('map.outsideNote')}</div>}
-                  <div>
-                    <Link to={`/record/${i.nr}`} className="text-blue-700 hover:underline">{t('map.viewDetail')}</Link>
-                  </div>
-                </div>
-              </Popup>
-            </CircleMarker>
-          ))}
-        </MapContainer>
+        <BusinessMap items={loading || error ? [] : items} outsidePoints={outsidePoints} fitTick={fitTick} />
       </div>
 
       <div className="flex flex-wrap items-center gap-4 rounded-lg border bg-white px-4 py-2 text-xs text-gray-700">

@@ -12,17 +12,9 @@
 
 ## In Progress
 
-### TICKET-013: Pitch video and submission
-- **Type:** docs | **Priority:** MVP — hard deadline
-- **Created:** 2026-09-16
-- **Description:** 3-minute video (NL or EN), first frame = team name + "Challenge 1". Structure: 0:00–0:30 officer problem · 0:30–1:30 screen recording of the real flow (search → detail → evidence → log observation → approve → street overview → export) · 1:30–2:20 architecture, data, what is real vs mocked · 2:20–3:00 value, limits, reuse (other municipality). Upload to YouTube as public/unlisted, **open in a private window to verify no sign-in**, submit via Google Form (link in docs/challenge.md).
-- **Times:** record by 15:45, uploaded and verified by 16:15, form submitted by 16:20.
-
-## Backlog
-
 ### TICKET-032: Gemeentedashboard als startpagina — status, sectoren en datadekking
 - **Type:** feat(dashboard) | **Priority:** Gepland; geen uitbreiding van de pitch-kritieke scope
-- **Created / Rescoped:** 2026-09-16 | **Status:** Gescopeerd; implementatie niet gestart. Deze PR bevat uitsluitend planning.
+- **Created / Rescoped:** 2026-09-16 | **Status:** In Progress — geïmplementeerd op `feat/TICKET-032-dashboard`; gereed voor PR-review.
 - **Doel en gebruikerskeuze:** Eén overzicht als nieuwe startpagina per gemeente, eerst Schoten: actuele ingeladen data netjes presenteren, statusverdeling tonen en naar dossiers doorklikken. Herscope op de daadwerkelijk gepullde `main` (`062d0ca`); de dashboardopzet blijft behouden. Toekomstige metrics later op dezelfde pagina aansluiten.
 
 **Wat nu al bestaat en wordt hergebruikt**
@@ -37,9 +29,9 @@
 | Blok | Inhoud en definitie | Gedrag / beperking |
 |---|---|---|
 | Kop en filters | Gemeenteoverzicht — Schoten; type Alle records / Ondernemingen / Vestigingen en bestaande sectorcodes, inclusief onbekend | Eén selectie voor alle recordmetrics; geen nieuwe gemeente-import of provinciebreed totaal |
-| Vier kerncijfers | Ingeladen records, Actief, Ter controle, Met waarneming; respectievelijk uniek `nr`, twee bestaande `assessment.status`-waarden en records met minstens één `evidence`-rij | Records uitsplitsen in ondernemingen/vestigingen; Met waarneming is bewijsdekking, geen bewijs van activiteit of recentheid |
-| Statuswiel | Donut met Actief / Ter controle / Waarschijnlijk niet actief / Geen onderneming; totaal in het midden, aantal en percentage in vaste legenda | Bestaande kleuren en codes; alle vier categorieën zichtbaar, ook bij nul; legenda en kerncijfers klikken naar de exacte recordselectie |
-| Sectoren | Compacte horizontale verdeling volgens `activity_of()` (KBO RSZ → BTW → laatste ingevulde waargenomen activiteit met herkend trefwoord → onbekend), met expliciet aandeel onbekend | Alle sectoren behoren tot hetzelfde gefilterde totaal; geen tweede classificatie. Bij gekozen sector toont het blok alleen die selectie; filter wissen herstelt het overzicht |
+| Vier kerncijfers | Ingeladen records, Ondernemingen, Vestigingen, Ter controle; uniek `nr`, beide recordtypes en bestaande `assessment.status` | Alle cijfers volgen dezelfde selectie. Met waarneming staat bij datadekking; actief blijft zichtbaar in statuswiel en balken. |
+| Statuswiel | Omschakelbare donut Activiteiten / Status met Actief / Ter controle / Waarschijnlijk niet actief / Geen onderneming; totaal in het midden, aantal en percentage in vaste legenda | Bestaande kleuren en codes; alle vier categorieën zichtbaar, ook bij nul; legenda en kerncijfers klikken naar de exacte recordselectie |
+| Sectoren | Activiteitendonut met aanklikbare legenda volgens `activity_of()` (KBO RSZ → BTW → laatste ingevulde waargenomen activiteit met herkend trefwoord → onbekend), met expliciet aandeel onbekend | Alle sectoren behoren tot hetzelfde gefilterde totaal; geen tweede classificatie. Bij gekozen sector toont het blok alleen die selectie; filter wissen herstelt het overzicht |
 | Datadekking | Compacte aantallen/aandelen voor zekerheid Hoog/Middel/Laag, ontbrekende moeder bij vestigingen en contactstatus register/zetel/waargenomen/onbekend | Zekerheid is geen numerieke score. Contactstatus volgt bestaande bronprioriteit; NBB-contacten tellen niet mee. Toon dit als contactdekking uit register/waarnemingen, niet als alle beschikbare contactmogelijkheden |
 | Opgeslagen voorstellen | Aantal voorstelrijen open/bevestigd/afgewezen die via `record_nr` aan de geselecteerde records gekoppeld zijn | Meerdere voorstellen per record mogelijk; tel afzonderlijke werkitems. Noem het geen volledige controlevoorraad en toon expliciet dat meldingen zonder registerkoppeling buiten deze gefilterde telling vallen |
 | Bron en dekking | Bron, ophaaldatum of datumbereik en vermelding Deelbestand — niet alle records van de gemeente | Starterbestand opgehaald 07-09-2026; exacte federale KBO-peildatum onbekend. Geen importtijd of berekentijd presenteren als laatste controle |
@@ -70,6 +62,20 @@
 - [ ] Test dubbel bewijs/voorstellen, beide recordtypes, een moeder buiten de gemeente, onbekende sector/contacten, sector uit een waarneming en alle nul-/fouttoestanden. Ongekoppelde meldingen blijven apart van registerrecords en hun uitsluiting is zichtbaar bij de voorstelmetric.
 - [ ] Nieuwe waarneming werkt status/bewijs/sector/contactdekking consequent bij; tegenstrijdig bewijs volgt bestaande regels. Goedkeuring wijzigt uitsluitend voorstelmetrics. Controleer gelijke beoordelingen bij aanwezige NBB-cache en de bewust NBB-vrije contactstatus.
 - [ ] Aggregatie doet geen writes of externe calls; bron/deelbestand/noemers zijn zichtbaar. Relevante tel-/filtertests, frontendtypecheck en controle van toetsenbord/mobiele weergave slagen. Geen hardgecodeerde live aantallen.
+
+- **Implementatie-aanvulling:** Gebruik de screenshot als visuele referentie: vier kaarten voor records/ondernemingen/vestigingen/ter controle, activiteitendonut, bestaande Leaflet-kaart uit Kaart en statusbalken. Echte data en expliciete dekking; geen fictieve trendlijnen. Bewijs/contact/zekerheid en voorstellen volgen als compacte blokken onderaan.
+- **Oplevering:** Dashboard, gedeelde kaart, doorklikfilters en paginering geïmplementeerd. Vier backendtests geslaagd (inclusief 2.105 records, dubbele waarnemingen/voorstellen, ontbrekende moeder, NBB-cachepariteit en alleen-lezen). Productiebuild en bestaande kaarttest geslaagd. Browsercontrole: gemeente/type/sector, echte totalen en kaart zichtbaar.
+
+
+
+### TICKET-013: Pitch video and submission
+- **Type:** docs | **Priority:** MVP — hard deadline
+- **Created:** 2026-09-16
+- **Description:** 3-minute video (NL or EN), first frame = team name + "Challenge 1". Structure: 0:00–0:30 officer problem · 0:30–1:30 screen recording of the real flow (search → detail → evidence → log observation → approve → street overview → export) · 1:30–2:20 architecture, data, what is real vs mocked · 2:20–3:00 value, limits, reuse (other municipality). Upload to YouTube as public/unlisted, **open in a private window to verify no sign-in**, submit via Google Form (link in docs/challenge.md).
+- **Times:** record by 15:45, uploaded and verified by 16:15, form submitted by 16:20.
+
+## Backlog
+
 
 ### MVP — critical path (in build order)
 

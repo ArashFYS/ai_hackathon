@@ -5,7 +5,7 @@ import sqlite3
 from fastapi import APIRouter, Depends, HTTPException
 
 from ..db import get_db
-from ..summaries import ensure_auto_proposals, load_context, proposal_with_record, summarize
+from ..summaries import ensure_auto_proposals, load_context, load_nbb_context, proposal_with_record, summarize
 
 router = APIRouter(prefix="/api/streets", tags=["streets"])
 
@@ -35,9 +35,12 @@ def street_detail(street: str, activity: str | None = None, conn: sqlite3.Connec
     if not rows:
         raise HTTPException(404, "Straat niet gevonden")
     parents, evidence, cached = load_context(conn, rows)
+    nbb = load_nbb_context(conn, rows)
     items = {}
     for r in rows:  # assess first so auto-proposals exist before we look up open ones
-        items[r["nr"]] = summarize(r, parents.get(r.get("parent_nr")), evidence.get(r["nr"], []), cached=cached)
+        items[r["nr"]] = summarize(r, parents.get(r.get("parent_nr")), evidence.get(r["nr"], []), cached=cached,
+            nbb=nbb.get(r.get("parent_nr") if r["record_type"] == "establishment" else r["nr"]),
+        )
         ensure_auto_proposals(conn, r, items[r["nr"]]["assessment"])
     nrs = [r["nr"] for r in rows]
     open_props: dict[str, dict] = {}

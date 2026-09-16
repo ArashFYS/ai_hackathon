@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react'
-import type { ActivityCount } from '../api'
+import type { ActivityCount, RecordType } from '../api'
 import { activitySectorLabel, getActivities } from '../api'
 import { useLang, useT } from '../i18n'
 
 /** "Activiteit" dropdown: sectors with counts from /api/activities (onbekend last). */
-export default function ActivitySelect({ value, onChange }: { value: string; onChange: (sector: string) => void }) {
+export default function ActivitySelect({ value, onChange, municipality, type }: { value: string; onChange: (sector: string) => void; municipality?: string; type?: RecordType | '' }) {
   const [options, setOptions] = useState<ActivityCount[] | null>(null)
   const t = useT()
   const { lang } = useLang()
 
   useEffect(() => {
     let cancelled = false
-    getActivities()
+    getActivities({ municipality, type })
       .then((a) => {
         if (!cancelled) setOptions(a)
       })
@@ -21,7 +21,7 @@ export default function ActivitySelect({ value, onChange }: { value: string; onC
     return () => {
       cancelled = true
     }
-  }, [])
+  }, [municipality, type])
 
   return (
     <label className="flex flex-col text-sm">

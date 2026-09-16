@@ -18,7 +18,7 @@ src/components/       StatusBadge · ZekerheidBadge · ReasonsList · EvidencePa
                       IndicatorLights (three traffic lights KBO · Maps · e-fact., captions via t(); TICKET-033)
 ```
 
-Routes: `/` Zoeken · `/record/:nr` Detail · `/straat` and `/straat/:street` Straatoverzicht · `/kaart?street=&status=` Kaart · `/goedgekeurd` Goedgekeurde wijzigingen.
+Routes: `/` Dashboard · `/zoeken` Zoeken · `/record/:nr` Detail · `/straat` and `/straat/:street` Straatoverzicht · `/kaart?street=&status=` Kaart · `/goedgekeurd` Goedgekeurde wijzigingen.
 
 ## Province of Antwerp theme — TICKET-030
 Visual restyle from `feat/TICKET-029-provincial-ui` merged on top of the i18n/feature set: `@theme` palette + semantic classes in `src/index.css` (`antwerp-app`, `site-header`/`site-brand`/`site-nav-link`/`site-footer`, `page-filters`, `results-table`/`address-group`, `record-layout`/`record-heading`/`detail-section`/`register-fields`/`address-comparison`, `source-browser`/`source-viewport`, `activity-status[data-status]`, `certainty-label[data-certainty]`), logo `public/provincie-antwerpen-logo.svg`. All text still goes through `t()`/`useT()` (NL default, EN toggle). `ConfidenceScore` and `mapLocation.ts` exist but are not wired in (the API supplies no numeric score; the minibrowser keeps the backend map links).
@@ -49,3 +49,16 @@ No library. `src/i18n/nl/*.ts` is the source of truth (`labels.ts` = enum codes,
 
 ## NbbPanel
 Calls `/api/records/{nr}/nbb`. Shows company (naam, rechtsvorm, rechtstoestand + datum), "Laatste neerlegging: {date} ({months} maanden geleden)", table of deposits: Boekjaar · Model · Omzet · Brutomarge · Winst/verlies · Eigen vermogen · VTE · PDF ↗. Numbers formatted `nl-BE` EUR, null → "—". If `available:false` show the `note` and the "Open in NBB ↗" link. Loading and error states in Dutch.
+
+
+## Dashboard — TICKET-032
+`/` is the municipal dashboard. URL scope: `gemeente`, `soort`, `sector` (default Schoten).
+Legacy root query links using q/type/status/activity/street redirect to `/zoeken` preserving filters.
+`pages/Dashboard.tsx` calls one aggregate endpoint; `DashboardChart` toggles sector/status distributions,
+`DashboardCoverage` shows observation/contact/certainty/parent coverage and saved proposals.
+`BusinessMap` shares the actual Leaflet renderer with Kaart. All percentages use the selected total;
+missing parents use selected establishments. No historical sparklines or invented counts.
+Dutch/English labels in `i18n/{nl,en}/dashboard.ts`. Empty/loading/error states are distinct.
+Search has exact totals and 100-row pagination. `ScopeChips` exposes dashboard drilldown filters.
+Kaart preserves municipality/type/sector; proposals preserve status and scope in the URL, with a
+separate all-municipality view for unlinked reports. Return to dashboard or window focus refreshes data.

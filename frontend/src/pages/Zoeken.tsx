@@ -1,17 +1,22 @@
 import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import type { RecordSummary, RecordType, Status } from '../api'
-import { STATUS_CODES, activitySectorLabel, activitySourceLabel, contactStatusLabel, dash, getRecords, recordTypeLabel, registerLabel, statusLabel } from '../api'
+import { STATUS_CODES, activitySectorLabel, activitySourceLabel, contactStatusLabel, dash, getRecordPage, recordTypeLabel, registerLabel, statusLabel } from '../api'
 import { useLang, useT } from '../i18n'
 import StatusBadge from '../components/StatusBadge'
 import ZekerheidBadge from '../components/ZekerheidBadge'
 import ActivitySelect from '../components/ActivitySelect'
 import IndicatorLights from '../components/IndicatorLights'
+import ScopeChips from '../components/ScopeChips'
+import { number, readRecordQuery } from '../dashboard'
 
 export default function Zoeken() {
   const t = useT()
   const { lang } = useLang()
   const [params, setParams] = useSearchParams()
+  const queryString = params.toString()
+  const offset = Math.max(0, Number(params.get('offset')) || 0)
+  const [total, setTotal] = useState(0)
   const q = params.get('q') ?? ''
   const type = (params.get('type') ?? '') as RecordType | ''
   const status = (params.get('status') ?? '') as Status | ''
@@ -29,9 +34,9 @@ export default function Zoeken() {
     let cancelled = false
     setLoading(true)
     setError(false)
-    getRecords({ q, type, status, activity, limit: 100 })
+    getRecordPage({ ...readRecordQuery(new URLSearchParams(queryString)), offset, limit: 100 })
       .then((rows) => {
-        if (!cancelled) setItems(rows)
+        if (!cancelled) { setItems(rows.items); setTotal(rows.total) }
       })
       .catch(() => {
         if (!cancelled) setError(true)
@@ -42,7 +47,7 @@ export default function Zoeken() {
     return () => {
       cancelled = true
     }
-  }, [q, type, status, activity])
+  }, [queryString, offset])
 
   function update(next: Record<string, string>) {
     const p = new URLSearchParams(params)
@@ -50,6 +55,7 @@ export default function Zoeken() {
       if (v) p.set(k, v)
       else p.delete(k)
     }
+    if (!('offset' in next)) p.delete('offset')
     setParams(p)
   }
 
@@ -64,6 +70,7 @@ export default function Zoeken() {
         </p>
       </div>
 
+      <ScopeChips params={params} onClear={() => setParams({})} />
       <form
         className="page-filters flex flex-wrap items-end gap-3"
         onSubmit={(e) => {
@@ -97,7 +104,7 @@ export default function Zoeken() {
             ))}
           </select>
         </label>
-        <ActivitySelect value={activity} onChange={(v) => update({ activity: v })} />
+        <ActivitySelect municipality={params.get('municipality') || undefined} type={type} value={activity} onChange={(v) => update({ activity: v })} />
         <button type="submit" className="rounded bg-gray-900 px-4 py-1.5 text-sm font-medium text-white hover:bg-gray-700">
           {t('search.button')}
         </button>
@@ -148,9 +155,13 @@ export default function Zoeken() {
           </table>
         )}
       </div>
-      {items && items.length >= 100 && (
-        <p className="text-xs text-gray-500">{t('search.limit')}</p>
-      )}
+      {!loading && !error && items && <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
+        <p>{t('dashboard.results', { from: number(items.length ? offset + 1 : 0), to: number(offset + items.length), total: number(total) })}</p>
+        {total > 100 && <div className="flex gap-2">
+          <button type="button" className="rounded border px-4 py-2 disabled:opacity-40" disabled={offset === 0} onClick={() => update({ offset: String(Math.max(0, offset - 100)) })}>{t('dashboard.previous')}</button>
+          <button type="button" className="rounded border px-4 py-2 disabled:opacity-40" disabled={offset + 100 >= total} onClick={() => update({ offset: String(offset + 100) })}>{t('dashboard.next')}</button>
+        </div>}
+      </div>}
     </div>
   )
 }
