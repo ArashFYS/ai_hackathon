@@ -1,6 +1,6 @@
 # Tickets -- ai_hackathon (Prefix: TICKET)
 
-> Next ID: TICKET-028
+> Next ID: TICKET-029
 >
 > **Deadline: 16:30 Europe/Brussels, 16 Sep 2026.** Build freeze ~15:00 → record 15:00–15:45 → upload + check + form by 16:15.
 > Anything not demoable by 15:00 is a slide in the video, not a feature.
@@ -9,15 +9,10 @@
 
 ## In Progress
 
-### TICKET-021: Provenance on every reason (source, field, date, verify link) + NBB signal in the assessment
-- **Type:** feat(score)
+### TICKET-028: README — features and how the tool works
+- **Type:** docs
 - **Created:** 2026-09-16
-- **Description:** A reason is not just a sentence: every entry in `assessment.reasons` carries `source` (KBO via VKBO · Vlaams Adressenregister · VKBO geometrie · NBB Balanscentrale · officer observation), `field` (the register field, e.g. `Rechtstoestand`, `Datum_adresdoorhaling`), `observed_at` (snapshot date of the register row, or the observation date) and `url` (KBO Public Search page of the enterprise or establishment, NBB consult page, officer-supplied URL). Starter rows are stamped with the real snapshot date (2026-09-07 from source-metadata.json) instead of import time. The detail assessment also reads the cached NBB payload: last filing > 24 months → negatief; NBB legal situation ≠ Normale toestand → sterk negatief (second, independent source). UI shows "Bron · veld · datum · Controleer bron ↗" under each reason. Also fixes an intermittent 500 (`check_same_thread`).
-
-### TICKET-023: "Inhoudingsplicht" tab — fiscal and social debts check
-- **Type:** feat(evidence)
-- **Created:** 2026-09-16
-- **Description:** Add https://www.checkinhoudingsplicht.be (RSZ · FOD Financiën · RSVZ) as a minibrowser tab. Verified: no frame restrictions, `?identificationnumber=<nr>` prefills the enterprise number; the lookup is captcha-protected so it stays a click for the officer (no automated calls). Evidence source option "Check Inhoudingsplicht".
+- **Description:** Rewrite README.md: problem, every feature (Zoeken, Straatoverzicht, Detail, minibrowser tabs, Goedgekeurd, Kaart), the rule table with sources, architecture, data sources, run instructions, data caveats, real vs. not, repo workflow.
 ### TICKET-013: Pitch video and submission
 - **Type:** docs | **Priority:** MVP — hard deadline
 - **Created:** 2026-09-16
@@ -85,11 +80,6 @@
 - **Created:** 2026-09-16
 - **Description:** Leaflet + OpenStreetMap tiles (no key) with records coloured by status; click → detail. Flags the "few points well outside Schoten".
 
-### TICKET-015: Google Maps / Street View embeds and reviews
-- **Type:** feat(evidence) | **Priority:** Stretch — needs a Google Maps API key
-- **Created:** 2026-09-16
-- **Description:** Replace link-outs with Maps Embed API iframes (place + streetview modes; free tier, key required). Google reviews need Places API + billing — likely stays a link-out.
-
 ### TICKET-017: Sector-specific review sources (horeca)
 - **Type:** feat(evidence) | **Priority:** Stretch
 - **Created:** 2026-09-16
@@ -106,6 +96,24 @@
 - **Description:** `ejustice.just.fgov.be/cgi_tsv/tsv_rech.pl?btw=<nr>` returned HTTP 500 on 2026-09-16; find a working publication-search URL before adding.
 
 ## Done
+
+### TICKET-015: Google Maps / Street View embeds and reviews
+- **Type:** feat(evidence) | **Priority:** Stretch — needs a Google Maps API key
+- **Created:** 2026-09-16 | **Completed:** 2026-09-16 (superseded)
+- **Description:** Replace link-outs with Maps Embed API iframes (place + streetview modes; free tier, key required). Google reviews need Places API + billing — likely stays a link-out.
+- **Outcome:** not needed — Google Maps (`output=embed`) and Street View (`output=svembed`) render inside the minibrowser without an API key (TICKET-008). Google reviews stay inside the embedded map; Places API not used.
+
+### TICKET-023: "Inhoudingsplicht" tab — fiscal and social debts check
+- **Type:** feat(evidence)
+- **Created:** 2026-09-16 | **Completed:** 2026-09-16
+- **Description:** Add https://www.checkinhoudingsplicht.be (RSZ · FOD Financiën · RSVZ) as a minibrowser tab. Verified: no frame restrictions, `?identificationnumber=<nr>` prefills the enterprise number; the lookup is captcha-protected so it stays a click for the officer (no automated calls). Evidence source option "Check Inhoudingsplicht".
+- **Commits:** `cd81619 (merged 1c9d9b6)`
+
+### TICKET-021: Provenance on every reason (source, field, date, verify link) + NBB signal in the assessment
+- **Type:** feat(score)
+- **Created:** 2026-09-16 | **Completed:** 2026-09-16
+- **Description:** A reason is not just a sentence: every entry in `assessment.reasons` carries `source` (KBO via VKBO · Vlaams Adressenregister · VKBO geometrie · NBB Balanscentrale · officer observation), `field` (the register field, e.g. `Rechtstoestand`, `Datum_adresdoorhaling`), `observed_at` (snapshot date of the register row, or the observation date) and `url` (KBO Public Search page of the enterprise or establishment, NBB consult page, officer-supplied URL). Starter rows are stamped with the real snapshot date (2026-09-07 from source-metadata.json) instead of import time. The detail assessment also reads the cached NBB payload: last filing > 24 months → negatief; NBB legal situation ≠ Normale toestand → sterk negatief (second, independent source). UI shows "Bron · veld · datum · Controleer bron ↗" under each reason. Also fixes an intermittent 500 (`check_same_thread`).
+- **Commits:** `5990fbe (merged 1c9d9b6)`
 
 ### TICKET-022: Branch-per-ticket policy, no pushes to main
 - **Type:** chore

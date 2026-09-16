@@ -17,3 +17,6 @@ frontend/dist/
 
 # Claude
 .claude/settings.local.json
+
+# Claude agent worktrees
+.claude/worktrees/
