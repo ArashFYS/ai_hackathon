@@ -29,6 +29,7 @@ export const SOURCE_LABELS: Record<string, string> = {
   terreinbezoek: 'Terreinbezoek',
   kbo: 'KBO',
   nbb: 'NBB',
+  inhoudingsplicht: 'Check Inhoudingsplicht',
   andere: 'Andere',
 }
 

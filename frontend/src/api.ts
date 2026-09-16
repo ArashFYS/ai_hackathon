@@ -122,6 +122,8 @@ export interface Links {
   kbo_public_embed: string
   kbo_establishments: string
   nbb_consult: string
+  inhoudingsplicht_embed: string | null
+  inhoudingsplicht: string
   web_search_embed: string
   web_search: string
 }

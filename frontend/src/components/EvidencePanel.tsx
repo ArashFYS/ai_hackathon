@@ -2,7 +2,7 @@ import { useState } from 'react'
 import type { Links } from '../api'
 import NbbPanel from './NbbPanel'
 
-type TabId = 'kaart' | 'streetview' | 'kbo' | 'nbb' | 'web'
+type TabId = 'kaart' | 'streetview' | 'kbo' | 'nbb' | 'web' | 'inhoudingsplicht'
 
 interface Tab {
   id: TabId
@@ -18,6 +18,7 @@ const TABS: Tab[] = [
   { id: 'streetview', label: 'Street View', bron: 'Google Street View', check: 'Uithangbord, gevel, leegstand', embed: (l) => l.street_view_embed, open: (l) => l.street_view },
   { id: 'kbo', label: 'KBO', bron: 'KBO Public Search (FOD Economie)', check: 'Activiteiten, vestigingen, status', embed: (l) => l.kbo_public_embed, open: (l) => l.kbo_public },
   { id: 'nbb', label: 'Jaarrekeningen', bron: 'NBB Balanscentrale', check: 'Recente neerleggingen, omzet, personeel', embed: () => null, open: (l) => l.nbb_consult },
+  { id: 'inhoudingsplicht', label: 'Inhoudingsplicht', bron: 'Check Inhoudingsplicht (RSZ · FOD Financiën · RSVZ)', check: 'Fiscale of sociale schulden: klik op "Controleren"', embed: (l) => l.inhoudingsplicht_embed, open: (l) => l.inhoudingsplicht },
   { id: 'web', label: 'Website', bron: 'Webzoekopdracht', check: 'Eigen website, contactgegevens, recente berichten', embed: (l) => l.web_search_embed, open: (l) => l.web_search },
 ]
 
