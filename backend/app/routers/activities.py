@@ -14,7 +14,7 @@ router = APIRouter(prefix="/api/activities", tags=["activities"])
 def list_activities(conn: sqlite3.Connection = Depends(get_db)):
     """[{ sector, label, count }] over all records; sorted by count desc, `onbekend` last."""
     rows = [dict(r) for r in conn.execute("SELECT * FROM records").fetchall()]
-    _, evidence = load_context(conn, rows)
+    _, evidence, _ = load_context(conn, rows)
     counts: dict[str, int] = {}
     for r in rows:
         sector = activity_of(r, evidence.get(r["nr"], []))["sector"]

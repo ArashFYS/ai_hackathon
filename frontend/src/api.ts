@@ -59,6 +59,22 @@ export interface ActivityCount {
   count: number
 }
 
+export type IndicatorLevel = 'groen' | 'geel' | 'rood' | 'onbekend'
+
+export interface Indicator {
+  level: IndicatorLevel
+  label: string
+  text: string
+  checked_at: string | null
+  url: string | null
+}
+
+export interface Indicators {
+  kbo: Indicator
+  google_maps: Indicator
+  einvoice: Indicator
+}
+
 export interface RecordSummary {
   nr: string
   record_type: RecordType
@@ -82,6 +98,7 @@ export interface RecordSummary {
   assessment: Assessment
   activity: Activity
   contact_status: ContactStatus
+  indicators: Indicators
   parent_in_dataset?: boolean
   seat_elsewhere?: boolean
   parent_display_name?: string | null
@@ -377,6 +394,25 @@ export function fetchParent(nr: string): Promise<RecordSummary> {
 
 export function getNbb(nr: string): Promise<NbbPanelData> {
   return api<NbbPanelData>(`/records/${encodeURIComponent(nr)}/nbb`)
+}
+
+export interface StreetRefreshResult {
+  street: string
+  records: number
+  kbo: Record<IndicatorLevel, number>
+  google_maps: Record<IndicatorLevel, number>
+  einvoice: Record<IndicatorLevel, number>
+  seconds: number
+}
+
+/** Live (cached) Peppol lookup for one record; KBO and Google Maps lights recomputed. */
+export function getIndicators(nr: string): Promise<Indicators> {
+  return api<Indicators>(`/records/${encodeURIComponent(nr)}/indicators`)
+}
+
+/** Sequential lookups for every record in a street (demo pre-fill); can take ~30 s. */
+export function refreshStreetIndicators(street: string): Promise<StreetRefreshResult> {
+  return api<StreetRefreshResult>(`/streets/${encodeURIComponent(street)}/indicators/refresh`, { method: 'POST' })
 }
 
 export function postEvidence(nr: string, body: EvidenceInput): Promise<Evidence> {

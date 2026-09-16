@@ -9,6 +9,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from ..contact import contact_status, contacts_for
 from ..db import get_db
 from ..links import build_links
+from ..indicators import load_indicator_cache
 from ..scoring import SCHOTEN_BBOX
 from ..summaries import (
     address_of, display_name, ensure_auto_proposals, fetch_evidence, fetch_record,
@@ -111,13 +112,14 @@ def record_detail(nr: str, conn: sqlite3.Connection = Depends(get_db)):
     parent = fetch_record(conn, row["parent_nr"]) if row.get("parent_nr") else None
     evidence = fetch_evidence(conn, nr)
     nbb = cached_nbb(conn, row)
-    record = summarize(row, parent, evidence, full=True, nbb=nbb)
+    cached = load_indicator_cache(conn, [row] + ([parent] if parent else []))
+    record = summarize(row, parent, evidence, full=True, nbb=nbb, cached=cached)
     ensure_auto_proposals(conn, row, record["assessment"])
     contacts = contacts_for(row, parent, evidence, nbb)
 
     parent_summary = None
     if parent:
-        parent_summary = summarize(parent, None, fetch_evidence(conn, parent["nr"]))
+        parent_summary = summarize(parent, None, fetch_evidence(conn, parent["nr"]), cached=cached)
     seat_elsewhere = bool(
         parent and (parent.get("kbo_municipality") or "").lower() != (row.get("kbo_municipality") or "").lower()
     )
