@@ -8,7 +8,15 @@ AI-powered business trust score checker: evaluates a business and produces a tru
 
 <!-- Auto-updated by /project-update. Do not edit manually. -->
 ```
-(will be updated after init)
+./.claude/hooks/enforce-ticket.sh
+./.claude/settings.json
+./.gitignore
+./CLAUDE.md
+./docs/adr/001-initial-setup.md
+./docs/notes.md
+./project/conventions.md
+./project/tickets.md
+./README.md
 ```
 
 ## Build / Test / Run
