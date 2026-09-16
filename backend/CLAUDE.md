@@ -50,8 +50,9 @@ Links       { google_maps_embed, google_maps, street_view_embed, street_view, kb
 Endpoints (all under `/api`):
 ```
 GET  /health
-GET  /records?q=&street=&type=&status=&limit=50      → { items: RecordSummary[] }   q matches name/trade_name/search_name/nr/street
-GET  /records/{nr}                                     → { record: RecordSummary (full row fields too), parent: RecordSummary|null,
+GET  /records?q=&street=&type=&status=&limit=50      → { items: RecordSummary[] }   q matches name/trade_name/search_name/street (LIKE, case-insensitive);
+                                                         if q stripped of non-digits is 9–10 digits (officers paste '0448.335.384' or 'BE 0448 335 384'), zfill(10) and also match nr/parent_nr
+GET  /records/{nr}                                     → { record: RecordSummary + every column of `records` except `raw`, parent: RecordSummary|null,
                                                            parent_in_dataset: bool, seat_elsewhere: bool,
                                                            establishments: RecordSummary[], evidence: Evidence[], proposals: Proposal[],
                                                            links: Links }
@@ -82,9 +83,11 @@ Evaluate in order; first "sterk negatief" fixes the status, later rules only add
 8. lat/lng outside Schoten bbox (lat 51.22–51.29, lng 4.44–4.56) → zwak negatief "Coördinaten liggen buiten Schoten".
 9. No phone and no email → zwak "Geen contactgegevens in het register".
 10. Evidence (latest by observed_at): `actief` → `actief`, hoog, positief "Bewijs: {source} {date}: {observation}"; `niet_actief` → `waarschijnlijk_niet_actief`, hoog; `onduidelijk` → `ter_controle`, middel.
+    **Conflict:** register sterk-negatief (rule 1–3/5) but latest evidence `actief` → `ter_controle`, middel, reason "Tegenstrijdig: register zegt niet actief, waarneming zegt actief". Evidence never silently overrides the register.
 11. No sterk-negatief rule and no evidence → `ter_controle`, laag (middel if phone or email present). Reason neutraal "Enkel registergegevens, nog geen bewijs van activiteit".
 `register_label`: "Niet actief" if rule 1–3 hit, "—" for geen_onderneming, else "Actief".
 `proposal_text`: waarschijnlijk_niet_actief → "Markeer als niet actief"; geen_onderneming → "Uitsluiten uit overzicht (geen onderneming)"; ter_controle → "Ter controle: geen bewijs van activiteit"; actief → "Geen actie". Address mismatch adds "; adres nazien".
+Optional (if time): make `proposals.record_nr` nullable and add `address TEXT` so a `missing_establishment` proposal ("Vestiging ontbreekt op dit adres") can be created from Straatoverzicht for a business that is not in the register — the jury's third worked-example row.
 Auto-proposals from the assessment (idempotent — skip if an open or decided proposal with same kind+proposed_value exists): status_change for niet actief / geen onderneming; address_check for rule 7/8.
 
 ## External links (`links.py`)
