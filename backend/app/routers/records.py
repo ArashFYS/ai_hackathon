@@ -6,9 +6,11 @@ import sqlite3
 import httpx
 from fastapi import APIRouter, Depends, HTTPException, Query
 
+from .. import kbo_public
 from ..contact import contact_status, contacts_for
+from ..indicator_cache import cache_put
 from ..db import get_db
-from ..links import build_links
+from ..links import build_links, enterprise_nr_of
 from ..indicators import load_indicator_cache
 from ..scoring import SCHOTEN_BBOX
 from ..summaries import (
@@ -115,7 +117,8 @@ def record_detail(nr: str, conn: sqlite3.Connection = Depends(get_db)):
     cached = load_indicator_cache(conn, [row] + ([parent] if parent else []))
     record = summarize(row, parent, evidence, full=True, nbb=nbb, cached=cached)
     ensure_auto_proposals(conn, row, record["assessment"])
-    contacts = contacts_for(row, parent, evidence, nbb)
+    contacts = contacts_for(row, parent, evidence, nbb, kbo_public=cached["kbo_public"].get(nr),
+                            einvoice=cached["einvoice"].get(enterprise_nr_of(row)))
 
     parent_summary = None
     if parent:
@@ -137,7 +140,8 @@ def record_detail(nr: str, conn: sqlite3.Connection = Depends(get_db)):
         "establishments": summarize_many(conn, est_rows),
         "evidence": evidence,
         "proposals": proposals,
-        "links": build_links(row, display_name(row), address_of(row)),
+        "links": build_links(row, display_name(row), address_of(row), cached["streetview"].get(nr)),
+        "kbo_public": cached["kbo_public"].get(nr),
         "contacts": contacts,
         "contact_status": contact_status(contacts),
     }
@@ -172,3 +176,15 @@ def fetch_parent(nr: str, conn: sqlite3.Connection = Depends(get_db)):
     conn.commit()
     stored = fetch_record(conn, parent_row["nr"])
     return summarize(stored, None, [])
+
+
+@router.post("/{nr}/kbo-public")
+def refresh_kbo_public(nr: str, conn: sqlite3.Connection = Depends(get_db)):
+    """Live fetch of the record's KBO Public Search page (activities, contact, status); cached (TICKET-035)."""
+    row = fetch_record(conn, nr)
+    if not row:
+        raise HTTPException(404, "Record niet gevonden")
+    payload, ok = kbo_public.fetch_live(row)
+    if ok:
+        cache_put(conn, "kbo_public", nr, payload)
+    return payload

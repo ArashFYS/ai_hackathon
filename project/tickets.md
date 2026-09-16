@@ -1,9 +1,6 @@
 # Tickets -- ai_hackathon (Prefix: TICKET)
 
-> Next ID: TICKET-035
-> Next ID: TICKET-035 (028 and 029 are already reserved on remote branches)
-> Next ID: TICKET-035
-> Next ID: TICKET-033
+> Next ID: TICKET-037
 >
 > **Deadline: 16:30 Europe/Brussels, 16 Sep 2026.** Build freeze ~15:00 → record 15:00–15:45 → upload + check + form by 16:15.
 > Anything not demoable by 15:00 is a slide in the video, not a feature.
@@ -11,6 +8,18 @@
 > Priority: **MVP** = on the critical path for the 3-min screen recording. **Stretch** = only if MVP is recordable.
 
 ## In Progress
+
+### TICKET-035: KBO Public Search enrichment (NACEBEL 2025 activities + contact) and NACEBEL 2025 code list
+- **Type:** feat(data) | **Priority:** MVP (fills activity for ~all rows; official contact source)
+- **Created:** 2026-09-16
+- **Description:** Only 86/1006 rows carry a NACE code and 54 a phone in the VKBO sample. The KBO Public Search pages (`toonvestigingps.html?vestigingsnummer=` / `toonondernemingps.html?ondernemingsnummer=`) list every NACEBEL 2025 activity (Hoofd-/Nevenactiviteit, since date), phone / e-mail / website and the entity status, with the register snapshot date in the footer. `app/kbo_public.py` fetches + parses one page, cached in `indicator_cache` (kind `kbo_public`, key = own nr). `app/nacebel.py` loads the official NACEBEL 2025 list (`app/data/nacebel_2025.csv`, from NACEBEL_2025.xlsx) for canonical Dutch titles at any level. `activity_of()` falls through to the KBO-public main activity (source `KBO (publiek)`), `contacts_for()` adds KBO-public phone/e-mail/website (source `KBO (publieke opzoeking)`). `scripts/prefetch_kbo_public.py` pre-fills the cache for the whole DB; `POST /api/records/{nr}/kbo-public` refreshes one record. `GET /api/nacebel?q=` searches the list.
+- **Branch:** `feat/TICKET-035-kbo-public-enrichment`
+
+### TICKET-036: Street View opens on the wrong street / faces north
+- **Type:** fix(evidence)
+- **Created:** 2026-09-16
+- **Description:** Record coordinates are the Adressenregister position "afgeleid van object" (parcel/building), so Google picks the nearest pano — for deep or corner parcels that is another street (Gelmelenstraat 204 opened on "1 Merelstraat") — and `cbp=11,0,...` always looks north. Fix: Wegenregister (geo.api.vlaanderen.be, OGC Features `Wegsegment`) segments in a small bbox whose left/right street name matches the record's street → nearest point on the street as `cbll`, heading = bearing street point → address point. Cached (`indicator_cache` kind `streetview`) by the prefetch script; falls back to the old URL when nothing is cached.
+- **Branch:** `feat/TICKET-035-kbo-public-enrichment` (same PR)
 
 ### TICKET-013: Pitch video and submission
 - **Type:** docs | **Priority:** MVP — hard deadline
