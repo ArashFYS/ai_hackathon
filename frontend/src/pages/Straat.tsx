@@ -85,6 +85,7 @@ export default function Straat() {
         </label>
         <ActivitySelect value={activity} onChange={setActivity} />
         {data && <span className="pb-2 text-xs text-gray-500">{total} records op {data.addresses.length} adressen</span>}
+        <Link to={`/kaart?street=${encodeURIComponent(street)}`} className="pb-2 text-xs text-blue-700 hover:underline">Toon op kaart →</Link>
       </div>
 
       <div className="overflow-x-auto rounded-lg border bg-white">

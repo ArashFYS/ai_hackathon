@@ -71,6 +71,8 @@ GET  /records?q=&street=&type=&status=&activity=&limit=50  → { items: RecordSu
                                                          if q stripped of non-digits is 9–10 digits (officers paste '0448.335.384' or 'BE 0448 335 384'), zfill(10) and also match nr/parent_nr
                                                          activity=<Activity.sector> filters on the computed sector (in Python, before limit)
 GET  /activities                                       → [{ sector, label, count }] over all records; count desc, 'onbekend' last; only sectors with count > 0
+GET  /records/geo?street=&status=&limit=2000          → { items: [{ nr, display_name, record_type, lat, lng, status, status_label, certainty, address, outside_municipality }] }
+                                                         only rows with coordinates; outside_municipality = lat/lng outside SCHOTEN_BBOX (scoring rule 8). Declared before /{nr}.
 GET  /records/{nr}                                     → { record: RecordSummary + every column of `records` except `raw`, parent: RecordSummary|null,
                                                            parent_in_dataset: bool, seat_elsewhere: bool,
                                                            establishments: RecordSummary[], evidence: Evidence[], proposals: Proposal[],

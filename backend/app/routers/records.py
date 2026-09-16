@@ -9,6 +9,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from ..contact import contact_status, contacts_for
 from ..db import get_db
 from ..links import build_links
+from ..scoring import SCHOTEN_BBOX
 from ..summaries import (
     address_of, display_name, ensure_auto_proposals, fetch_evidence, fetch_record,
     cached_nbb, now_iso, summarize, summarize_many,
@@ -63,6 +64,43 @@ def list_records(
     if status or activity:
         items = items[:limit]
     return {"items": items}
+
+
+@router.get("/geo")
+def list_geo(
+    street: str | None = None,
+    status: str | None = None,
+    limit: int = Query(2000, ge=1, le=5000),
+    conn: sqlite3.Connection = Depends(get_db),
+):
+    """Every record with coordinates, reduced to what the map needs (nr, name, status, lat/lng).
+    `outside_municipality` flags points outside the Schoten bbox used in scoring."""
+    where, params = ["lat IS NOT NULL", "lng IS NOT NULL"], []
+    if street:
+        where.append("kbo_street = ? COLLATE NOCASE")
+        params.append(street)
+    sql = "SELECT * FROM records WHERE " + " AND ".join(where) + " ORDER BY kbo_street, kbo_housenr, name"
+    if not status:
+        sql += " LIMIT ?"
+        params.append(limit)
+    rows = [dict(r) for r in conn.execute(sql, params).fetchall()]
+    items = summarize_many(conn, rows)
+    if status:
+        items = [i for i in items if i["assessment"]["status"] == status][:limit]
+    out = []
+    for i in items:
+        lat, lng = i["lat"], i["lng"]
+        inside = (
+            SCHOTEN_BBOX["lat_min"] <= lat <= SCHOTEN_BBOX["lat_max"]
+            and SCHOTEN_BBOX["lng_min"] <= lng <= SCHOTEN_BBOX["lng_max"]
+        )
+        a = i["assessment"]
+        out.append({
+            "nr": i["nr"], "display_name": i["display_name"], "record_type": i["record_type"],
+            "lat": lat, "lng": lng, "status": a["status"], "status_label": a["status_label"],
+            "certainty": a["certainty"], "address": i["address"], "outside_municipality": not inside,
+        })
+    return {"items": out}
 
 
 @router.get("/{nr}")

@@ -80,6 +80,11 @@
 - **Created:** 2026-09-16
 - **Description:** Leaflet + OpenStreetMap tiles (no key) with records coloured by status; click → detail. Flags the "few points well outside Schoten".
 
+### TICKET-015: Google Maps / Street View embeds and reviews
+- **Type:** feat(evidence) | **Priority:** Stretch — needs a Google Maps API key
+- **Created:** 2026-09-16
+- **Description:** Replace link-outs with Maps Embed API iframes (place + streetview modes; free tier, key required). Google reviews need Places API + billing — likely stays a link-out.
+
 ### TICKET-017: Sector-specific review sources (horeca)
 - **Type:** feat(evidence) | **Priority:** Stretch
 - **Created:** 2026-09-16
@@ -141,6 +146,12 @@
   - Not: Google Places (key + billing), scraping Google Maps / Gouden Gids (terms of use).
 
 - **Commits:** `027cf3d, 21a5226` (branch `feat/TICKET-025-contact-source`; Done-move commit follows)
+
+### TICKET-014: Map view
+- **Type:** feat(map) | **Priority:** Stretch
+- **Created:** 2026-09-16 | **Completed:** 2026-09-16
+- **Description:** Leaflet + OpenStreetMap tiles (no key) with records coloured by status; click → detail. Flags the "few points well outside Schoten". `/kaart` page + `GET /api/records/geo`; "Buiten Schoten: N" button fits the map to the mis-geocoded points (60/1000 outside the scoring bbox, one near Paris).
+- **Commits:** `08ee0f7`
 
 ### TICKET-022: Branch-per-ticket policy, no pushes to main
 - **Type:** chore
