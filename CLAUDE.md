@@ -17,14 +17,26 @@ Hackathon entry for **Challenge 01: Find the Real Businesses** (ns2agi, Province
 ./.gitignore
 ./CLAUDE.md
 ./Makefile
+./AGENTS.md -> CLAUDE.md
+./backend/CLAUDE.md              # backend contract: API, scoring rules, external URLs
 ./backend/app/main.py
 ./backend/app/db.py
-./backend/app/routers/
-./backend/scripts/
+./backend/app/schema.sql
+./backend/app/vkbo.py            # VKBO mapping + API client
+./backend/app/scoring.py         # rule-based assessment (no AI)
+./backend/app/links.py           # external evidence URLs
+./backend/app/nbb.py             # NBB Balanscentrale public API client
+./backend/app/summaries.py
+./backend/app/routers/{records,streets,evidence,proposals,nbb}.py
+./backend/scripts/import_data.py
 ./backend/pyproject.toml
+./frontend/CLAUDE.md             # pages, components, Dutch vocabulary
+./frontend/src/api.ts            # typed client mirroring backend contract
+./frontend/src/pages/{Zoeken,Detail,Straat,Goedgekeurd}.tsx
+./frontend/src/components/
 ./frontend/src/App.tsx
-./frontend/src/main.tsx
-./frontend/vite.config.ts
+./data/CLAUDE.md
+./docs/video-script.md
 ./data/raw/schoten-kbo-1000-2026-09-07.csv
 ./data/raw/schoten-kbo-1000-2026-09-07.geojson
 ./data/raw/source-metadata.json
@@ -46,6 +58,10 @@ Hackathon entry for **Challenge 01: Find the Real Businesses** (ns2agi, Province
 - **Import data:** `make import` (loads `data/raw/*.geojson` into `backend/data.db`)
 - **Typecheck frontend:** `cd frontend && pnpm tsc -b --noEmit`
 - **Test:** none yet
+
+## Per-area guides
+
+Each architecture piece has its own `CLAUDE.md` (with an `AGENTS.md` symlink): [backend/CLAUDE.md](backend/CLAUDE.md), [frontend/CLAUDE.md](frontend/CLAUDE.md), [data/CLAUDE.md](data/CLAUDE.md). The backend one is the API contract.
 
 ## Coding Conventions
 
