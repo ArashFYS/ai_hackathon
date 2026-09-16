@@ -10,7 +10,7 @@ from ..db import get_db
 from ..links import build_links
 from ..summaries import (
     address_of, display_name, ensure_auto_proposals, fetch_evidence, fetch_record,
-    now_iso, summarize, summarize_many,
+    cached_nbb, now_iso, summarize, summarize_many,
 )
 from ..vkbo import feature_to_row, upsert_sql
 
@@ -66,7 +66,7 @@ def record_detail(nr: str, conn: sqlite3.Connection = Depends(get_db)):
         raise HTTPException(404, "Record niet gevonden")
     parent = fetch_record(conn, row["parent_nr"]) if row.get("parent_nr") else None
     evidence = fetch_evidence(conn, nr)
-    record = summarize(row, parent, evidence, full=True)
+    record = summarize(row, parent, evidence, full=True, nbb=cached_nbb(conn, row))
     ensure_auto_proposals(conn, row, record["assessment"])
 
     parent_summary = None
