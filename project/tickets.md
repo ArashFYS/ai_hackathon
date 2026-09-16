@@ -9,11 +9,6 @@
 
 ## In Progress
 
-### TICKET-014: Map view
-- **Type:** feat(map) | **Priority:** Stretch
-- **Created:** 2026-09-16
-- **Description:** Leaflet + OpenStreetMap tiles (no key) with records coloured by status; click → detail. Flags the "few points well outside Schoten".
-
 ### TICKET-021: Provenance on every reason (source, field, date, verify link) + NBB signal in the assessment
 - **Type:** feat(score)
 - **Created:** 2026-09-16
@@ -106,6 +101,12 @@
 - **Description:** `ejustice.just.fgov.be/cgi_tsv/tsv_rech.pl?btw=<nr>` returned HTTP 500 on 2026-09-16; find a working publication-search URL before adding.
 
 ## Done
+
+### TICKET-014: Map view
+- **Type:** feat(map) | **Priority:** Stretch
+- **Created:** 2026-09-16 | **Completed:** 2026-09-16
+- **Description:** Leaflet + OpenStreetMap tiles (no key) with records coloured by status; click → detail. Flags the "few points well outside Schoten". `/kaart` page + `GET /api/records/geo`; "Buiten Schoten: N" button fits the map to the mis-geocoded points (60/1000 outside the scoring bbox, one near Paris).
+- **Commits:** `08ee0f7`
 
 ### TICKET-022: Branch-per-ticket policy, no pushes to main
 - **Type:** chore
