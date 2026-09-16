@@ -82,7 +82,7 @@ export default function GooglePlacesPanel({ apiKey, query }: { apiKey: string; q
     ) : null
 
   return (
-    <div className="space-y-2 border-t p-3 text-sm">
+    <div className="space-y-2 border-b p-3 text-sm">
       <div className="flex flex-wrap items-center gap-3">
         {button}
         <span className="text-gray-500">{t('places.query')} <span className="text-gray-700">{query}</span></span>

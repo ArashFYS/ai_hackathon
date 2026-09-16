@@ -58,6 +58,9 @@ export default function EvidencePanel({ nr, links }: { nr: string; links: Links 
           <span className="font-medium text-gray-800">{t('panel.whatToCheck')}</span> {t(`panel.check.${tab.id}`)}
         </p>
       </div>
+      {tab.id === 'kaart' && links.google_places_key && (
+        <GooglePlacesPanel apiKey={links.google_places_key} query={links.google_places_query} />
+      )}
       <div id="source-view" className="source-viewport" role="region" aria-label={label}>
         {tab.id === 'nbb' ? (
           <div className="h-full overflow-auto"><NbbPanel nr={nr} nbbConsultUrl={links.nbb_consult} /></div>
@@ -73,9 +76,6 @@ export default function EvidencePanel({ nr, links }: { nr: string; links: Links 
           </div>
         )}
       </div>
-      {tab.id === 'kaart' && links.google_places_key && (
-        <GooglePlacesPanel apiKey={links.google_places_key} query={links.google_places_query} />
-      )}
       {tab.id !== 'nbb' && (
         <p className="source-footer">
           {tab.id === 'streetview' ? t('panel.streetviewFail') : t('panel.mapFail')}{' '}
