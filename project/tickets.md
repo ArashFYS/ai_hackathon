@@ -4,14 +4,15 @@
 
 ## In Progress
 
-### TICKET-002: Document challenge brief and import starter data
-- **Type:** docs
-- **Created:** 2026-09-16
-- **Description:** Capture the full "Find the Real Businesses" challenge brief in docs/challenge.md; download the Schoten KBO starter data (CSV, GeoJSON, source-metadata.json) into data/raw/ and verify checksums.
-
 ## Backlog
 
 ## Done
+
+### TICKET-002: Document challenge brief and import starter data
+- **Type:** docs
+- **Created:** 2026-09-16 | **Completed:** 2026-09-16
+- **Description:** Capture the full "Find the Real Businesses" challenge brief in docs/challenge.md; download the Schoten KBO starter data (CSV, GeoJSON, source-metadata.json) into data/raw/ and verify checksums.
+- **Commits:** `ff6dd14`
 
 ### TICKET-001: Project initialization
 - **Type:** chore
