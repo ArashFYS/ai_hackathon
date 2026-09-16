@@ -61,11 +61,34 @@ def kbo_indicator(row: dict, parent: dict | None) -> dict:
     return indicator("groen", "Register in orde", text, checked, url)
 
 
-def google_maps_indicator(evidence: list[dict] | None) -> dict:
-    """From officer-logged observations with source google_maps (no Google API)."""
+_PLACES_STATUS = {
+    "OPERATIONAL": ("groen", "Vermeld op Google Maps", "Actief volgens Google Maps"),
+    "CLOSED_TEMPORARILY": ("geel", "Tijdelijk gesloten", "Tijdelijk gesloten volgens Google Maps"),
+    "CLOSED_PERMANENTLY": ("rood", "Definitief gesloten", "Definitief gesloten volgens Google Maps"),
+}
+
+
+def _places_indicator(places: dict | None) -> dict:
+    """Cached Places API text search (TICKET-038); 'onbekend' when never checked."""
+    if not places:
+        return indicator("onbekend", "Geen waarneming", "Nog geen Google Maps-waarneming gelogd (tab Kaart & recensies)")
+    checked = (places.get("fetched_at") or "")[:10] or None
+    if not places.get("found"):
+        return indicator("geel", "Geen vermelding", places.get("note") or "Geen Google Maps-vermelding gevonden", checked)
+    level, label, text = _PLACES_STATUS.get(places.get("status") or "", ("geel", "Vermelding zonder status", "Vermeld op Google Maps, status onbekend"))
+    text += f": {places.get('name')}"
+    if places.get("phone"):
+        text += f", tel. {places['phone']}"
+    if places.get("rating") is not None:
+        text += f", {places['rating']} ★ ({places.get('rating_count') or 0})"
+    return indicator(level, label, text, checked, places.get("url"))
+
+
+def google_maps_indicator(evidence: list[dict] | None, places: dict | None = None) -> dict:
+    """Officer-logged observations with source google_maps win; else the cached Places API listing."""
     obs = [e for e in (evidence or []) if e.get("source") == "google_maps" and e.get("observed_at")]
     if not obs:
-        return indicator("onbekend", "Geen waarneming", "Nog geen Google Maps-waarneming gelogd (tab Kaart & recensies)")
+        return _places_indicator(places)
     latest = max(obs, key=lambda e: (e["observed_at"], e.get("id") or 0))
     date, url, what = latest["observed_at"], latest.get("url"), (latest.get("observation") or "").strip()
     text = f"Waarneming op Google Maps op {date}: {what}" if what else f"Waarneming op Google Maps op {date}"
@@ -102,10 +125,11 @@ def einvoice_indicator(payload: dict | None, row: dict, parent: dict | None) -> 
     return indicator("rood", "Niet op Peppol", text, checked, url)
 
 
-def build_indicators(row: dict, parent: dict | None, evidence: list[dict] | None, einvoice: dict | None) -> dict:
+def build_indicators(row: dict, parent: dict | None, evidence: list[dict] | None, einvoice: dict | None,
+                     places: dict | None = None) -> dict:
     return {
         "kbo": kbo_indicator(row, parent),
-        "google_maps": google_maps_indicator(evidence),
+        "google_maps": google_maps_indicator(evidence, places),
         "einvoice": einvoice_indicator(einvoice, row, parent),
     }
 
@@ -119,8 +143,10 @@ def load_indicator_cache(conn: sqlite3.Connection, rows: list[dict]) -> dict[str
         "einvoice": cache_get_many(conn, "einvoice", ents) if ents else {},
         "kbo_public": cache_get_many(conn, "kbo_public", nrs) if nrs else {},
         "streetview": cache_get_many(conn, "streetview", nrs) if nrs else {},
+        "places": cache_get_many(conn, "places", nrs) if nrs else {},
     }
 
 
 def indicators_for(row: dict, parent: dict | None, evidence: list[dict] | None, cached: dict | None) -> dict:
-    return build_indicators(row, parent, evidence, (cached or {}).get("einvoice", {}).get(enterprise_nr_of(row)))
+    return build_indicators(row, parent, evidence, (cached or {}).get("einvoice", {}).get(enterprise_nr_of(row)),
+                            (cached or {}).get("places", {}).get(row.get("nr")))

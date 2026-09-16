@@ -16,7 +16,8 @@ app/streetview.py  Wegenregister snap: point on the record's own street + headin
 app/contact.py     contacts_for(row, parent, evidence, nbb) → Contact[] with owner/source/date; contact_status()
 app/nbb.py         NBB Balanscentrale public API client (+ cache)
 app/indicator_cache.py  generic cache (table indicator_cache)
-app/indicators.py  the three traffic lights (KBO rule, logged Google Maps observations → light, Peppol payload → light)
+app/indicators.py  the three traffic lights (KBO rule, logged Google Maps observation else cached Places listing → light, Peppol payload → light)
+app/google_places.py  Places API (New) Text Search, server-side (Referer = frontend origin) → indicator_cache kind places (key = own nr, 7 d); needs GOOGLE_MAPS_EMBED_KEY
 app/peppol.py      Peppol SML DNS check + Directory enrichment
 app/routers/       records.py · streets.py · evidence.py · proposals.py · nbb.py · activities.py · indicators.py
 scripts/import_data.py
