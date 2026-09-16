@@ -4,12 +4,14 @@ import type { RecordSummary, RecordType, Status } from '../api'
 import { getRecords, RECORD_TYPE_LABELS, STATUS_LABELS, dash } from '../api'
 import StatusBadge from '../components/StatusBadge'
 import ZekerheidBadge from '../components/ZekerheidBadge'
+import ActivitySelect from '../components/ActivitySelect'
 
 export default function Zoeken() {
   const [params, setParams] = useSearchParams()
   const q = params.get('q') ?? ''
   const type = (params.get('type') ?? '') as RecordType | ''
   const status = (params.get('status') ?? '') as Status | ''
+  const activity = params.get('activity') ?? ''
   const [input, setInput] = useState(q)
   const [items, setItems] = useState<RecordSummary[] | null>(null)
   const [loading, setLoading] = useState(false)
@@ -23,7 +25,7 @@ export default function Zoeken() {
     let cancelled = false
     setLoading(true)
     setError(null)
-    getRecords({ q, type, status, limit: 100 })
+    getRecords({ q, type, status, activity, limit: 100 })
       .then((rows) => {
         if (!cancelled) setItems(rows)
       })
@@ -36,7 +38,7 @@ export default function Zoeken() {
     return () => {
       cancelled = true
     }
-  }, [q, type, status])
+  }, [q, type, status, activity])
 
   function update(next: Record<string, string>) {
     const p = new URLSearchParams(params)
@@ -91,6 +93,7 @@ export default function Zoeken() {
             ))}
           </select>
         </label>
+        <ActivitySelect value={activity} onChange={(v) => update({ activity: v })} />
         <button type="submit" className="rounded bg-gray-900 px-4 py-1.5 text-sm font-medium text-white hover:bg-gray-700">
           Zoeken
         </button>
@@ -107,6 +110,7 @@ export default function Zoeken() {
                 <th className="px-3 py-2">Naam</th>
                 <th className="px-3 py-2">Type</th>
                 <th className="px-3 py-2">Adres</th>
+                <th className="px-3 py-2">Activiteit</th>
                 <th className="px-3 py-2">Register</th>
                 <th className="px-3 py-2">Status</th>
                 <th className="px-3 py-2">Zekerheid</th>
@@ -123,6 +127,10 @@ export default function Zoeken() {
                   </td>
                   <td className="px-3 py-2 text-gray-700">{RECORD_TYPE_LABELS[r.record_type] ?? r.record_type}</td>
                   <td className="px-3 py-2 text-gray-700">{dash(r.address)}</td>
+                  <td className="px-3 py-2 text-gray-700">
+                    {r.activity?.sector === 'onbekend' ? <span className="text-gray-400">onbekend</span> : r.activity?.label}
+                    {r.activity?.source && <div className="text-xs text-gray-500">{r.activity.source}</div>}
+                  </td>
                   <td className="px-3 py-2 text-gray-700">{dash(r.assessment?.register_label)}</td>
                   <td className="px-3 py-2"><StatusBadge status={r.assessment.status} label={r.assessment.status_label} /></td>
                   <td className="px-3 py-2"><ZekerheidBadge certainty={r.assessment.certainty} label={r.assessment.certainty_label} /></td>

@@ -9,8 +9,9 @@ app/schema.sql     tables: records, evidence, proposals (+ nbb_cache)
 app/vkbo.py        VKBO property → row mapping, cleaning rules, upsert SQL
 app/scoring.py     rule-based assessment (status + zekerheid + reasons) — NO AI
 app/links.py       external evidence URLs for a record
+app/activity.py    NACE 2-digit → sector (Dutch label); keyword map for officer-observed activity text
 app/nbb.py         NBB Balanscentrale public API client (+ cache)
-app/routers/       records.py · streets.py · evidence.py · proposals.py · nbb.py
+app/routers/       records.py · streets.py · evidence.py · proposals.py · nbb.py · activities.py
 scripts/import_data.py
 ```
 
@@ -35,9 +36,16 @@ Assessment  { status: 'actief'|'ter_controle'|'waarschijnlijk_niet_actief'|'geen
               reasons: [{ code, text, direction: 'negatief'|'positief'|'neutraal', weight: 'sterk'|'matig'|'zwak' }],
               proposal_text: string,                              // e.g. 'Geen actie', 'Ter controle: geen bewijs van activiteit'
               last_observed: 'YYYY-MM-DD'|null }
+Activity    { sector: string,                                    // 'detailhandel'|'horeca'|'zorg'|'persoonlijke_diensten'|'garages'|'vastgoed'|'bouw'|
+                                                                  //  'zakelijke_diensten'|'onderwijs'|'verenigingen'|'overheid_welzijn'|'industrie'|'groothandel'|
+                                                                  //  'transport'|'ict'|'financieel'|'overige'|'onbekend'
+              label: string,                                     // Dutch, e.g. 'Gezondheidszorg', 'Onbekend'
+              source: 'KBO (RSZ)'|'KBO (BTW)'|'waarneming'|null, // priority: nace_rsz → nace_vat → latest evidence.observed_activity (keywords) → onbekend
+              nace: string|null,                                 // full NACE code from KBO ('86230'), or the 2-digit prefix for a waarneming ('96')
+              description: string|null }                         // KBO NACE description, or the observed activity text for a waarneming
 RecordSummary { nr, record_type, parent_nr, display_name, name, trade_name, legal_form, legal_status,
                 address, kbo_street, kbo_housenr, kbo_box, kbo_postcode, kbo_municipality, lat, lng,
-                phone, email, start_date, assessment: Assessment }
+                phone, email, start_date, assessment: Assessment, activity: Activity }
 Evidence    { id, record_nr, source, url, observation, observed_activity, conclusion: 'actief'|'niet_actief'|'onduidelijk',
               observed_at, created_at }
 Proposal    { id, record_nr, kind: 'status_change'|'address_check'|'missing_establishment'|'field_correction',
@@ -50,8 +58,10 @@ Links       { google_maps_embed, google_maps, street_view_embed, street_view, kb
 Endpoints (all under `/api`):
 ```
 GET  /health
-GET  /records?q=&street=&type=&status=&limit=50      → { items: RecordSummary[] }   q matches name/trade_name/search_name/street (LIKE, case-insensitive);
+GET  /records?q=&street=&type=&status=&activity=&limit=50  → { items: RecordSummary[] }   q matches name/trade_name/search_name/street (LIKE, case-insensitive);
                                                          if q stripped of non-digits is 9–10 digits (officers paste '0448.335.384' or 'BE 0448 335 384'), zfill(10) and also match nr/parent_nr
+                                                         activity=<Activity.sector> filters on the computed sector (in Python, before limit)
+GET  /activities                                       → [{ sector, label, count }] over all records; count desc, 'onbekend' last; only sectors with count > 0
 GET  /records/{nr}                                     → { record: RecordSummary + every column of `records` except `raw`, parent: RecordSummary|null,
                                                            parent_in_dataset: bool, seat_elsewhere: bool,
                                                            establishments: RecordSummary[], evidence: Evidence[], proposals: Proposal[],
@@ -65,7 +75,8 @@ GET  /records/{nr}/nbb                                 → { available: bool, en
 POST /records/{nr}/evidence  body {source,url?,observation,observed_activity?,conclusion,observed_at}  → Evidence
 POST /records/{nr}/proposals body {kind,field?,current_value?,proposed_value?,reason}                 → Proposal
 GET  /streets                                          → [{ street, count }]  sorted by count desc
-GET  /streets/{street}                                 → { street, addresses: [{ address, housenr, lat, lng, records: RecordSummary[] (+ last_evidence: Evidence|null, open_proposal: Proposal|null) }] }
+GET  /streets/{street}?activity=                       → { street, addresses: [{ address, housenr, lat, lng, records: RecordSummary[] (+ last_evidence: Evidence|null, open_proposal: Proposal|null) }] }
+                                                         activity=<sector> keeps only matching records (addresses may become empty → [])
 GET  /proposals?status=open|bevestigd|afgewezen        → Proposal[] (with record)
 POST /proposals/{id}/decide  body {status:'bevestigd'|'afgewezen'}  → Proposal
 GET  /proposals/export?format=csv|json                 → only status='bevestigd' rows; CSV download

@@ -28,7 +28,7 @@ def list_streets(conn: sqlite3.Connection = Depends(get_db)):
 
 
 @router.get("/{street}")
-def street_detail(street: str, conn: sqlite3.Connection = Depends(get_db)):
+def street_detail(street: str, activity: str | None = None, conn: sqlite3.Connection = Depends(get_db)):
     rows = [dict(r) for r in conn.execute(
         "SELECT * FROM records WHERE kbo_street = ? COLLATE NOCASE", (street,)
     ).fetchall()]
@@ -49,6 +49,9 @@ def street_detail(street: str, conn: sqlite3.Connection = Depends(get_db)):
         ).fetchall():
             open_props.setdefault(p["record_nr"], dict(p))
 
+    street_name = rows[0]["kbo_street"]
+    if activity:  # sector is a computed field → filter after summarizing
+        rows = [r for r in rows if items[r["nr"]]["activity"]["sector"] == activity]
     groups: dict[str, dict] = {}
     for r in rows:
         ev = evidence.get(r["nr"], [])
@@ -64,4 +67,4 @@ def street_detail(street: str, conn: sqlite3.Connection = Depends(get_db)):
     addresses = sorted(groups.values(), key=lambda g: housenr_key(g["housenr"]))
     for g in addresses:
         g["records"].sort(key=lambda i: (i.get("kbo_box") or "", i["display_name"].lower()))
-    return {"street": rows[0]["kbo_street"], "addresses": addresses}
+    return {"street": street_name, "addresses": addresses}

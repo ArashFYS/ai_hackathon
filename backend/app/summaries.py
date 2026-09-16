@@ -3,6 +3,7 @@ import json
 import sqlite3
 from datetime import datetime, timezone
 
+from .activity import activity_of
 from .scoring import assess
 
 SUMMARY_COLS = [
@@ -81,6 +82,7 @@ def summarize(row: dict, parent: dict | None, evidence: list[dict], full: bool =
     base["display_name"] = display_name(row)
     base["address"] = address_of(row)
     base["assessment"] = assess(row, parent, evidence, nbb)
+    base["activity"] = activity_of(row, evidence)
     if row.get("record_type") == "establishment":
         base["parent_in_dataset"] = parent is not None
         # seat is "elsewhere" when the parent is known and sits in another municipality
