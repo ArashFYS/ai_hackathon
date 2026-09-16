@@ -47,7 +47,7 @@
 - **Type:** feat(ui)
 - **Created:** 2026-09-16 | **Completed:** 2026-09-16
 - **Description:** Teammate restyle (branch feat/TICKET-029-provincial-ui, based on an older main) merged on top of the i18n + feature set: brand palette, logo, semantic layout classes, data-status badges. Kept: NL/EN toggle, Kaart, activity filter, contact block, missing establishment, provenance. Dropped from the restyle: hardcoded English strings, removal of leaflet.
-- **Commits:** (merge commit on feat/TICKET-030-provincial-theme)
+- **Commits:** `cc54849` (merge, feat/TICKET-030-provincial-theme)
 
 ### TICKET-028: README — features and how the tool works
 - **Type:** docs
