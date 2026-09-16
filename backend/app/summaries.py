@@ -89,8 +89,9 @@ def summarize(row: dict, parent: dict | None, evidence: list[dict], full: bool =
     base["display_name"] = display_name(row)
     base["address"] = address_of(row)
     base["assessment"] = assess(row, parent, evidence, nbb)
-    base["activity"] = activity_of(row, evidence)
-    base["contact_status"] = contact_status(contacts_for(row, parent, evidence))  # NBB deliberately not counted
+    kbo_public = (cached or {}).get("kbo_public", {}).get(row["nr"])
+    base["activity"] = activity_of(row, evidence, kbo_public)
+    base["contact_status"] = contact_status(contacts_for(row, parent, evidence, kbo_public=kbo_public))  # NBB not counted
     base["indicators"] = indicators_for(row, parent, evidence, cached)
     if row.get("record_type") == "establishment":
         base["parent_in_dataset"] = parent is not None

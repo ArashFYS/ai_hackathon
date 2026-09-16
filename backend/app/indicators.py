@@ -111,9 +111,15 @@ def build_indicators(row: dict, parent: dict | None, evidence: list[dict] | None
 
 
 def load_indicator_cache(conn: sqlite3.Connection, rows: list[dict]) -> dict[str, dict[str, dict]]:
-    """Cached payloads for many rows: {"einvoice": {enterprise_nr: payload}}."""
+    """Cached payloads for many rows: {"einvoice": {enterprise_nr: payload},
+    "kbo_public": {nr: payload}, "streetview": {nr: payload}} (TICKET-035/036)."""
     ents = sorted({e for e in (enterprise_nr_of(r) for r in rows) if e})
-    return {"einvoice": cache_get_many(conn, "einvoice", ents) if ents else {}}
+    nrs = sorted({r["nr"] for r in rows if r.get("nr")})
+    return {
+        "einvoice": cache_get_many(conn, "einvoice", ents) if ents else {},
+        "kbo_public": cache_get_many(conn, "kbo_public", nrs) if nrs else {},
+        "streetview": cache_get_many(conn, "streetview", nrs) if nrs else {},
+    }
 
 
 def indicators_for(row: dict, parent: dict | None, evidence: list[dict] | None, cached: dict | None) -> dict:
