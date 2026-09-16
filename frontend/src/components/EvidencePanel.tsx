@@ -31,22 +31,14 @@ export default function EvidencePanel({ nr, links }: { nr: string; links: Links 
   const label = t(`panel.tab.${tab.id}`)
 
   return (
-    <section className="source-browser" aria-label={label}>
+    <section className="source-browser" aria-label={t('panel.chooseSource')}>
       <div className="source-toolbar">
-        <div className="flex flex-wrap border-b text-sm" role="tablist">
-          {TABS.map((x) => (
-            <button
-              key={x.id}
-              type="button"
-              role="tab"
-              aria-selected={x.id === active}
-              onClick={() => setActive(x.id)}
-              className={`px-3 py-2 ${x.id === active ? 'border-b-2 border-gray-900 bg-white font-medium text-gray-900' : 'text-gray-600 hover:text-gray-900'}`}
-            >
-              {t(`panel.tab.${x.id}`)}
-            </button>
-          ))}
-        </div>
+        <label className="source-picker">
+          <span>{t('panel.chooseSource')}</span>
+          <select value={active} aria-controls="source-view" onChange={(e) => setActive(e.target.value as TabId)}>
+            {TABS.map((x) => <option key={x.id} value={x.id}>{t(`panel.tab.${x.id}`)}</option>)}
+          </select>
+        </label>
         <a href={openUrl} target="_blank" rel="noopener noreferrer" className="source-external">
           {t('panel.openNew')}
         </a>

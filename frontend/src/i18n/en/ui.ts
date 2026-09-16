@@ -182,6 +182,7 @@ export const enUi: Record<keyof typeof nlUi, string> = {
   'panel.check.inhoudingsplicht': 'Tax or social debts: click "Controleren" (check)',
   'panel.check.staatsblad': 'Publications: incorporation, dissolution, bankruptcy, address change',
   'panel.check.web': 'Own website, contact details, recent posts',
+  'panel.chooseSource': 'Inspect a source',
   'panel.source': 'Source:',
   'panel.whatToCheck': 'What to check:',
   'panel.openNew': 'Open in new window ↗',

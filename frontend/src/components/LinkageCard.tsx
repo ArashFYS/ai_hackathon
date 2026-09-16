@@ -32,7 +32,7 @@ export default function LinkageCard({ detail, onChanged }: Props) {
 
   if (record.record_type === 'establishment') {
     return (
-      <div className="space-y-2 text-sm">
+      <div className="linkage-content text-sm">
         <p className="text-gray-600">
           {t('linkage.belongsTo')}{' '}
           <span className="font-mono">{record.parent_nr ?? t('common.unknown')}</span>

@@ -36,45 +36,26 @@ export default function ContactBlock({ contacts, status }: { contacts: Contact[]
     )
   }
   return (
-    <div className="space-y-2">
+    <div className="contact-block">
       <ContactStatusBadge status={status} />
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead className="text-left text-xs uppercase tracking-wide text-gray-500">
-            <tr>
-              <th className="py-1 pr-3">{t('contact.col.value')}</th>
-              <th className="py-1 pr-3">{t('contact.col.belongsTo')}</th>
-              <th className="py-1 pr-3">{t('contact.col.source')}</th>
-              <th className="py-1 pr-3">{t('contact.col.date')}</th>
-              <th className="py-1">{t('contact.col.link')}</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y">
-            {contacts.map((c, i) => (
-              <tr key={`${c.kind}-${c.value}-${i}`}>
-                <td className="py-1 pr-3">
-                  <span className="mr-1 text-xs text-gray-500">{t(`contactKind.${c.kind}`)}</span>
-                  <a href={hrefFor(c)} className="text-blue-700 hover:underline" {...(c.kind === 'website' ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
-                    {c.value}
-                  </a>
-                </td>
-                <td className="py-1 pr-3">
-                  <span className={`rounded px-1.5 py-0.5 text-xs ${c.belongs_to === 'vestiging' ? 'bg-gray-100 text-gray-700' : 'bg-blue-50 text-blue-800'}`}>{t(`belongsTo.${c.belongs_to}`)}</span>
-                </td>
-                <td className="py-1 pr-3 text-gray-700">{c.source}</td>
-                <td className="py-1 pr-3 text-gray-700">{dash(c.observed_at)}</td>
-                <td className="py-1">
-                  {c.url ? (
-                    <a href={c.url} target="_blank" rel="noopener noreferrer" className="text-blue-700 underline">{t('common.sourceLink')}</a>
-                  ) : (
-                    '—'
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <ul className="contact-list">
+        {contacts.map((c, i) => (
+          <li key={`${c.kind}-${c.value}-${i}`}>
+            <div className="contact-value">
+              <span>{t(`contactKind.${c.kind}`)}</span>
+              <a href={hrefFor(c)} className="text-blue-700 hover:underline" {...(c.kind === 'website' ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
+                {c.value}
+              </a>
+            </div>
+            <dl className="contact-meta">
+              <div><dt>{t('contact.col.belongsTo')}</dt><dd>{t(`belongsTo.${c.belongs_to}`)}</dd></div>
+              <div><dt>{t('contact.col.source')}</dt><dd>{c.source}</dd></div>
+              <div><dt>{t('contact.col.date')}</dt><dd>{dash(c.observed_at)}</dd></div>
+            </dl>
+            {c.url && <a href={c.url} target="_blank" rel="noopener noreferrer" className="contact-source-link text-blue-700 underline">{t('common.sourceLink')}</a>}
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }

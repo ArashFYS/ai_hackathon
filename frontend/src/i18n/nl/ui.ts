@@ -180,6 +180,7 @@ export const nlUi = {
   'panel.check.inhoudingsplicht': 'Fiscale of sociale schulden: klik op "Controleren"',
   'panel.check.staatsblad': 'Publicaties: oprichting, ontbinding, faillissement, adreswijziging',
   'panel.check.web': 'Eigen website, contactgegevens, recente berichten',
+  'panel.chooseSource': 'Bron raadplegen',
   'panel.source': 'Bron:',
   'panel.whatToCheck': 'Wat te controleren:',
   'panel.openNew': 'Open in nieuw venster ↗',

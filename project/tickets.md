@@ -1,7 +1,6 @@
 # Tickets -- ai_hackathon (Prefix: TICKET)
 
-> Next ID: TICKET-031
-> Next ID: TICKET-031 (028 and 029 are already reserved on remote branches)
+> Next ID: TICKET-034
 >
 > **Deadline: 16:30 Europe/Brussels, 16 Sep 2026.** Build freeze ~15:00 → record 15:00–15:45 → upload + check + form by 16:15.
 > Anything not demoable by 15:00 is a slide in the video, not a feature.
@@ -9,6 +8,13 @@
 > Priority: **MVP** = on the critical path for the 3-min screen recording. **Stretch** = only if MVP is recordable.
 
 ## In Progress
+
+### TICKET-033: Source selector and aligned, unboxed record details
+- **Type:** feat(ui) | **Created:** 2026-09-16
+- **Description:** Replace the wrapped source tabs with an accessible source selector defaulting to Map, preserving all seven sources and NL/EN labels. Organize the left record column with aligned label/value rows, grouped provenance, tidy contact information and consistent form spacing; no decorative cards or separator bars.
+- **Scope:** Local review on top of main 7ba8cbf. Preserve backend behavior, current confidence/status values, source links, evidence submission and existing functionality. Main and earlier UI variants remain available.
+- **Status:** Implemented locally; awaiting user review, not published.
+- **Validation:** TypeScript and production build pass. Browser checks confirm all seven sources, default Map when opening a record, NL/EN labels, retained source links and zero borders around the six detail sections.
 
 ### TICKET-013: Pitch video and submission
 - **Type:** docs | **Priority:** MVP — hard deadline
