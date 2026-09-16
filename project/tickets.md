@@ -51,7 +51,7 @@
 - **Type:** feat(ui)
 - **Created:** 2026-09-16 | **Completed:** 2026-09-16
 - **Description:** NL | EN toggle in the header. Dutch is the default and the officer-facing language (challenge requirement); English is for the jury/video. Frontend-only i18n: `src/i18n/` with `nl.ts` and `en.ts` dictionaries, a `LanguageProvider` + `useT()` hook, persisted in localStorage (`lang`), `<html lang>` updated. All static UI text (nav, headings, table columns, buttons, form labels, placeholders, hints, status/zekerheid/source/contact/activity labels, empty/loading/error states, minibrowser tab labels and "wat te controleren" texts) goes through `t()`. Backend-generated free text (reason sentences, proposal texts, register values, NBB model names) stays as delivered — in EN mode it is shown unchanged with a small note "(brontekst in het Nederlands / source text in Dutch)" on the Beoordeling block. The challenge vocabulary (Adres, Register, Bewijs van activiteit, Laatste waarneming, Zekerheid, Voorstel, bevestigen/afwijzen, contactgegevens onbekend) is translated literally in EN (Address, Register, Evidence of activity, Last observation, Certainty, Proposal, confirm/reject, contact details unknown).
-- **Commits:** `560087e`, `d6ed076` (merge), `219e230` (document.title)
+- **Commits:** `560087e`, `d6ed076` (merge), `1d9a5ce` (document.title)
 
 ### TICKET-019: Belgisch Staatsblad link
 - **Type:** feat(evidence) | **Priority:** Stretch
