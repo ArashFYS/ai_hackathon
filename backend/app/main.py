@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .db import apply_schema
-from .routers import activities, evidence, indicators, nacebel, nbb, proposals, records, streets
+from .routers import activities, evidence, indicators, nacebel, nbb, proposals, records, staatsblad, streets
 
 
 @asynccontextmanager
@@ -36,3 +36,4 @@ app.include_router(proposals.router)
 app.include_router(nbb.router)
 app.include_router(indicators.router)
 app.include_router(nacebel.router)
+app.include_router(staatsblad.router)
