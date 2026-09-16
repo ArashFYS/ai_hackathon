@@ -1,6 +1,6 @@
 # Tickets -- ai_hackathon (Prefix: TICKET)
 
-> Next ID: TICKET-020
+> Next ID: TICKET-021
 >
 > **Deadline: 16:30 Europe/Brussels, 16 Sep 2026.** Build freeze ~15:00 → record 15:00–15:45 → upload + check + form by 16:15.
 > Anything not demoable by 15:00 is a slide in the video, not a feature.
@@ -18,6 +18,23 @@
 ## Backlog
 
 ### MVP — critical path (in build order)
+
+### TICKET-020: "Vestiging ontbreekt op dit adres" — record a business that is not in the register
+- **Type:** feat(approval) | **Priority:** MVP (small, ~20 min)
+- **Created:** 2026-09-16
+- **Why:** the jury's worked example has three rows; the third is *Kapsalon Voorbeeld (niet in register op dit adres)* — a shop the officer sees on the street or on Google Maps that has no KBO record at that address. Today the tool can only act on records that exist. Without this, "find missing records" (success criterion 1) is only half covered.
+- **Backend**
+  - `schema.sql`: `proposals.record_nr` becomes nullable; add `address TEXT` (free-text address the officer saw), `observed_name TEXT`, `source TEXT`, `source_url TEXT`, `observed_at TEXT`. Existing rows unaffected (ALTER TABLE ADD COLUMN; for the NOT NULL → nullable change recreate the table in `apply_schema()` only if the old constraint is present, or simply accept that a fresh `make import` rebuilds it).
+  - `POST /api/proposals/missing` body `{ street, housenr, box?, postcode, municipality, observed_name, observed_activity?, source, source_url?, observed_at, reason }` → creates a proposal with `kind='missing_establishment'`, `record_nr=NULL`, `proposed_value=observed_name`, `current_value=NULL`, `address=<formatted>`, status `open`. Returns Proposal (with `record: null`, `address` filled).
+  - `GET /api/streets/{street}` gains `missing: Proposal[]` — open `missing_establishment` proposals whose `address` starts with that street, so the row shows up in the overview.
+  - `GET /api/proposals` and `/export` include these rows; `display_name` = `observed_name`, `address` from the proposal.
+  - `proposal_with_record()` must tolerate `record_nr IS NULL`.
+- **Frontend**
+  - Straatoverzicht: button **"Vestiging ontbreekt op dit adres"** at the top (and per address-group header). Opens an inline form prefilled with the street (and house number when opened from a group): *Huisnummer · Naam zoals waargenomen · Waargenomen activiteit · Bron (Google Maps / Street View / Terreinbezoek / Website / Andere) · URL · Datum waarneming · Toelichting*. Submit → POST → reload.
+  - The resulting row renders in the table exactly like the jury example: **Adres** = the address · **Onderneming / vestiging** = `observed_name` + "(niet in register op dit adres)" · **Register** = "—" · **Bewijs van activiteit** = reason · **Laatste waarneming** = observed_at · **Zekerheid** = "Middel" (fixed) · **Voorstel** = "Nazicht: vestiging ontbreekt of adres verkeerd" · Bevestigen / Afwijzen.
+  - Goedgekeurd: rows with `record: null` show `observed_name` and the proposal's address, no detail link.
+- **Done when:** on Paalstraat, adding "Kapsalon Voorbeeld" at nr 20 with bron Street View shows the third-example row; bevestigen moves it to Goedgekeurd and into the CSV export with kind `missing_establishment`.
+- **Out of scope:** matching the observed name against records on nearby addresses (nice-to-have suggestion: "Lijkt op … op nr 22").
 
 ### Stretch — only after MVP is recordable
 
