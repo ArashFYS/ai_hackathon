@@ -58,8 +58,6 @@ export default function EvidencePanel({ nr, links, record }: { nr: string; links
         {tab.id === 'kaart' && location.needsReview && <p className="text-xs text-amber-800">{t('panel.locationReview')}</p>}
         {tab.id === 'kaart' && <a className="text-xs text-blue-700 underline" href={links.google_maps} target="_blank" rel="noopener noreferrer">{t('panel.businessReviews')}</a>}
       </div>
-      {/* Live Places API lookup (GooglePlacesPanel) is hidden for now: the Apify block on the left already shows the
-          listing. Re-enable it as a "double-check with current data" refresh next to the cached Apify result (TICKET-041). */}
       <div id="source-view" className="source-viewport" role="region" aria-label={label}>
         {tab.id === 'kaart' ? (
           location.hasCoordinates ? <RecordMap key={`${record.nr}-${record.lat}-${record.lng}`} latitude={record.lat!} longitude={record.lng!} name={record.display_name || record.nr} address={record.address} />

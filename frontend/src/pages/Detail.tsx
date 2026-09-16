@@ -238,7 +238,7 @@ export default function Detail() {
         <Section title={t('detail.registerData')}><RegisterFacts r={r} lang={lang} /><div className="mt-3"><NacebelActivities nr={r.nr} kboPublic={data.kbo_public} onChanged={reload} /></div></Section>
         <Section title={t('detail.linkage')}><LinkageCard detail={data} onChanged={reload} /></Section>
         <Section title={t('detail.contact')}><ContactBlock contacts={data.contacts} status={data.contact_status} /></Section>
-        <Section title={t('detail.googleMaps')}><GoogleMapsCard nr={r.nr} place={data.google_maps} onChanged={reload} /></Section>
+        <Section title={t('detail.googleMaps')}><GoogleMapsCard nr={r.nr} place={data.google_maps} onChanged={reload} placesKey={data.links.google_places_key} placesQuery={data.links.google_places_query} /></Section>
 
         <Section title={t('detail.evidence')}>
           <EvidenceForm nr={r.nr} onSaved={reload} />

@@ -38,7 +38,18 @@ async function searchText(key: string, query: string): Promise<Place | null> {
   return data.places?.[0] ?? null
 }
 
-export default function GooglePlacesPanel({ apiKey, query }: { apiKey: string; query: string }) {
+/** Values from the cached Apify listing, to flag what the live lookup confirms or contradicts. */
+export interface CachedListing { phone?: string | null; website?: string | null; status?: string | null }
+
+// Same value in different notation must compare equal: +32 3 658 26 38 ≡ 03 658 26 38, http://www.x.be/ ≡ x.be
+const norm = (v?: string | null) => {
+  const s = (v ?? '').trim().toLowerCase().replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/$/, '')
+  const digits = s.replace(/[\s./()+-]/g, '')
+  if (/^\d+$/.test(digits)) return digits.replace(/^0032/, '0').replace(/^32(?=\d{8,9}$)/, '0')
+  return s
+}
+
+export default function GooglePlacesPanel({ apiKey, query, cached }: { apiKey: string; query: string; cached?: CachedListing }) {
   const t = useT()
   const [place, setPlace] = useState<Place | null | undefined>(undefined) // undefined = not fetched yet
   const [loading, setLoading] = useState(false)
@@ -73,16 +84,22 @@ export default function GooglePlacesPanel({ apiKey, query }: { apiKey: string; q
     </button>
   )
 
-  const row = (label: string, value: React.ReactNode) =>
+  const compare = (live?: string | null, old?: string | null) => {
+    if (!cached || !live) return null
+    const cls = !old ? 'bg-blue-100 text-blue-800' : norm(live) === norm(old) ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'
+    const key = !old ? 'places.new' : norm(live) === norm(old) ? 'places.same' : 'places.differs'
+    return <span className={`ml-2 rounded px-1.5 py-0.5 text-xs ${cls}`}>{t(key)}</span>
+  }
+  const row = (label: string, value: React.ReactNode, mark: React.ReactNode = null) =>
     value ? (
       <div className="flex gap-3">
         <dt className="w-28 shrink-0 text-gray-500">{label}</dt>
-        <dd className="min-w-0 flex-1 text-gray-900">{value}</dd>
+        <dd className="min-w-0 flex-1 text-gray-900">{value}{mark}</dd>
       </div>
     ) : null
 
   return (
-    <div className="space-y-2 border-b p-3 text-sm">
+    <div className="space-y-2 text-sm">
       <div className="flex flex-wrap items-center gap-3">
         {button}
         <span className="text-gray-500">{t('places.query')} <span className="text-gray-700">{query}</span></span>
@@ -96,9 +113,9 @@ export default function GooglePlacesPanel({ apiKey, query }: { apiKey: string; q
             {place.formattedAddress && <span className="font-normal text-gray-600"> · {place.formattedAddress}</span>}
           </p>
           <dl className="space-y-1">
-            {row(t('places.phone'), place.nationalPhoneNumber && <a href={`tel:${place.nationalPhoneNumber}`} className="font-medium text-blue-700 underline">{place.nationalPhoneNumber}</a>)}
-            {row(t('places.website'), place.websiteUri && <a href={place.websiteUri} target="_blank" rel="noopener noreferrer" className="text-blue-700 underline">{place.websiteUri}</a>)}
-            {row(t('places.status'), place.businessStatus && (place.businessStatus in STATUS_KEYS ? t(STATUS_KEYS[place.businessStatus as keyof typeof STATUS_KEYS]) : place.businessStatus))}
+            {row(t('places.phone'), place.nationalPhoneNumber && <a href={`tel:${place.nationalPhoneNumber}`} className="font-medium text-blue-700 underline">{place.nationalPhoneNumber}</a>, compare(place.nationalPhoneNumber, cached?.phone))}
+            {row(t('places.website'), place.websiteUri && <a href={place.websiteUri} target="_blank" rel="noopener noreferrer" className="text-blue-700 underline">{place.websiteUri}</a>, compare(place.websiteUri, cached?.website))}
+            {row(t('places.status'), place.businessStatus && (place.businessStatus in STATUS_KEYS ? t(STATUS_KEYS[place.businessStatus as keyof typeof STATUS_KEYS]) : place.businessStatus), compare(place.businessStatus, cached?.status))}
             {row(t('places.rating'), place.rating !== undefined && `${place.rating} ★ (${place.userRatingCount ?? 0})`)}
             {row(t('places.hours'), place.regularOpeningHours && (
               <ul>{place.regularOpeningHours.weekdayDescriptions.map((d) => <li key={d}>{d}</li>)}</ul>
