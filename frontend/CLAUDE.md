@@ -7,6 +7,7 @@ pnpm. Dev server on 5173; `/api/*` is proxied to the backend on 8010 (see `vite.
 src/main.tsx          LanguageProvider + BrowserRouter
 src/App.tsx           layout (header + nav + LanguageToggle) and routes
 src/api.ts            typed fetch helpers for every backend endpoint (types mirror backend/CLAUDE.md)
+src/googleMaps.ts     GoogleMapsPlace types + refreshRecordGoogleMaps / refreshStreetGoogleMaps (re-exported by api.ts; TICKET-035)
 src/labels.ts         language-aware label helpers for enum codes (statusLabel, sourceLabel, activitySectorLabel, …) — re-exported by api.ts
 src/i18n/             index.tsx (LanguageProvider · useLang · useT · translate) · nl/{labels,ui}.ts · en/{labels,ui}.ts
 src/pages/            Zoeken.tsx · Detail.tsx · Straat.tsx · Kaart.tsx · Goedgekeurd.tsx
@@ -15,7 +16,8 @@ src/components/       StatusBadge · ZekerheidBadge · ReasonsList · EvidencePa
                       NbbPanel · EvidenceForm · ProposalList · RecordCard · LinkageCard · ContactBlock
                       NbbPanel · EvidenceForm · ProposalList · RecordCard · LinkageCard ·
                       MissingEstablishmentForm (+ MissingRow: "Vestiging ontbreekt op dit adres" form and table row)
-                      IndicatorLights (three traffic lights KBO · Maps · e-fact., captions via t(); TICKET-033)
+                      IndicatorLights (three traffic lights KBO · Maps · e-fact., captions via t(); TICKET-033) ·
+                      GoogleMapsCard (scraped listing: status pill, contact, rating, 3 newest reviews, openingsuren, "Ophalen via Apify"; TICKET-035)
 ```
 
 Routes: `/` Zoeken · `/record/:nr` Detail · `/straat` and `/straat/:street` Straatoverzicht · `/kaart?street=&status=` Kaart · `/goedgekeurd` Goedgekeurde wijzigingen.
@@ -31,6 +33,9 @@ No library. `src/i18n/nl/*.ts` is the source of truth (`labels.ts` = enum codes,
 
 ## Status colours (Tailwind)
 `actief` green · `ter_controle` amber · `waarschijnlijk_niet_actief` red · `geen_onderneming` gray. Zekerheid: hoog solid, middel outline, laag dashed/light.
+
+## Google Maps (via Apify) — GoogleMapsCard
+Detail section between Contact and Bewijs van activiteit, fed by `RecordDetail.google_maps` (null = never fetched). Status pill: Open · Tijdelijk gesloten · Permanent gesloten · Niet gevonden · Nog niet opgehaald (keys `maps.status.*`); match badge `mapsMatch.adres|naam|geen`. Shows adres, telefoon (tel:), e-mail (mailto:), website, beoordeling + aantal recensies + laatste recensie, nieuwste recensies (date · stars · text), openingsuren (collapsible), "Open in Google Maps ↗", "opgehaald {date} via Apify". Button "Ophalen via Apify" / "Opnieuw ophalen" → `refreshRecordGoogleMaps(nr)` (30–60 s) then `onChanged()` = reload; HTTP 409/502 messages from the backend are shown verbatim (Dutch), other errors `maps.fetchError`. Straatoverzicht: button "Google Maps ophalen (Apify)" → `refreshStreetGoogleMaps(street)` (minutes) then reload, result line `street.mapsResult`. The Maps light in Signalen reflects the scraped listing when present (see backend/CLAUDE.md), otherwise the logged observation.
 
 ## Signalen (IndicatorLights)
 `record.indicators = { kbo, google_maps, einvoice }`, each `{ level, label, text, checked_at, url }`. Dots: groen `bg-green-500` · geel `bg-amber-400` · rood `bg-red-500` · onbekend `bg-gray-300`; captions KBO · Maps · e-fact. (EN: e-inv.) via `t('indicators.*')`, `label`/`text` stay backend Dutch like reason sentences; the `title` tooltip carries label + text so colour is never the only signal. Compact (row of dots) in the Zoeken and Straatoverzicht tables (column **Signalen**); `detailed` (one line per source with "gecontroleerd {date} · Controleer bron ↗") in the Detail Beoordeling block. Detail calls `getIndicators(nr)` on mount (live Peppol lookup, cached server-side) and swaps in the result; on failure the cached dots stay. Straatoverzicht has **Controleer straat** → `refreshStreetIndicators(street)` (busy text `t('street.checkBusy')`), then shows the counts and reloads. The Maps light has no Google API behind it: it reflects the latest logged observation with bron Google Maps (groen if actief within 6 months), so logging a waarneming on the detail page is what turns it on.
