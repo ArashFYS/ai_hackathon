@@ -85,13 +85,24 @@ export default function Goedgekeurd() {
                 <tr key={p.id} className="align-top hover:bg-gray-50">
                   <td className="px-3 py-2 whitespace-nowrap text-gray-600">{(p.decided_at ?? p.created_at)?.slice(0, 10)}</td>
                   <td className="px-3 py-2">
-                    <Link to={`/record/${p.record_nr}`} className="font-medium text-blue-700 hover:underline">{p.record?.display_name ?? p.record_nr}</Link>
-                    <div className="text-xs text-gray-500">{p.record_nr}</div>
+                    {p.record_nr ? (
+                      <>
+                        <Link to={`/record/${p.record_nr}`} className="font-medium text-blue-700 hover:underline">{p.record?.display_name ?? p.record_nr}</Link>
+                        <div className="text-xs text-gray-500">{p.record_nr}</div>
+                      </>
+                    ) : (
+                      <>
+                        <span className="font-medium">{p.observed_name ?? p.display_name}</span>
+                        <div className="text-xs text-gray-500">niet in register op dit adres</div>
+                      </>
+                    )}
                   </td>
-                  <td className="px-3 py-2 text-gray-700">{dash(p.record?.address)}</td>
+                  <td className="px-3 py-2 text-gray-700">{dash(p.record?.address ?? p.address)}</td>
                   <td className="px-3 py-2 text-gray-800">
                     {p.field && <span className="text-xs text-gray-500">{p.field}: </span>}
-                    {p.current_value || p.proposed_value ? (
+                    {p.kind === 'missing_establishment' ? (
+                      <span className="text-xs text-gray-500">{KIND_LABELS[p.kind]}{p.observed_at ? ` · waargenomen ${p.observed_at}` : ''}</span>
+                    ) : p.current_value || p.proposed_value ? (
                       <><span className="line-through text-gray-500">{valueLabel(p.current_value)}</span> → <span className="font-medium">{valueLabel(p.proposed_value)}</span></>
                     ) : (
                       <span className="text-xs text-gray-500">{KIND_LABELS[p.kind] ?? p.kind}</span>
